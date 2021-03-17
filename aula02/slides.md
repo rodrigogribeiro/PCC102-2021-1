@@ -441,8 +441,6 @@ Exercícios
 - Prove que se $x \in xs$ então $x \in ys ++ xs$, em que 
 $++$ é a função de concatenação de listas.
 
-Symbol’s function definition is void: end-of-fileSymbol’s value as variable is void: haskellSymbol’s function definition is void: end-of-file
-
 Referências
 ===========
 
