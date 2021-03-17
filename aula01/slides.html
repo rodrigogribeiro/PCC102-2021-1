@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="PCC102 - Teoria da Computação - Prof. Rodrigo Ribeiro">
+  <title>Noções de semântica formal</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../revealjs/dist/reset.css">
+  <link rel="stylesheet" href="../revealjs/dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../revealjs/dist/theme/white.css" id="theme">
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">Noções de semântica formal</h1>
+  <p class="author">PCC102 - Teoria da Computação - Prof. Rodrigo Ribeiro</p>
+</section>
+
+<section id="setup" class="slide level1">
+<h1>Setup</h1>
+<div class="sourceCode" id="cb1"><pre class="sourceCode haskell literate"><code class="sourceCode haskell"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ot">main ::</span> <span class="dt">IO</span> ()</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>main <span class="ot">=</span> <span class="fu">return</span> ()</span></code></pre></div>
+</section>
+<section id="objetivo" class="slide level1">
+<h1>Objetivo</h1>
+<ul>
+<li>Apresentar conceitos de semântica formal: semântica denotacional, operacional big-step e operacional small-step.</li>
+</ul>
+</section>
+<section id="semântica-formal" class="slide level1">
+<h1>Semântica formal</h1>
+<ul>
+<li><p>O foco da disciplina de teoria da computação versa sobre a <em>sintaxe</em>.</p></li>
+<li><p>Porém, para a definição de alguns formalismos, faz-se necessário o uso de semântica formal.</p></li>
+</ul>
+</section>
+<section id="semântica-formal-1" class="slide level1">
+<h1>Semântica formal</h1>
+<ul>
+<li><p>Objetivo: definir o significado preciso de linguagens formais.</p></li>
+<li><p>Como? Veremos três diferentes técnicas usando uma linguagem simples de expressões e sua implementação em Haskell.</p></li>
+</ul>
+</section>
+<section id="sintaxe" class="slide level1">
+<h1>Sintaxe</h1>
+<ul>
+<li>Vamos considerar uma linguagem simples formada apenas por constantes númericas e adição.</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{lcl}
+   e &amp; \to &amp; n\:\mid\:e\,+\,e
+\end{array}
+\]</span></p>
+</section>
+<section id="sintaxe-1" class="slide level1">
+<h1>Sintaxe</h1>
+<ul>
+<li>Sintaxe como um tipo de dados Haskell</li>
+</ul>
+<div class="sourceCode" id="cb2"><pre class="sourceCode haskell literate"><code class="sourceCode haskell"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">data</span> <span class="dt">Exp</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="ot">=</span> <span class="dt">Const</span> <span class="dt">Int</span> <span class="op">|</span> <span class="dt">Exp</span> <span class="op">:+:</span> <span class="dt">Exp</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">deriving</span> (<span class="dt">Eq</span>, <span class="dt">Ord</span>, <span class="dt">Show</span>)</span></code></pre></div>
+</section>
+<section id="denotacional" class="slide level1">
+<h1>Denotacional</h1>
+<ul>
+<li>Semântica denotacional consiste em definir uma função para associar termos de uma linguagem a valores de um domínio semântico apropriado.</li>
+</ul>
+</section>
+<section id="denotacional-1" class="slide level1">
+<h1>Denotacional</h1>
+<ul>
+<li>Seja <span class="math inline">\(\mathcal{T}\)</span> o domínio de termos da linguagem para a qual desejamos definir a semântica e <span class="math inline">\(V\)</span> o universo de valores semânticos.</li>
+</ul>
+</section>
+<section id="denotacional-2" class="slide level1">
+<h1>Denotacional</h1>
+<ul>
+<li><p>A semântica denotacional de <span class="math inline">\(\mathcal{T}\)</span> consiste em definir uma função <span class="math inline">\([\![\_]\!] : \mathcal{T}\to V\)</span>.</p></li>
+<li><p>É importante que a semântica seja <em>composicional</em>, isto é, o significado de um termo composto deve ser definido em termos de seus subtermos.</p></li>
+</ul>
+</section>
+<section id="denotacional-3" class="slide level1">
+<h1>Denotacional</h1>
+<ul>
+<li>A semântica de expressões é definida por uma função <span class="math inline">\([\![\_]\!] : e\to \mathbb{Z}\)</span>.
+<ul>
+<li><span class="math inline">\(\mid n \mid\)</span> valor inteiro correspondente a <span class="math inline">\(n\)</span>.</li>
+<li><span class="math inline">\(\oplus : \mathbb{Z} \times \mathbb{Z} \to \mathbb{Z}\)</span></li>
+</ul></li>
+</ul>
+</section>
+<section id="denotacional-4" class="slide level1">
+<h1>Denotacional</h1>
+<ul>
+<li>Semântica de expressões.</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{lcl}
+[\![ n ]\!]         &amp; = &amp; \mid n \mid\\
+[\![ e_1 + e_2 ]\!] &amp; = &amp; [\![ e_1 ]\!] \oplus [\![ e_2 ]\!]
+\end{array}
+\]</span></p>
+</section>
+<section id="denotacional-5" class="slide level1">
+<h1>Denotacional</h1>
+<ul>
+<li>Implementação em Haskell.</li>
+</ul>
+<div class="sourceCode" id="cb3"><pre class="sourceCode haskell literate"><code class="sourceCode haskell"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ot">eval ::</span> <span class="dt">Exp</span> <span class="ot">-&gt;</span> <span class="dt">Int</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>eval (<span class="dt">Const</span> n) <span class="ot">=</span> n</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>eval (e1 <span class="op">:+:</span> e2) <span class="ot">=</span> eval e1 <span class="op">+</span> eval e2</span></code></pre></div>
+</section>
+<section id="operacional" class="slide level1">
+<h1>Operacional</h1>
+<ul>
+<li><p>Semântica operacional consiste em atribuir significado a termos utilizando uma relação de execução.</p></li>
+<li><p>Dois tipos principais: <em>small-step</em> e <em>big-step</em>.</p></li>
+</ul>
+</section>
+<section id="operacional-1" class="slide level1">
+<h1>Operacional</h1>
+<ul>
+<li>Semântica small-step define o significado de termos usando uma relação que descreve cada um dos passos necessários para sua execução.</li>
+</ul>
+</section>
+<section id="operacional-2" class="slide level1">
+<h1>Operacional</h1>
+<ul>
+<li>Semântica big-step define o significado de termos usando uma relação que descreve o resultado final de sua execução.</li>
+</ul>
+</section>
+<section id="operacional-3" class="slide level1">
+<h1>Operacional</h1>
+<ul>
+<li>Semântica small-step para expressões.</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{cc}
+   \dfrac{x \to x&#39;}{x + y \to x&#39; + y} &amp;
+   \dfrac{y \to y&#39;}{n + y \to n + y&#39;} &amp; \\ \\
+   \dfrac{}{n + n&#39; \to \mid n \mid \oplus \mid n&#39; \mid}
+\end{array}
+\]</span></p>
+</section>
+<section id="operacional-4" class="slide level1">
+<h1>Operacional</h1>
+<ul>
+<li>Exemplo.</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{c}
+\dfrac{1 + 2 \to 3}{(1 + 2) + (3 + 4) \to 3 + (3 + 4)}
+\end{array}
+\]</span></p>
+</section>
+<section id="operacional-5" class="slide level1">
+<h1>Operacional</h1>
+<ul>
+<li>Para obtenção do resultado final da execução de um termo, devemos aplicar regras da semântica small-step enquanto possível.
+<ul>
+<li>Devemos usar o conceito de fecho reflexivo e transitivo da semântica.</li>
+</ul></li>
+</ul>
+</section>
+<section id="operacional-6" class="slide level1">
+<h1>Operacional</h1>
+<ul>
+<li>Fecho reflexivo e transitivo: Seja <span class="math inline">\(R\)</span> uma relação binária sobre um conjunto <span class="math inline">\(A\)</span>. Dizemos que <span class="math inline">\(S\)</span> é o fecho reflexivo e transitivo de <span class="math inline">\(R\)</span> se:
+<ul>
+<li><span class="math inline">\(S\)</span> é reflexiva e transitiva.</li>
+<li><span class="math inline">\(R \subseteq S\)</span>.</li>
+<li>Para toda <span class="math inline">\(T\)</span> reflexiva e transitiva tal que <span class="math inline">\(R \subseteq T\)</span> temos que <span class="math inline">\(S\subseteq T\)</span>.</li>
+</ul></li>
+</ul>
+</section>
+<section id="operacional-7" class="slide level1">
+<h1>Operacional</h1>
+<ul>
+<li><p>A implementação da semântica small-step em Haskell pode ser feita usando list comprehensions.</p></li>
+<li><p>Para isso, vamos definir uma função de tipo</p></li>
+</ul>
+<div class="sourceCode" id="cb4"><pre class="sourceCode haskell literate"><code class="sourceCode haskell"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ot">trans ::</span> <span class="dt">Exp</span> <span class="ot">-&gt;</span> [<span class="dt">Exp</span>]</span></code></pre></div>
+</section>
+<section id="operacional-8" class="slide level1">
+<h1>Operacional</h1>
+<ul>
+<li><p>Cada equação da função irá representar uma regra da semântica.</p></li>
+<li><p>O resultado será a uma lista contendo o resultado de aplicar uma regra.</p></li>
+</ul>
+</section>
+<section id="operacional-9" class="slide level1">
+<h1>Operacional</h1>
+<ul>
+<li>A primeira equação denota o fato de que constantes não podem ser mais reduzidas pela semântica.</li>
+</ul>
+<div class="sourceCode" id="cb5"><pre class="sourceCode haskell literate"><code class="sourceCode haskell"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>trans (<span class="dt">Const</span> _) <span class="ot">=</span> []</span></code></pre></div>
+</section>
+<section id="operacional-10" class="slide level1">
+<h1>Operacional</h1>
+<ul>
+<li>Representando a regra:</li>
+</ul>
+<p><span class="math display">\[
+\dfrac{}{n + n&#39; \to \mid n \mid \oplus \mid n&#39; \mid}
+\]</span></p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode haskell literate"><code class="sourceCode haskell"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>trans ((<span class="dt">Const</span> n) <span class="op">:+:</span> (<span class="dt">Const</span> n&#39;))</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="ot">=</span> [<span class="dt">Const</span> (n <span class="op">+</span> n&#39;)]</span></code></pre></div>
+</section>
+<section id="operacional-11" class="slide level1">
+<h1>Operacional</h1>
+<ul>
+<li>Representando a regra</li>
+</ul>
+<p><span class="math display">\[
+\dfrac{e&#39; \to e1}{n + e&#39; \to n + e1}
+\]</span></p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode haskell literate"><code class="sourceCode haskell"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>trans ((<span class="dt">Const</span> n) <span class="op">:+:</span> e&#39;)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="ot">=</span> [(<span class="dt">Const</span> n) <span class="op">:+:</span> e1 <span class="op">|</span> e1 <span class="ot">&lt;-</span> trans e&#39;]</span></code></pre></div>
+</section>
+<section id="operacional-12" class="slide level1">
+<h1>Operacional</h1>
+<ul>
+<li>Representando a regra</li>
+</ul>
+<p><span class="math display">\[
+\dfrac{e \to e1}{e + e&#39; \to e1 + e&#39;}
+\]</span></p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode haskell literate"><code class="sourceCode haskell"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>trans (e <span class="op">:+:</span> e&#39;)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="ot">=</span> [e1 <span class="op">:+:</span> e&#39; <span class="op">|</span> e1 <span class="ot">&lt;-</span> trans e]</span></code></pre></div>
+</section>
+<section id="operacional-13" class="slide level1">
+<h1>Operacional</h1>
+<ul>
+<li>Obtemos o fecho transitivo da semântica aplicado transições de forma a construir uma árvore.</li>
+</ul>
+<div class="sourceCode" id="cb9"><pre class="sourceCode haskell literate"><code class="sourceCode haskell"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">data</span> <span class="dt">Tree</span> a <span class="ot">=</span> <span class="dt">Node</span> a [<span class="dt">Tree</span> a]</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>   <span class="kw">deriving</span> (<span class="dt">Eq</span>, <span class="dt">Ord</span>, <span class="dt">Show</span>)</span></code></pre></div>
+</section>
+<section id="operacional-14" class="slide level1">
+<h1>Operacional</h1>
+<ul>
+<li>Aplicando repetidamente transições sobre a árvore de execução.</li>
+</ul>
+<div class="sourceCode" id="cb10"><pre class="sourceCode haskell literate"><code class="sourceCode haskell"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="ot">exec ::</span> <span class="dt">Exp</span> <span class="ot">-&gt;</span> <span class="dt">Tree</span> <span class="dt">Exp</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>exec e <span class="ot">=</span> <span class="dt">Node</span> e [exec e&#39; <span class="op">|</span> e&#39; <span class="ot">&lt;-</span> trans e]</span></code></pre></div>
+</section>
+<section id="operacional-15" class="slide level1">
+<h1>Operacional</h1>
+<ul>
+<li>Outra forma popular de representar a semântica small-step é usando contextos, que separam a execução propriamente dita de regras estruturais (i.e. para recursão sobre termos).</li>
+</ul>
+</section>
+<section id="operacional-16" class="slide level1">
+<h1>Operacional</h1>
+<ul>
+<li><p>A ordem de execução da semântica é definida usando o conceito de <em>contextos</em>.</p></li>
+<li><p>Contextos são exatamente a sintaxe de expressões marcados por “holes”, representados por <span class="math inline">\([\_]\)</span>.</p></li>
+</ul>
+</section>
+<section id="operacional-17" class="slide level1">
+<h1>Operacional</h1>
+<ul>
+<li>A sintaxe de contexto deve refletir a estrutura de avaliação da semântica.</li>
+</ul>
+</section>
+<section id="operacional-18" class="slide level1">
+<h1>Operacional</h1>
+<ul>
+<li>Sintaxe de contextos.</li>
+</ul>
+<p><span class="math display">\[
+C\:\to\:[\_]\:\mid\:C + e\:\mid\:n + C
+\]</span></p>
+</section>
+<section id="operacional-19" class="slide level1">
+<h1>Operacional</h1>
+<ul>
+<li><p>O contexto <span class="math inline">\(C + e\)</span> indica que a avaliação deve proceder recursivamente sobre o termo da esquerda.</p></li>
+<li><p>O contexto <span class="math inline">\(n + C\)</span> indica que avaliamos o termo da direita somente quando o da esquerda for reduzido a um valor.</p></li>
+</ul>
+</section>
+<section id="operacional-20" class="slide level1">
+<h1>Operacional</h1>
+<ul>
+<li><p>A execução da semântica dá-se por re-escrever termos em contextos.</p></li>
+<li><p>Pontos de re-escrita são marcados na sintaxe por holes.</p></li>
+</ul>
+</section>
+<section id="operacional-21" class="slide level1">
+<h1>Operacional</h1>
+<ul>
+<li>Denotamos por <span class="math inline">\(C[e]\)</span> o resultado de substituir um hole no contexto <span class="math inline">\(C\)</span> pelo termo <span class="math inline">\(e\)</span>.</li>
+</ul>
+</section>
+<section id="operacional-22" class="slide level1">
+<h1>Operacional</h1>
+<ul>
+<li>Exemplo:
+<ul>
+<li>Contexto <span class="math inline">\(C = [\_] + (3 + 4)\)</span>.</li>
+<li>Temos que <span class="math inline">\(C[3] = 3 + (3 + 4)\)</span>.</li>
+</ul></li>
+</ul>
+</section>
+<section id="operacional-23" class="slide level1">
+<h1>Operacional</h1>
+<ul>
+<li>Semântica de expressões</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{cc}
+  \dfrac{e \to e&#39;}{C[e] \to C[e&#39;]} &amp; \dfrac{}{n + n&#39; \to \mid n \mid \oplus \mid n&#39; \mid}
+\end{array}
+\]</span></p>
+</section>
+<section id="operacional-24" class="slide level1">
+<h1>Operacional</h1>
+<ul>
+<li>O uso de contextos permitiu que duas regras fossem condensadas em uma, usando contextos.</li>
+</ul>
+</section>
+<section id="operacional-25" class="slide level1">
+<h1>Operacional</h1>
+<ul>
+<li>Representando contextos em Haskell</li>
+</ul>
+<div class="sourceCode" id="cb11"><pre class="sourceCode haskell literate"><code class="sourceCode haskell"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">data</span> <span class="dt">Con</span> <span class="ot">=</span> <span class="dt">Hole</span> <span class="op">|</span> <span class="dt">AddL</span> <span class="dt">Con</span> <span class="dt">Exp</span> <span class="op">|</span> <span class="dt">AddR</span> <span class="dt">Exp</span> <span class="dt">Con</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">deriving</span> (<span class="dt">Eq</span>, <span class="dt">Ord</span>, <span class="dt">Show</span>)</span></code></pre></div>
+</section>
+<section id="operacional-26" class="slide level1">
+<h1>Operacional</h1>
+<ul>
+<li>Substituição em um contexto.</li>
+</ul>
+<div class="sourceCode" id="cb12"><pre class="sourceCode haskell literate"><code class="sourceCode haskell"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="ot">subst ::</span> <span class="dt">Con</span> <span class="ot">-&gt;</span> <span class="dt">Exp</span> <span class="ot">-&gt;</span> <span class="dt">Exp</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>subst <span class="dt">Hole</span> e <span class="ot">=</span> e</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>subst (<span class="dt">AddL</span> c e&#39;) e <span class="ot">=</span> (subst c e) <span class="op">:+:</span> e&#39;</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>subst (<span class="dt">AddR</span> e c) e&#39; <span class="ot">=</span> e <span class="op">:+:</span> (subst c e&#39;)</span></code></pre></div>
+</section>
+<section id="operacional-27" class="slide level1">
+<h1>Operacional</h1>
+<ul>
+<li>A operação dual da substituição <span class="math inline">\(C[e]\)</span> envolve dividir uma expressão nos contextos possíveis.</li>
+</ul>
+</section>
+<section id="operacional-28" class="slide level1">
+<h1>Operacional</h1>
+<ul>
+<li>Decompondo uma expressão em contextos.</li>
+</ul>
+<div class="sourceCode" id="cb13"><pre class="sourceCode haskell literate"><code class="sourceCode haskell"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="ot">decompose ::</span> <span class="dt">Exp</span> <span class="ot">-&gt;</span> [(<span class="dt">Con</span>,<span class="dt">Exp</span>)]</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>decompose e <span class="ot">=</span> (<span class="dt">Hole</span>, e) <span class="op">:</span> <span class="kw">case</span> e <span class="kw">of</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">Const</span> n   <span class="ot">-&gt;</span> []</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  e1 <span class="op">:+:</span> e2 <span class="ot">-&gt;</span> [(<span class="dt">AddL</span> c e2, e1&#39;) <span class="op">|</span> (c,e1&#39;) <span class="ot">&lt;-</span> decompose e1] <span class="op">++</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>               [(<span class="dt">AddR</span> e1 c, e2&#39;) <span class="op">|</span> (c,e2&#39;) <span class="ot">&lt;-</span> decompose e2]</span></code></pre></div>
+</section>
+<section id="operacional-29" class="slide level1">
+<h1>Operacional</h1>
+<ul>
+<li>Usando as definições anteriores, podemos definir a semântica small-step usando contextos usando a função:</li>
+</ul>
+<div class="sourceCode" id="cb14"><pre class="sourceCode haskell literate"><code class="sourceCode haskell"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="ot">transCon ::</span> <span class="dt">Exp</span> <span class="ot">-&gt;</span> [<span class="dt">Exp</span>]</span></code></pre></div>
+</section>
+<section id="operacional-30" class="slide level1">
+<h1>Operacional</h1>
+<ul>
+<li>Representando a regra</li>
+</ul>
+<p><span class="math display">\[\dfrac{}{n + n&#39; \to \mid n \mid \oplus \mid n&#39; \mid}\]</span></p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode haskell literate"><code class="sourceCode haskell"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>transCon ((<span class="dt">Const</span> n) <span class="op">:+:</span> (<span class="dt">Const</span> n&#39;))</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>      <span class="ot">=</span> [<span class="dt">Const</span> (n <span class="op">+</span> n&#39;)]</span></code></pre></div>
+</section>
+<section id="operacional-31" class="slide level1">
+<h1>Operacional</h1>
+<ul>
+<li>Representando a regra</li>
+</ul>
+<p><span class="math display">\[
+\dfrac{e \to e&#39;}{C[e] \to C[e&#39;]}
+\]</span></p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode haskell literate"><code class="sourceCode haskell"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>transCon e</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>      <span class="ot">=</span> [subst c e1 <span class="op">|</span> (c,e&#39;) <span class="ot">&lt;-</span> <span class="fu">tail</span> (decompose e)</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>                    , e1 <span class="ot">&lt;-</span> trans e&#39;]</span></code></pre></div>
+</section>
+<section id="operacional-32" class="slide level1">
+<h1>Operacional</h1>
+<ul>
+<li>Semântica big-step para expressões.</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{cc}
+  \dfrac{}{n \Downarrow \mid n \mid} &amp;
+  \dfrac{e \Downarrow n \,\,\,\,\, e&#39; \Downarrow n&#39;}{e + e&#39; \Downarrow \mid n \mid \oplus \mid n&#39; \mid} \\
+\end{array}
+\]</span></p>
+</section>
+<section id="operacional-33" class="slide level1">
+<h1>Operacional</h1>
+<ul>
+<li>Implementação em Haskell da semântica big-step</li>
+</ul>
+<div class="sourceCode" id="cb17"><pre class="sourceCode haskell literate"><code class="sourceCode haskell"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="ot">interp ::</span> <span class="dt">Exp</span> <span class="ot">-&gt;</span> [<span class="dt">Int</span>]</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>interp (<span class="dt">Const</span> n) <span class="ot">=</span> [n]</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>interp (e <span class="op">:+:</span> e&#39;) <span class="ot">=</span> [n <span class="op">+</span> m <span class="op">|</span> n <span class="ot">&lt;-</span> interp e</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>                           , m <span class="ot">&lt;-</span> interp e&#39;]</span></code></pre></div>
+</section>
+<section id="exercícios" class="slide level1">
+<h1>Exercícios</h1>
+<ul>
+<li>Considere a seguinte linguagem sobre constantes booleanas em conjunto com o operador de disjunção (ou lógico).</li>
+</ul>
+<p><span class="math inline">\(b \to true\,\mid\,false\,\mid\,b \lor b\)</span></p>
+</section>
+<section id="exercícios-1" class="slide level1">
+<h1>Exercícios</h1>
+<ul>
+<li><p>Apresente definições da semânticas small-step, small-step com contextos e big-step e suas respectivas implementações em Haskell.</p></li>
+<li><p>Para apresentação das regras formais das semânticas, utilize o template laTeX disponível no Moodle.</p></li>
+</ul>
+</section>
+<section id="referências" class="slide level1">
+<h1>Referências</h1>
+<ul>
+<li>Hutton, Graham. It’s easy as 1,2,3. Under consideration for publication on Journal of Functional Programming, 2021.</li>
+</ul>
+</section>
+    </div>
+  </div>
+
+  <script src="../revealjs/dist/reveal.js"></script>
+
+  // reveal.js plugins
+  <script src="../revealjs/plugin/notes/notes.js"></script>
+  <script src="../revealjs/plugin/search/search.js"></script>
+  <script src="../revealjs/plugin/zoom/zoom.js"></script>
+  <script src="../revealjs/plugin/math/math.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+      
+        // Push each slide change to the browser history
+        history: true,
+        math: {
+          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // reveal.js plugins
+        plugins: [
+          RevealMath,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    </body>
+</html>

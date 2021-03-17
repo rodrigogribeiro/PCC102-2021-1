@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="PCC102 - Teoria da Computação - Prof. Rodrigo Ribeiro">
+  <title>Expressões regulares</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../revealjs/dist/reset.css">
+  <link rel="stylesheet" href="../revealjs/dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+  </style>
+  <link rel="stylesheet" href="../revealjs/dist/theme/white.css" id="theme">
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">Expressões regulares</h1>
+  <p class="author">PCC102 - Teoria da Computação - Prof. Rodrigo Ribeiro</p>
+</section>
+
+<section id="objetivos" class="slide level1">
+<h1>Objetivos</h1>
+<ul>
+<li><p>Apresentar a sintaxe de expressões regulares.</p></li>
+<li><p>Apresentar a semântica denotacional de expressões regulares.</p></li>
+</ul>
+</section>
+<section id="objetivos-1" class="slide level1">
+<h1>Objetivos</h1>
+<ul>
+<li><p>Apresentar a semântica operacional big-step de expressões regulares.</p></li>
+<li><p>Apresentar a semântica operacional small-step de expressões regulares.</p></li>
+</ul>
+</section>
+<section id="expressões-regulares" class="slide level1">
+<h1>Expressões regulares</h1>
+<ul>
+<li><p>Especificação algébrica de linguagens regulares.</p></li>
+<li><p>Criada por Kleene em 1951 como uma forma de especificar linguagens regulares usando o que ele concebeu como <em>regular events</em>.</p></li>
+</ul>
+</section>
+<section id="expressões-regulares-1" class="slide level1">
+<h1>Expressões regulares</h1>
+<ul>
+<li><p>Amplamente utilizadas em computação para casamento de padrões em texto.</p></li>
+<li><p>Resultados conhecidos da teoria de linguagens formais mostram que expressões regulares são equivalentes à autômatos finitos.</p></li>
+</ul>
+</section>
+<section id="sintaxe" class="slide level1">
+<h1>Sintaxe</h1>
+<ul>
+<li>Seja <span class="math inline">\(\Sigma\)</span> um alfabeto e <span class="math inline">\(a \in \Sigma\)</span>.</li>
+<li>A sintaxe de expressões regulares sobre <span class="math inline">\(\Sigma\)</span> é:</li>
+</ul>
+<p><span class="math display">\[
+e \to \emptyset\,|\,\lambda \,|\,a\,|\,e + e\,|\,e\:e\,|\,e^{*}
+\]</span></p>
+</section>
+<section id="semântica" class="slide level1">
+<h1>Semântica</h1>
+<ul>
+<li><p>Tradicionalmente, a semântica de expressões regulares é especificada de forma denotacional.</p></li>
+<li><p>Para isso, define-se uma função <span class="math inline">\([\![\_]\!] : e\to \mathcal{P}(\Sigma^*)\)</span> que associa a uma expressão a linguagem por ela denotada.</p></li>
+</ul>
+</section>
+<section id="semântica-1" class="slide level1">
+<h1>Semântica</h1>
+<ul>
+<li>Semântica denotacional</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{lcl}
+[\![\emptyset]\!] &amp; = &amp; \emptyset\\
+[\![\lambda ]\!]  &amp; = &amp; \{\lambda\}\\
+[\![ a ]\!]       &amp; = &amp; \{a\} \\
+[\![e_1 + e_2]\!] &amp; = &amp; [\![e_1]\!] \cup [\![e_2]\!] \\
+[\![e_1\:e_2]\!]  &amp; = &amp; [\![e_1]\!]\:[\![e_2]\!]\\
+[\![e^*]\!]       &amp; = &amp; ([\![e]\!])^*\\
+\end{array}
+\]</span></p>
+</section>
+<section id="semântica-2" class="slide level1">
+<h1>Semântica</h1>
+<ul>
+<li><p>Como definir uma semântica operacional para expressões regular?</p></li>
+<li><p>A idéia é definir um sistema de provas para determinar quando um string <span class="math inline">\(s\)</span> pertence a linguagem denotada por uma expressão <span class="math inline">\(e\)</span>.</p></li>
+</ul>
+</section>
+<section id="semântica-3" class="slide level1">
+<h1>Semântica</h1>
+<ul>
+<li>Representaremos a semântica operacional big-step por um sistema de regras para concluir <span class="math inline">\(s \in |\!|e|\!|\)</span> que denotará que a string <span class="math inline">\(s\)</span> pertence à linguagem de <span class="math inline">\(e\)</span>.</li>
+</ul>
+</section>
+<section id="semântica-4" class="slide level1">
+<h1>Semântica</h1>
+<ul>
+<li>Regras base: <span class="math inline">\(\lambda\)</span> e um símbolo de <span class="math inline">\(\Sigma\)</span>.</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{cc}
+  \dfrac{}{\lambda \in |\!|\lambda|\!|} &amp; 
+  \dfrac{a \in \Sigma}{a \in |\!|a|\!|} 
+\end{array}
+\]</span></p>
+</section>
+<section id="semântica-5" class="slide level1">
+<h1>Semântica</h1>
+<ul>
+<li>Regras para União.</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{cc}
+  \dfrac{s \in |\!|e_1|\!|}{s \in |\!|e_1 + e_2|\!|} &amp;
+  \dfrac{s \in |\!|e_2|\!|}{s \in |\!|e_1 + e_2|\!|} 
+\end{array}
+\]</span></p>
+</section>
+<section id="semântica-6" class="slide level1">
+<h1>Semântica</h1>
+<ul>
+<li>Regra para concatenação.</li>
+</ul>
+<p><span class="math display">\[
+\dfrac{s \in |\!|e_1|\!|\:\:\:s&#39; \in|\!|e_2|\!|}{ss&#39; \in |\!|e_1\:e_2|\!|}
+\]</span></p>
+</section>
+<section id="semântica-7" class="slide level1">
+<h1>Semântica</h1>
+<ul>
+<li>Regras para o fecho de Kleene.</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{cc}
+\dfrac{}{\lambda \in |\!|e^*|\!|} &amp;
+\dfrac{s \in |\!|e|\!|\:\:\:\:s&#39;\in |\!|e^*|\!|}{ss&#39;\in|\!|e^*|\!|}
+\end{array}
+\]</span></p>
+</section>
+<section id="semântica-8" class="slide level1">
+<h1>Semântica</h1>
+<ul>
+<li>Teorema: Para todo <span class="math inline">\(s\in\Sigma^*\)</span> e para todo <span class="math inline">\(e\)</span>, temos que <span class="math inline">\(s \in [\![e]\!]\)</span> se e somente se <span class="math inline">\(s\in |\!| e |\!|\)</span>.
+<ul>
+<li><span class="math inline">\((\to)\)</span> Prova por indução bem formada sobre <span class="math inline">\((e,s)\)</span></li>
+<li><span class="math inline">\((\leftarrow)\)</span> Prova por indução bem formada sobre <span class="math inline">\((e,s)\)</span></li>
+</ul></li>
+</ul>
+</section>
+<section id="semântica-9" class="slide level1">
+<h1>Semântica</h1>
+<ul>
+<li><p>Alguns casos da prova para primeira implicação.</p></li>
+<li><p>Primeiro, supomos que <span class="math inline">\(s \in [\![e]\!]\)</span>.</p></li>
+</ul>
+</section>
+<section id="semântica-10" class="slide level1">
+<h1>Semântica</h1>
+<ul>
+<li>Caso <span class="math inline">\(e = \lambda\)</span>. Temos que <span class="math inline">\(s \in [\![\lambda]\!]\)</span>. Logo, temos que:</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{lc}
+s \in [\![\lambda]\!] &amp; \Leftrightarrow \\ 
+s \in \{\lambda\}     &amp; \Leftrightarrow \\ 
+s = \lambda
+\end{array}
+\]</span></p>
+<ul>
+<li>Como <span class="math inline">\(s = \lambda\)</span>, temos que <span class="math inline">\(s \in |\!|\lambda|\!|\)</span>, como requerido.</li>
+</ul>
+</section>
+<section id="semântica-11" class="slide level1">
+<h1>Semântica</h1>
+<ul>
+<li>Caso <span class="math inline">\(e = e_1 + e_2\)</span>. Temos que <span class="math inline">\(s \in [\![e_1 + e_2]\!]\)</span>. Logo, temos que <span class="math inline">\(s \in [\![e_1]\!] \cup [\![e_2]\!]\)</span>. Considere os seguintes casos:
+<ul>
+<li><span class="math inline">\(s \in [\![e_1]\!]\)</span>: Pela hipótese de indução, temos que <span class="math inline">\(s \in |\!| e_1|\!|\)</span>. Desse fato, decorre que <span class="math inline">\(s \in |\!|e_1 + e_2|\!|\)</span>.</li>
+<li><span class="math inline">\(s \in [\![e_2]\!]\)</span>: Similar.</li>
+</ul></li>
+</ul>
+</section>
+<section id="semântica-12" class="slide level1">
+<h1>Semântica</h1>
+<ul>
+<li><p>Alguns casos da prova para segunda implicação.</p></li>
+<li><p>Primeiro, supomos que <span class="math inline">\(s \in |\!|e|\!|\)</span>.</p></li>
+</ul>
+</section>
+<section id="semântica-13" class="slide level1">
+<h1>Semântica</h1>
+<ul>
+<li>Caso <span class="math inline">\(e = a\)</span>, para <span class="math inline">\(a \in \Sigma\)</span>. Como <span class="math inline">\(s \in |\!|a|\!|\)</span>, temos que <span class="math inline">\(s = a\)</span>. Logo, temos:</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{lc}
+a \in \{a\}     &amp; \Leftrightarrow \\
+\end{array}
+\]</span></p>
+</section>
+<section id="semântica-14" class="slide level1">
+<h1>Semântica</h1>
+<ul>
+<li>Caso <span class="math inline">\(e = a\)</span>, para <span class="math inline">\(a \in \Sigma\)</span>. Como <span class="math inline">\(s \in |\!|a|\!|\)</span>, temos que <span class="math inline">\(s = a\)</span>. Logo, temos:</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{lc}
+a \in \{a\}     &amp; \Leftrightarrow \\
+a \in [\![a]\!] &amp; \Leftrightarrow \\
+\end{array}
+\]</span></p>
+</section>
+<section id="semântica-15" class="slide level1">
+<h1>Semântica</h1>
+<ul>
+<li>Caso <span class="math inline">\(e = a\)</span>, para <span class="math inline">\(a \in \Sigma\)</span>. Como <span class="math inline">\(s \in |\!|a|\!|\)</span>, temos que <span class="math inline">\(s = a\)</span>. Logo, temos:</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{lc}
+a \in \{a\}     &amp; \Leftrightarrow \\
+a \in [\![a]\!] &amp; \Leftrightarrow \\
+s \in [\![a]\!] &amp; \\
+\end{array}
+\]</span></p>
+</section>
+<section id="semântica-16" class="slide level1">
+<h1>Semântica</h1>
+<ul>
+<li>Caso <span class="math inline">\(e = e_1\:e_2\)</span>. Como <span class="math inline">\(s \in |\!|e_1\:e_2|\!|\)</span>, temos que
+<ul>
+<li><span class="math inline">\(s = s_1s_2\)</span>;</li>
+<li><span class="math inline">\(D_1 : s_1 \in |\!|e_1|\!|\)</span> e;</li>
+<li><span class="math inline">\(D_2 : s_2 \in |\!|e_2|\!|\)</span>.</li>
+</ul></li>
+<li>Pela HI sobre <span class="math inline">\(D_1\)</span> e <span class="math inline">\(D_2\)</span>, temos que <span class="math inline">\(s_1\in[\![e_1]\!]\)</span> e <span class="math inline">\(s_2\in[\![e_2]\!]\)</span>.</li>
+</ul>
+</section>
+<section id="semântica-17" class="slide level1">
+<h1>Semântica</h1>
+<ul>
+<li>Como <span class="math inline">\(s_1\in[\![e_1]\!]\)</span> e <span class="math inline">\(s_2\in[\![e_2]\!]\)</span>, temos que:</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{lc}
+  s_1s_2\in[\![e_1]\!]\:[\![e_2]\!] &amp; \Leftrightarrow \\
+\end{array}
+\]</span></p>
+</section>
+<section id="semântica-18" class="slide level1">
+<h1>Semântica</h1>
+<ul>
+<li>Como <span class="math inline">\(s_1\in[\![e_1]\!]\)</span> e <span class="math inline">\(s_2\in[\![e_2]\!]\)</span>, temos que:</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{lc}
+  s_1s_2\in [\![e_1]\!]\:[\![e_2]\!] &amp; \Leftrightarrow \\
+  s_1s_2\in [\![e_1\:e_2]\!]         &amp; \Leftrightarrow \\ 
+\end{array}
+\]</span></p>
+</section>
+<section id="semântica-19" class="slide level1">
+<h1>Semântica</h1>
+<ul>
+<li>Como <span class="math inline">\(s_1\in[\![e_1]\!]\)</span> e <span class="math inline">\(s_2\in[\![e_2]\!]\)</span>, temos que:</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{lc}
+  s_1s_2\in [\![e_1]\!]\:[\![e_2]\!] &amp; \Leftrightarrow \\
+  s_1s_2\in [\![e_1\:e_2]\!]         &amp; \Leftrightarrow \\ 
+  s \in [\![e_1\:e_2]\!]
+\end{array}
+\]</span></p>
+</section>
+<section id="semântica-20" class="slide level1">
+<h1>Semântica</h1>
+<ul>
+<li><p>Apresentamos como definir a semântica de expressões regulares usando semântica denotacional e operacional <em>big-step</em>.</p></li>
+<li><p>Como definir a semântica small-step para expressões regulares?</p></li>
+</ul>
+</section>
+<section id="semântica-21" class="slide level1">
+<h1>Semântica</h1>
+<ul>
+<li>Para representar a semântica small-step de expressões regulares vamos nos inspirar na conhecida equivalência com autômatos conhecida como construção de Thompson.</li>
+</ul>
+</section>
+<section id="semântica-22" class="slide level1">
+<h1>Semântica</h1>
+<ul>
+<li>A construção de Thompson mostra como construir um AFN-<span class="math inline">\(\lambda\)</span> a partir de uma expressão regular qualquer.</li>
+</ul>
+</section>
+<section id="semântica-23" class="slide level1">
+<h1>Semântica</h1>
+<ul>
+<li>AFN para <span class="math inline">\(e = \emptyset\)</span></li>
+</ul>
+<p><img data-src="/Users/rodrigo/Documents/aulas/2021-1/teoria/slides/aula03/fc9325b9ac40f446f83e1f07735dcdaeb9d477ad.svg" /></p>
+</section>
+<section id="semântica-24" class="slide level1">
+<h1>Semântica</h1>
+<ul>
+<li>AFN para <span class="math inline">\(e= \lambda\)</span></li>
+</ul>
+<p><img data-src="/Users/rodrigo/Documents/aulas/2021-1/teoria/slides/aula03/f1d9c300a1400c2d0e5386d5d627dc8e18ec746f.svg" /></p>
+</section>
+<section id="semântica-25" class="slide level1">
+<h1>Semântica</h1>
+<ul>
+<li>AFN para <span class="math inline">\(e= a\)</span>, para <span class="math inline">\(a \in \Sigma\)</span></li>
+</ul>
+<p><img data-src="/Users/rodrigo/Documents/aulas/2021-1/teoria/slides/aula03/bc3208a22244d34644ffe4ff87691fa879698648.svg" /></p>
+</section>
+<section id="semântica-26" class="slide level1">
+<h1>Semântica</h1>
+<ul>
+<li>AFN para <span class="math inline">\(e = e_1 + e_2\)</span></li>
+</ul>
+<p><img data-src="/Users/rodrigo/Documents/aulas/2021-1/teoria/slides/aula03/e3744b155e969c7bd7ee6c7ac1db6e143b2d7d35.svg" /></p>
+</section>
+<section id="semântica-27" class="slide level1">
+<h1>Semântica</h1>
+<ul>
+<li>AFN para <span class="math inline">\(e = e_1\:e_2\)</span></li>
+</ul>
+<p><img data-src="/Users/rodrigo/Documents/aulas/2021-1/teoria/slides/aula03/9e658d18c642832a8253825ec36b11ec2eefe846.svg" /></p>
+</section>
+<section id="semântica-28" class="slide level1">
+<h1>Semântica</h1>
+<ul>
+<li>AFN para <span class="math inline">\(e = e_1^*\)</span>.</li>
+</ul>
+<p><img data-src="/Users/rodrigo/Documents/aulas/2021-1/teoria/slides/aula03/b30dcf8550fd3c829a640167ed99a240326ea23f.svg" /></p>
+</section>
+<section id="semântica-29" class="slide level1">
+<h1>Semântica</h1>
+<ul>
+<li><p>Ideia geral: Simular as configurações instântaneas do AFN de Thompson ao executar uma expressão regular sobre uma string.</p></li>
+<li><p>Vamos usar contextos de avaliação para definir em qual sub-autômato estamos no momento.</p></li>
+</ul>
+</section>
+<section id="semântica-30" class="slide level1">
+<h1>Semântica</h1>
+<ul>
+<li><p>Cada regra da semântica representará uma transição do AFN de Thompson.</p></li>
+<li><p>Indicaremos que uma configuração inicia um sub-AFN por <span class="math inline">\(B\)</span> e termina por <span class="math inline">\(F\)</span>.</p></li>
+</ul>
+</section>
+<section id="semântica-31" class="slide level1">
+<h1>Semântica</h1>
+<ul>
+<li>Configurações serão formadas por <span class="math inline">\(\langle S,e,E,s \rangle\)</span>, em que
+<ul>
+<li><span class="math inline">\(S\)</span>: indica se a configuração é inicial ou final.</li>
+<li><span class="math inline">\(e\)</span>: expressão regular atual.</li>
+<li><span class="math inline">\(E\)</span>: contexto de avaliação.</li>
+<li><span class="math inline">\(s\)</span>: string atualmente processada.</li>
+</ul></li>
+</ul>
+</section>
+<section id="semântica-32" class="slide level1">
+<h1>Semântica</h1>
+<ul>
+<li>Contextos de avaliação para expressões regulares.</li>
+</ul>
+<p><span class="math display">\[
+E[\,] \to E[\,]+ e\,\mid\,e + E[\,]\,\mid\,E[\,]\,e\,\mid\,e\,E[\,]\,\mid\,\star
+\]</span></p>
+</section>
+<section id="semântica-33" class="slide level1">
+<h1>Semântica</h1>
+<ul>
+<li>Regra para <span class="math inline">\(e = \lambda\)</span>.</li>
+</ul>
+<p><span class="math display">\[
+\dfrac{}{\langle B,\lambda,c,s \rangle \to \langle F,\lambda,c,s \rangle}
+\]</span></p>
+</section>
+<section id="semântica-34" class="slide level1">
+<h1>Semântica</h1>
+<ul>
+<li>Regra para <span class="math inline">\(e = a\)</span>.</li>
+</ul>
+<p><span class="math display">\[
+\dfrac{}{\langle B,a,c,a:s \rangle \to \langle F,a,c,s \rangle}
+\]</span></p>
+</section>
+<section id="semântica-35" class="slide level1">
+<h1>Semântica</h1>
+<ul>
+<li>Regras para <span class="math inline">\(e = e_1 + e_2\)</span>.</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{c}
+  \dfrac{c&#39; = E[\,]+e_2 : c}{\langle B,e_1+e_2,c,s \rangle\to\langle B,e_1,c&#39;,s \rangle}\\ \\
+  \dfrac{c&#39; = e_1 + E[\,] : c }{\langle B,e_1+e_2,c,s \rangle\to\langle B,e_2,c&#39;,s \rangle}
+\end{array}
+\]</span></p>
+</section>
+<section id="semântica-36" class="slide level1">
+<h1>Semântica</h1>
+<ul>
+<li>Regras para <span class="math inline">\(e = e_1 + e_2\)</span>.</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{c}
+  \dfrac{c = E[\,]+e_2 : c&#39;}{\langle F,e_1,c,s \rangle\to\langle F,e_1+e_2,c&#39;,s \rangle}\\ \\
+  \dfrac{e_1 + E[\,] : c&#39;}{\langle F,e_2,c,s \rangle\to\langle F,e_1+e_2,c&#39;,s \rangle}
+\end{array}
+\]</span></p>
+</section>
+<section id="semântica-37" class="slide level1">
+<h1>Semântica</h1>
+<ul>
+<li>Regras para <span class="math inline">\(e = e_1\:e_2\)</span>.</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{c}
+  \dfrac{c&#39; = E[\,]e_2 : c}{\langle B,e_1\,e_2,c,s \rangle\to\langle B,e_1,c&#39;,s \rangle} \\ \\
+  \dfrac{c&#39;=e_1E[\,]:c}{\langle F,e_1,E[\,]e_2:c,s \rangle\to\langle B,e_2,c&#39;,s \rangle}
+\end{array}
+\]</span></p>
+</section>
+<section id="semântica-38" class="slide level1">
+<h1>Semântica</h1>
+<ul>
+<li>Regras para <span class="math inline">\(e = e_1\:e_2\)</span>.</li>
+</ul>
+<p><span class="math display">\[
+\dfrac{}{\langle F,e&#39;,eE[\,]:c,s \rangle\to\langle F,e_1e_2,c,s \rangle}
+\]</span></p>
+</section>
+<section id="semântica-39" class="slide level1">
+<h1>Semântica</h1>
+<ul>
+<li>Regras para <span class="math inline">\(e = e_1^*\)</span>.</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{c}
+  \dfrac{}{\langle B,e_1^\star,c,s \rangle\to\langle B,e_1,\star : c, s \rangle} \\ \\
+  \dfrac{}{\langle B,e_1^\star,c,s \rangle\to\langle F,e_1^\star, c, s \rangle} 
+\end{array}
+\]</span></p>
+</section>
+<section id="semântica-40" class="slide level1">
+<h1>Semântica</h1>
+<ul>
+<li>Regras para <span class="math inline">\(e = e_1^*\)</span>.</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{c}
+  \dfrac{}{\langle F,e_1,\star:c,s \rangle\to\langle B,e_1,\star:c,s \rangle} \\ \\
+  \dfrac{}{\langle F,e_1,\star:c,s \rangle\to\langle F,e_1^\star,c,s \rangle}
+\end{array}
+\]</span></p>
+</section>
+<section id="semântica-41" class="slide level1">
+<h1>Semântica</h1>
+<ul>
+<li>Dizemos que uma string <span class="math inline">\(s\)</span> é aceita pela semântica small-step se a execução da semântica termina em uma configuração de aceitação.</li>
+</ul>
+</section>
+<section id="semântica-42" class="slide level1">
+<h1>Semântica</h1>
+<ul>
+<li><p>Dizemos que uma configuração é de aceitação se ela é da forma <span class="math inline">\(\langle F, e, [], \lambda \rangle\)</span>, para alguma expressão <span class="math inline">\(e\)</span>.</p></li>
+<li><p>A configuração inicial é <span class="math inline">\(\langle B,e,[],\lambda \rangle\)</span>.</p></li>
+</ul>
+</section>
+<section id="semântica-43" class="slide level1">
+<h1>Semântica</h1>
+<ul>
+<li>Teorema: Temos <span class="math inline">\(\langle B,e,[],s \rangle\to^*\langle F,e,[],\lambda \rangle\)</span> se e somente se <span class="math inline">\(s\in [\![e]\!]\)</span>.
+<ul>
+<li>Prova por indução sobre <span class="math inline">\((e,s)\)</span>.</li>
+</ul></li>
+</ul>
+</section>
+<section id="exercícios" class="slide level1">
+<h1>Exercícios</h1>
+<ul>
+<li><p>Complete as demonstrações da equivalência entre a semântica denotacional e big-step para expressões regulares.</p></li>
+<li><p>Explique porque as demonstrações devem ser feitas usando indução bem formada e não indução sobre a estrutura de uma expressão regular.</p></li>
+</ul>
+</section>
+<section id="referências" class="slide level1">
+<h1>Referências</h1>
+<p>Delfino, Thales; Ribeiro, Rodrigo. Towards certified virtual machine-based regular expression parsing. In XXII Brazilian Symposium on Programming Languages, SBLP 2018, Fortaleza, 2018.</p>
+</section>
+    </div>
+  </div>
+
+  <script src="../revealjs/dist/reveal.js"></script>
+
+  // reveal.js plugins
+  <script src="../revealjs/plugin/notes/notes.js"></script>
+  <script src="../revealjs/plugin/search/search.js"></script>
+  <script src="../revealjs/plugin/zoom/zoom.js"></script>
+  <script src="../revealjs/plugin/math/math.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+      
+        // Push each slide change to the browser history
+        history: true,
+        math: {
+          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // reveal.js plugins
+        plugins: [
+          RevealMath,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    </body>
+</html>
