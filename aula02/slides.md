@@ -181,7 +181,7 @@ Indução
 - Suponha $n > 1$ arbitrário. Se $n$ é primo, a conclusão é imediata. Logo, 
 suponha que $n$ não é primo.
 
-- Como $n$ não é primo, existem $a, b$ tais que  < a < n$,  < b < n$ e 
+- Como $n$ não é primo, existem $a, b$ tais que  $1< a < n$,  $1< b < n$ e 
 $n = ab$.
 
 Indução
@@ -244,11 +244,11 @@ Indução
 =======
 
 - Caso $n = 0$: 
-- Note que não existe $k < 0$.
-- Logo, devemos mostrar que $H(t) = 0 \to P(t)$.
-- Somente uma folha é uma árvore com $H(t) = 0$.
-- Logo, o número de folhas $ é um a mais que a altura 
-de $t$.
+  - Note que não existe $k < 0$.
+  - Logo, devemos mostrar que $H(t) = 0 \to P(t)$.
+  - Somente uma folha é uma árvore com $H(t) = 0$.
+  - Logo, o número de folhas $L(t)$ é um a mais que o número de nós 
+  internos, $N(t)$.
 
 Indução
 =======
@@ -262,7 +262,7 @@ $$
 L(t)        & = \\
 L(l) + L(r) & \leq \\
 N(l) + 1 + N(r) + 1 & = \\
-N(t)
+N(t) + 1
 \end{array}
 $$
 

@@ -192,7 +192,7 @@
 <h1>Indução</h1>
 <ul>
 <li><p>Suponha <span class="math inline">\(n &gt; 1\)</span> arbitrário. Se <span class="math inline">\(n\)</span> é primo, a conclusão é imediata. Logo, suponha que <span class="math inline">\(n\)</span> não é primo.</p></li>
-<li><p>Como <span class="math inline">\(n\)</span> não é primo, existem <span class="math inline">\(a, b\)</span> tais que &lt; a &lt; n<span class="math inline">\(, &lt; b &lt; n\)</span> e <span class="math inline">\(n = ab\)</span>.</p></li>
+<li><p>Como <span class="math inline">\(n\)</span> não é primo, existem <span class="math inline">\(a, b\)</span> tais que <span class="math inline">\(1&lt; a &lt; n\)</span>, <span class="math inline">\(1&lt; b &lt; n\)</span> e <span class="math inline">\(n = ab\)</span>.</p></li>
 </ul>
 </section>
 <section id="indução-15" class="slide level1">
@@ -253,11 +253,13 @@ Q(n) = \forall t. H(t) = n \to P(t)
 <section id="indução-22" class="slide level1">
 <h1>Indução</h1>
 <ul>
-<li>Caso <span class="math inline">\(n = 0\)</span>:</li>
+<li>Caso <span class="math inline">\(n = 0\)</span>:
+<ul>
 <li>Note que não existe <span class="math inline">\(k &lt; 0\)</span>.</li>
 <li>Logo, devemos mostrar que <span class="math inline">\(H(t) = 0 \to P(t)\)</span>.</li>
 <li>Somente uma folha é uma árvore com <span class="math inline">\(H(t) = 0\)</span>.</li>
-<li>Logo, o número de folhas $ é um a mais que a altura de <span class="math inline">\(t\)</span>.</li>
+<li>Logo, o número de folhas <span class="math inline">\(L(t)\)</span> é um a mais que o número de nós internos, <span class="math inline">\(N(t)\)</span>.</li>
+</ul></li>
 </ul>
 </section>
 <section id="indução-23" class="slide level1">
@@ -272,7 +274,7 @@ Q(n) = \forall t. H(t) = n \to P(t)
 L(t)        &amp; = \\
 L(l) + L(r) &amp; \leq \\
 N(l) + 1 + N(r) + 1 &amp; = \\
-N(t)
+N(t) + 1
 \end{array}
 \]</span></p>
 </section>
