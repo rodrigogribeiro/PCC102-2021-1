@@ -1,6 +1,6 @@
 ---
 author: PCC102 - Teoria da Computação - Prof. Rodrigo Ribeiro
-title: Indução.
+title: Indução
 ---
 
 Objetivos
@@ -50,7 +50,7 @@ Indução
 
 $$
 \begin{array}{lc}
-\sum_{k=0}^0 k & = \ 
+\sum_{k=0}^0 k & = \\ 
 \end{array}
 $$
 
@@ -61,8 +61,8 @@ Indução
 
 $$
 \begin{array}{lc}
-\sum_{k=0}^0 k & = \ 
-0              & = \
+\sum_{k=0}^0 k & = \\ 
+0              & = \\
 \end{array}
 $$
 
@@ -73,9 +73,9 @@ Indução
 
 $$
 \begin{array}{lc}
-\sum_{k=0}^0 k & = \ 
-0              & = \
-\frac{0(0 + 1)}{2} & \
+\sum_{k=0}^0 k & = \\ 
+0              & = \\
+\frac{0(0 + 1)}{2} & \\
 \end{array}
 $$
 
@@ -87,7 +87,7 @@ Temos:
 
 $$
 \begin{array}{lc}
-\sum_{k = 0}^{n + 1}k         & = \
+\sum_{k = 0}^{n + 1}k         & = \\
 \end{array}
 $$
 
@@ -99,8 +99,8 @@ Temos:
 
 $$
 \begin{array}{lc}
-\sum_{k = 0}^{n + 1}k         & = \
-\sum_{k = 0}^n k + (n + 1)    & = \
+\sum_{k = 0}^{n + 1}k         & = \\
+\sum_{k = 0}^n k + (n + 1)    & = \\
 \end{array}
 $$
 
@@ -112,9 +112,9 @@ Temos:
 
 $$
 \begin{array}{lc}
-\sum_{k = 0}^{n + 1}k         & = \
-\sum_{k = 0}^n k + (n + 1)    & = \
-\frac{n(n+1)}{2} + (n + 1)    & = \
+\sum_{k = 0}^{n + 1}k         & = \\
+\sum_{k = 0}^n k + (n + 1)    & = \\
+\frac{n(n+1)}{2} + (n + 1)    & = \\
 \end{array}
 $$
 
@@ -126,10 +126,10 @@ Temos:
 
 $$
 \begin{array}{lc}
-\sum_{k = 0}^{n + 1}k         & = \
-\sum_{k = 0}^n k + (n + 1)    & = \
-\frac{n(n+1)}{2} + (n + 1)    & = \
-\frac{n(n + 1) + 2(n + 1)}{2} & = \
+\sum_{k = 0}^{n + 1}k         & = \\
+\sum_{k = 0}^n k + (n + 1)    & = \\
+\frac{n(n+1)}{2} + (n + 1)    & = \\
+\frac{n(n + 1) + 2(n + 1)}{2} & = \\
 \end{array}
 $$
 
@@ -142,11 +142,11 @@ Temos:
 
 $$
 \begin{array}{lc}
-\sum_{k = 0}^{n + 1}k         & = \
-\sum_{k = 0}^n k + (n + 1)    & = \
-\frac{n(n+1)}{2} + (n + 1)    & = \
-\frac{n(n + 1) + 2(n + 1)}{2} & = \
-\frac{(n + 1)(n + 2)}{2}      & \
+\sum_{k = 0}^{n + 1}k         & = \\
+\sum_{k = 0}^n k + (n + 1)    & = \\
+\frac{n(n+1)}{2} + (n + 1)    & = \\
+\frac{n(n + 1) + 2(n + 1)}{2} & = \\
+\frac{(n + 1)(n + 2)}{2}      & \\
 \end{array}
 $$
 
@@ -259,9 +259,9 @@ Indução
 
 $$
 \begin{array}{lc}
-L(t)        & = \
-L(l) + L(r) & \leq \
-N(l) + 1 + N(r) + 1 & = \
+L(t)        & = \\
+L(l) + L(r) & \leq \\
+N(l) + 1 + N(r) + 1 & = \\
 N(t)
 \end{array}
 $$

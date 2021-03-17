@@ -591,7 +591,7 @@ e não indução sobre a estrutura de uma expressão regular.
 Referências
 ===========
 
-Delfino, Thales; Ribeiro, Rodrigo. Towards certified virtual machine-based 
+- Delfino, Thales; Ribeiro, Rodrigo. Towards certified virtual machine-based 
 regular expression parsing. In XXII Brazilian Symposium on Programming Languages,
 SBLP 2018, Fortaleza, 2018.
 
