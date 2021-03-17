@@ -51,6 +51,30 @@ $$
 e \to \emptyset\,|\,\lambda \,|\,a\,|\,e + e\,|\,e\:e\,|\,e^{*}
 $$
 
+Sintaxe
+=======
+
+- Definimos o tamanho de uma expressão regular como o número de 
+símbolos do alfabeto somado ao número de operadores.
+
+- Denotamos por $size(e)$ o tamanho de uma expressão regular $e$.
+
+Sintaxe
+=======
+
+- Sejam $s$ e $s'$ duas strings. Definimos $s \prec_s s'$ como:
+
+$$
+s \prec_s s' \equiv |s| < |s'|
+$$
+
+Sintaxe
+=======
+
+- Podemos definir uma relação bem formada entre expressões regulares 
+e strings usando uma ordem lexicográfica baseada no tamanho de uma
+expressão regular e na relação $\prec_s$.
+
 Semântica
 =========
 

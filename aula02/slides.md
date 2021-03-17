@@ -1,4 +1,4 @@
----
+Selecting deleted buffer---
 author: PCC102 - Teoria da Computação - Prof. Rodrigo Ribeiro
 title: Indução.
 ---
@@ -50,7 +50,7 @@ Indução
 
 $$
 \begin{array}{lc}
-  \sum_{k=0}^0 k & = \\ 
+\sum_{k=0}^0 k & = \ 
 \end{array}
 $$
 
@@ -61,8 +61,8 @@ Indução
 
 $$
 \begin{array}{lc}
-  \sum_{k=0}^0 k & = \\ 
-  0              & = \\
+\sum_{k=0}^0 k & = \ 
+0              & = \
 \end{array}
 $$
 
@@ -73,9 +73,9 @@ Indução
 
 $$
 \begin{array}{lc}
-  \sum_{k=0}^0 k & = \\ 
-  0              & = \\
-  \frac{0(0 + 1)}{2} & \\
+\sum_{k=0}^0 k & = \ 
+0              & = \
+\frac{0(0 + 1)}{2} & \
 \end{array}
 $$
 
@@ -87,7 +87,7 @@ Temos:
 
 $$
 \begin{array}{lc}
-  \sum_{k = 0}^{n + 1}k         & = \\
+\sum_{k = 0}^{n + 1}k         & = \
 \end{array}
 $$
 
@@ -99,8 +99,8 @@ Temos:
 
 $$
 \begin{array}{lc}
-  \sum_{k = 0}^{n + 1}k         & = \\
-  \sum_{k = 0}^n k + (n + 1)    & = \\
+\sum_{k = 0}^{n + 1}k         & = \
+\sum_{k = 0}^n k + (n + 1)    & = \
 \end{array}
 $$
 
@@ -112,9 +112,9 @@ Temos:
 
 $$
 \begin{array}{lc}
-  \sum_{k = 0}^{n + 1}k         & = \\
-  \sum_{k = 0}^n k + (n + 1)    & = \\
-  \frac{n(n+1)}{2} + (n + 1)    & = \\
+\sum_{k = 0}^{n + 1}k         & = \
+\sum_{k = 0}^n k + (n + 1)    & = \
+\frac{n(n+1)}{2} + (n + 1)    & = \
 \end{array}
 $$
 
@@ -126,10 +126,10 @@ Temos:
 
 $$
 \begin{array}{lc}
-  \sum_{k = 0}^{n + 1}k         & = \\
-  \sum_{k = 0}^n k + (n + 1)    & = \\
-  \frac{n(n+1)}{2} + (n + 1)    & = \\
-  \frac{n(n + 1) + 2(n + 1)}{2} & = \\
+\sum_{k = 0}^{n + 1}k         & = \
+\sum_{k = 0}^n k + (n + 1)    & = \
+\frac{n(n+1)}{2} + (n + 1)    & = \
+\frac{n(n + 1) + 2(n + 1)}{2} & = \
 \end{array}
 $$
 
@@ -142,11 +142,11 @@ Temos:
 
 $$
 \begin{array}{lc}
-  \sum_{k = 0}^{n + 1}k         & = \\
-  \sum_{k = 0}^n k + (n + 1)    & = \\
-  \frac{n(n+1)}{2} + (n + 1)    & = \\
-  \frac{n(n + 1) + 2(n + 1)}{2} & = \\
-  \frac{(n + 1)(n + 2)}{2}      & \\
+\sum_{k = 0}^{n + 1}k         & = \
+\sum_{k = 0}^n k + (n + 1)    & = \
+\frac{n(n+1)}{2} + (n + 1)    & = \
+\frac{n(n + 1) + 2(n + 1)}{2} & = \
+\frac{(n + 1)(n + 2)}{2}      & \
 \end{array}
 $$
 
@@ -154,16 +154,16 @@ Indução
 =======
 
 - Indução fraca nem sempre é o método mais conveniente para uma prova.
-   - A hipótese de indução é restrita apenas a $n$ e não pode ser usada
-     para valores menores que $n$.
-     
+- A hipótese de indução é restrita apenas a $n$ e não pode ser usada
+para valores menores que $n$.
+
 Indução
 =======
 
 - A Indução _forte_ assume uma hipótese de indução válida para quaisquer 
 valores menores que $n$.
-    - É possível mostrar que ambos os princípios são equivalentes.
-    
+- É possível mostrar que ambos os princípios são equivalentes.
+
 $$
 \forall n \in \mathbb{N}. P(n) \equiv \forall n. (\forall k. k < n \to P(k)) \to P(n)
 $$
@@ -181,7 +181,7 @@ Indução
 - Suponha $n > 1$ arbitrário. Se $n$ é primo, a conclusão é imediata. Logo, 
 suponha que $n$ não é primo.
 
-- Como $n$ não é primo, existem $a, b$ tais que $1 < a < n$, $1 < b < n$ e 
+- Como $n$ não é primo, existem $a, b$ tais que  < a < n$,  < b < n$ e 
 $n = ab$.
 
 Indução
@@ -201,7 +201,7 @@ Indução
 
 - Podemos usar a indução sobre números naturais em elementos 
 de um conjunto $A$ qualquer se existir uma função
-    - $f : A \to \mathbb{N}$
+- $f : A \to \mathbb{N}$
 
 Indução
 =======
@@ -244,28 +244,28 @@ Indução
 =======
 
 - Caso $n = 0$: 
-    - Note que não existe $k < 0$.
-    - Logo, devemos mostrar que $H(t) = 0 \to P(t)$.
-    - Somente uma folha é uma árvore com $H(t) = 0$.
-- Logo, o número de folhas $1$ é um a mais que a altura 
+- Note que não existe $k < 0$.
+- Logo, devemos mostrar que $H(t) = 0 \to P(t)$.
+- Somente uma folha é uma árvore com $H(t) = 0$.
+- Logo, o número de folhas $ é um a mais que a altura 
 de $t$.
 
 Indução
 =======
 
 - Caso $n > 0$: 
-    - Nesse caso, $t$ é formada for duas subárvores: $l$ e $r$.
-    - Pela HI, temos que $P(l)$ e $P(r)$. Logo, temos:
+- Nesse caso, $t$ é formada for duas subárvores: $l$ e $r$.
+- Pela HI, temos que $P(l)$ e $P(r)$. Logo, temos:
 
 $$
 \begin{array}{lc}
-L(t)        & = \\
-L(l) + L(r) & \leq \\
-N(l) + 1 + N(r) + 1 & = \\
+L(t)        & = \
+L(l) + L(r) & \leq \
+N(l) + 1 + N(r) + 1 & = \
 N(t)
 \end{array}
 $$
-    
+
 
 Indução
 =======
@@ -283,8 +283,8 @@ Indução
 
 $$
 \begin{array}{cc}
-   \dfrac{}{even\:0} &
-   \dfrac{even\:n}{even (n + 2)}
+\dfrac{}{even\:0} &
+\dfrac{even\:n}{even (n + 2)}
 \end{array}
 $$
 
@@ -294,11 +294,11 @@ Indução
 - Uma prova de que $even\:6$.
 
 $$
-   \dfrac{
-      \dfrac{
-         \dfrac{\dfrac{}{even\:0}}{even\:2}
-      }{even\:4}
-    }{even\:6}
+\dfrac{
+\dfrac{
+\dfrac{\dfrac{}{even\:0}}{even\:2}
+}{even\:4}
+}{even\:6}
 $$
 
 Indução
@@ -314,9 +314,9 @@ Indução
 
 - Suponha que $even\:n$ e $even\:m$. Seguiremos por indução sobre a 
 derivação de $even\:n$.
-    - Caso $even\:0$: Nesse caso, temos que $n = 0$ e portanto $0 + m = m$.
-    - Como temos que $even\:m$, a conclusão segue.
-    
+- Caso $even\:0$: Nesse caso, temos que $n = 0$ e portanto  + m = m$.
+- Como temos que $even\:m$, a conclusão segue.
+
 Indução
 =======
 
@@ -352,8 +352,8 @@ um único: indução sobre relações bem formadas.
 
 - Relações bem formadas: Dizemos que uma relação $\prec \subseteq A \times A$ 
 é bem formada se ela não possui uma cadeia decrescente infinita.
-    - Cadeia decrescente infinita: $a_1 \prec a_2 \prec ...$.
-    
+- Cadeia decrescente infinita: $a_1 \prec a_2 \prec ...$.
+
 Indução
 =======
 
@@ -370,8 +370,8 @@ Indução
 - Exemplo de relação bem formada: $<$ sobre $\mathbb{N}$.
 
 - Outro exemplo: $i \prec j$, quando $i = j + 1$. 
-   - Essa relação é a que especializa a indução sobre relações bem formadas
-     para indução fraca.
+- Essa relação é a que especializa a indução sobre relações bem formadas
+para indução fraca.
 
 Indução
 =======
@@ -427,11 +427,11 @@ $$
 Exercícios
 ==========
 
-- Exemplo: $2 \in [1,2,3]$.
+- Exemplo:  \in [1,2,3]$.
 
 $$
 \dfrac{
-   \dfrac{}{2 \in [2,3]}
+\dfrac{}{2 \in [2,3]}
 }{2\in [1,2,3]}
 $$
 
@@ -441,11 +441,7 @@ Exercícios
 - Prove que se $x \in xs$ então $x \in ys ++ xs$, em que 
 $++$ é a função de concatenação de listas.
 
-```haskell
-(++) :: [a] -> [a] -> [a]
-[] ++ ys       = ys
-(x : xs) ++ ys = x : (xs ++ ys)
-```
+Symbol’s function definition is void: end-of-fileSymbol’s value as variable is void: haskellSymbol’s function definition is void: end-of-file
 
 Referências
 ===========
