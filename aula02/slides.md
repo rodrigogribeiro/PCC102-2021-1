@@ -1,4 +1,4 @@
-Selecting deleted buffer---
+---
 author: PCC102 - Teoria da Computação - Prof. Rodrigo Ribeiro
 title: Indução.
 ---
