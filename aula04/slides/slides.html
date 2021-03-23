@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="PCC102 - Teoria da Computação - Prof. Rodrigo Ribeiro">
+  <title>Derivadas de Expressões Regulares</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../../revealjs/dist/reset.css">
+  <link rel="stylesheet" href="../../revealjs/dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../../revealjs/dist/theme/white.css" id="theme">
+  
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">Derivadas de Expressões Regulares</h1>
+  <p class="author">PCC102 - Teoria da Computação - Prof. Rodrigo Ribeiro</p>
+</section>
+
+<section id="setup" class="slide level1">
+<h1>Setup</h1>
+<div class="sourceCode" id="cb1"><pre class="sourceCode haskell literate"><code class="sourceCode haskell"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ot">main ::</span> <span class="dt">IO</span> ()</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>main <span class="ot">=</span> <span class="fu">return</span> ()</span></code></pre></div>
+</section>
+<section id="objetivo" class="slide level1">
+<h1>Objetivo</h1>
+<ul>
+<li><p>Apresentar o conceito de derivadas de expressões regulares.</p></li>
+<li><p>Apresentar como derivadas podem ser usadas para matching e obtenção de AFDs a partir de uma expressão regular.</p></li>
+</ul>
+</section>
+<section id="derivadas" class="slide level1">
+<h1>Derivadas</h1>
+<ul>
+<li>Definição: Seja <span class="math inline">\(L \subseteq \Sigma^*\)</span> e <span class="math inline">\(a \in \Sigma\)</span>. A derivada de <span class="math inline">\(L\)</span> com respeito a <span class="math inline">\(a\)</span>, <span class="math inline">\(\delta(L,a)\)</span>, é definida como:</li>
+</ul>
+<p><span class="math display">\[
+ \delta(L,a) =\{w \in \Sigma^*\,|\,aw \in L\}
+\]</span></p>
+</section>
+<section id="derivadas-1" class="slide level1">
+<h1>Derivadas</h1>
+<ul>
+<li>Brzozowski mostrou que a classe das linguagens regulares é fechada sobre a operação de derivadas.
+<ul>
+<li>Para isso, mostrou um algoritmo para calcular a derivada de uma expressão regular.</li>
+</ul></li>
+</ul>
+</section>
+<section id="derivadas-2" class="slide level1">
+<h1>Derivadas</h1>
+<ul>
+<li>O algoritmo depende de uma função que testa se uma expressão regular aceita a string vazia.</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{lcl}
+   \nu(\emptyset) &amp; = &amp; \bot \\
+   \nu(\lambda)   &amp; = &amp; \top \\
+   \nu(a)         &amp; = &amp; \bot \\
+   \nu(e_1 + e_2) &amp; = &amp; \nu(e_1) \lor \nu(e_2) \\
+   \nu(e_1\:e_2)  &amp; = &amp; \nu(e_1) \land \nu(e_2) \\
+   \nu(e_1^*)     &amp; = &amp; \top \\
+\end{array}
+\]</span></p>
+</section>
+<section id="derivadas-3" class="slide level1">
+<h1>Derivadas</h1>
+<ul>
+<li>Algoritmo de cálculo de derivada.</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{lcl}
+\partial(\emptyset, a) &amp; = &amp; \emptyset \\
+\partial(\lambda, a)   &amp; = &amp; \emptyset \\
+\partial(a,a)          &amp; = &amp; \lambda \\
+\partial(b,a)          &amp; = &amp; \emptyset,\:\:\textrm{se }a \neq b\\
+\partial(e_1 + e_2, a) &amp; = &amp; \partial(e_1,a) + \partial(e_2,a)\\
+\end{array}
+\]</span></p>
+</section>
+<section id="derivadas-4" class="slide level1">
+<h1>Derivadas</h1>
+<ul>
+<li>Algoritmo de cálculo de derivada.</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{lcl}
+\partial(e_1\:e_2,a) &amp; = &amp; \left\{
+                           \begin{array}{ll}
+                             \partial(e_1,a)e_2 + \partial(e_2,a) &amp; \textrm{se }\nu(e_1) = \top \\
+                             \partial(e_1,a)e_2  &amp; \textrm{se }\nu(e_1) = \bot \\
+                           \end{array}
+                         \right. \\
+\partial(e_1^*,a)    &amp; = &amp; \partial(e_1,a)e_1^*
+\end{array}
+\]</span></p>
+</section>
+<section id="exemplo" class="slide level1">
+<h1>Exemplo</h1>
+<p><span class="math display">\[
+\begin{array}{lc}
+\partial((ab + a)^*, a) &amp; = \\
+\end{array}
+\]</span></p>
+</section>
+<section id="exemplo-1" class="slide level1">
+<h1>Exemplo</h1>
+<p><span class="math display">\[
+\begin{array}{lc}
+\partial((ab + a)^*, a) &amp; = \\
+\partial(ab + a,a)(ab + a)^* &amp; =\\
+\end{array}
+\]</span></p>
+</section>
+<section id="exemplo-2" class="slide level1">
+<h1>Exemplo</h1>
+<p><span class="math display">\[
+\begin{array}{lc}
+\partial((ab + a)^*, a) &amp; =\\
+\partial(ab + a,a)(ab + a)^* &amp; =\\
+(\partial(ab, a) + \partial(a,a))(ab + a)^* &amp; = \\
+\end{array}
+\]</span></p>
+</section>
+<section id="exemplo-3" class="slide level1">
+<h1>Exemplo</h1>
+<p><span class="math display">\[
+\begin{array}{lc}
+\partial((ab + a)^*, a) &amp; = \\
+\partial(ab + a,a)(ab + a)^* &amp; =\\
+(\partial(ab, a) + \partial(a,a))(ab + a)^* &amp; = \\
+(b + \lambda)(ab + a)^* &amp; = \\
+\end{array}
+\]</span></p>
+</section>
+<section id="exemplo-4" class="slide level1">
+<h1>Exemplo</h1>
+<p><span class="math display">\[
+\begin{array}{lc}
+\partial((ab + a)^*, a) &amp; = \\
+\partial(ab + a,a)(ab + a)^* &amp; =\\
+(\partial(ab, a) + \partial(a,a))(ab + a)^* &amp; = \\
+(b + \lambda)(ab + a)^* &amp; = \\
+b(ab + a)^* + (ab + a)^*\\
+\end{array}
+\]</span></p>
+</section>
+<section id="derivadas-5" class="slide level1">
+<h1>Derivadas</h1>
+<ul>
+<li><p>Teorema 1: Se <span class="math inline">\(aw \in [\![e]\!]\)</span> então <span class="math inline">\(w \in [\![\partial(e,a)]\!]\)</span></p></li>
+<li><p>Teorema 2: Se <span class="math inline">\(w \in [\![\partial(e,a)]\!]\)</span> então <span class="math inline">\(aw \in [\![e]\!]\)</span>.</p></li>
+</ul>
+</section>
+<section id="matching" class="slide level1">
+<h1>Matching</h1>
+<ul>
+<li><p>Derivadas podem ser utilizadas para construir um algoritmo de matching.</p></li>
+<li><p>A ideia consiste em aplicar a operação de derivada em cada caractere de uma string.</p>
+<ul>
+<li>Se a expressão regular resultante for tal que <span class="math inline">\(\nu(e) = \top\)</span>, então a string pertence a linguagem da RE original.</li>
+</ul></li>
+</ul>
+</section>
+<section id="matching-1" class="slide level1">
+<h1>Matching</h1>
+<ul>
+<li>Algoritmo de matching</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{lcl}
+\partial^*(e,\lambda) &amp; = &amp; \nu(e)\\
+\partial^*(e,ay)      &amp; = &amp; \partial^*(\partial(e,a),y)\\
+\end{array}
+\]</span></p>
+</section>
+<section id="exemplo-5" class="slide level1">
+<h1>Exemplo</h1>
+<p><span class="math display">\[
+\begin{array}{lc}
+  \partial^*((ab + a)^*, ab) &amp; = \\
+\end{array}
+\]</span></p>
+</section>
+<section id="exemplo-6" class="slide level1">
+<h1>Exemplo</h1>
+<p><span class="math display">\[
+\begin{array}{lc}
+  \partial^*((ab + a)^*, ab) &amp; = \\
+  \partial^*(\partial((ab + a)^*, a), b) &amp; = \\
+\end{array}
+\]</span></p>
+</section>
+<section id="exemplo-7" class="slide level1">
+<h1>Exemplo</h1>
+<p><span class="math display">\[
+\begin{array}{lc}
+  \partial^*((ab + a)^*, ab) &amp; = \\
+  \partial^*(\partial((ab + a)^*, a), b) &amp; = \\
+  \partial^*(b(ab + a)^* + (ab + a)^*,b) &amp; = \\
+\end{array}
+\]</span></p>
+</section>
+<section id="exemplo-8" class="slide level1">
+<h1>Exemplo</h1>
+<p><span class="math display">\[
+\begin{array}{lc}
+  \partial^*((ab + a)^*, ab) &amp; = \\
+  \partial^*(\partial((ab + a)^*, a), b) &amp; = \\
+  \partial^*(b(ab + a)^* + (ab + a)^*,b) &amp; = \\
+  \partial^*(\partial(b(ab + a)^* + (ab + a)^*,b),\lambda) &amp; = \\
+\end{array}
+\]</span></p>
+</section>
+<section id="exemplo-9" class="slide level1">
+<h1>Exemplo</h1>
+<p><span class="math display">\[
+\begin{array}{lc}
+  \partial^*((ab + a)^*, ab) &amp; = \\
+  \partial^*(\delta((ab + a)^*, a), b) &amp; = \\
+  \partial^*(b(ab + a)^* + (ab + a)^*,b) &amp; = \\
+  \partial^*(\partial(b(ab + a)^* + (ab + a)^*,b),\lambda) &amp; = \\
+  \partial^*((ab + a)^* + b(ab + a)^* + (ab + a)^*, \lambda) &amp; = \\
+  \top
+\end{array}
+\]</span></p>
+</section>
+<section id="autômatos" class="slide level1">
+<h1>Autômatos</h1>
+<ul>
+<li>Outra aplicação de derivadas é a obtenção de um autômato determinístico equivalente à expressão regular.</li>
+</ul>
+</section>
+<section id="autômatos-1" class="slide level1">
+<h1>Autômatos</h1>
+<ul>
+<li>Recordando: um autômato finito determinístico (AFD) <span class="math inline">\(M = (E,\Sigma,\delta,i,F)\)</span> é tal que:
+<ul>
+<li><span class="math inline">\(E\)</span>: conjunto finito de estados.</li>
+<li><span class="math inline">\(\Sigma\)</span>: alfabeto</li>
+<li><span class="math inline">\(\delta : E \times \Sigma \to E\)</span>, função total de transição.</li>
+<li><span class="math inline">\(i \in E\)</span>: estado inicial.</li>
+<li><span class="math inline">\(F \subseteq E\)</span>: conjunto de estados finais.</li>
+</ul></li>
+</ul>
+</section>
+<section id="autômatos-2" class="slide level1">
+<h1>Autômatos</h1>
+<ul>
+<li>Ideia: gerar todas as derivadas para cada <span class="math inline">\(a\in\Sigma\)</span>:
+<ul>
+<li>Número de derivadas possíveis é finito, se levarmos em conta equivalência de expressões.</li>
+<li>Consequência do teorema de Myhill-Nerode.</li>
+</ul></li>
+</ul>
+</section>
+<section id="autômatos-3" class="slide level1">
+<h1>Autômatos</h1>
+<ul>
+<li>Definição: Sejam <span class="math inline">\(e_1\)</span> e <span class="math inline">\(e_2\)</span> duas REs sobre <span class="math inline">\(\Sigma\)</span>. Dizemos que <span class="math inline">\(e_1\)</span> e <span class="math inline">\(e_2\)</span> são equivalentes, <span class="math inline">\(e_1 \equiv e_2\)</span>, se</li>
+</ul>
+<p><span class="math display">\[
+\forall w \in \Sigma^*. w \in [\![e_1]\!] \leftrightarrow w \in [\![e_2]\!]
+\]</span></p>
+</section>
+<section id="autômatos-4" class="slide level1">
+<h1>Autômatos</h1>
+<ul>
+<li>Algoritmo para conversão em um AFD</li>
+</ul>
+<div class="sourceCode" id="cb2"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>mkDFA e</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="ot">=</span> <span class="kw">let</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>     q0 <span class="ot">=</span> e</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>     (states, delta) <span class="ot">=</span> explore [e] [] e</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>     finals <span class="ot">=</span> <span class="fu">filter</span> acceptNull states</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">in</span> <span class="dt">DFA</span> states delta q0 finals</span></code></pre></div>
+</section>
+<section id="autômatos-5" class="slide level1">
+<h1>Autômatos</h1>
+<ul>
+<li>Função auxiliar: <code>explore</code>.
+<ul>
+<li>Constrói novos estados para cada símbolo <span class="math inline">\(a \in \Sigma\)</span>.</li>
+</ul></li>
+</ul>
+<div class="sourceCode" id="cb3"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>explore states delta e</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="ot">=</span> fold (goto e) (states, delta) alphabet</span></code></pre></div>
+</section>
+<section id="autômatos-6" class="slide level1">
+<h1>Autômatos</h1>
+<ul>
+<li>Função auxiliar: <code>goto</code>
+<ul>
+<li>Identifica se um novo estado necessita ser gerado.</li>
+</ul></li>
+</ul>
+<div class="sourceCode" id="cb4"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>goto e (c, (states, delta))</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="ot">=</span> <span class="kw">let</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>      e&#39; <span class="ot">=</span> deriv e c</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>      es <span class="ot">=</span> <span class="fu">filter</span> (isEquiv e&#39;) states</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">in</span> <span class="kw">if</span> <span class="fu">not</span> <span class="op">$</span> <span class="fu">null</span> es</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>       <span class="kw">then</span> (states, ((e,c), <span class="fu">head</span> es))</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>       <span class="kw">else</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>         explore (e&#39; <span class="op">:</span> states)</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>                 (((e,c), <span class="fu">head</span> es) <span class="op">:</span> delta)</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>                 (<span class="fu">head</span> es)</span></code></pre></div>
+</section>
+<section id="autômatos-7" class="slide level1">
+<h1>Autômatos</h1>
+<ul>
+<li>Problema central: testar equivalência entre duas REs.
+<ul>
+<li>No código, representado pela função <code>isEquiv</code></li>
+<li>Como testar a equivalência de REs?</li>
+</ul></li>
+</ul>
+</section>
+<section id="autômatos-8" class="slide level1">
+<h1>Autômatos</h1>
+<ul>
+<li><p>Idealmente, devemos ser capazes de testar a equivalência considerando apenas a sintaxe das REs.</p></li>
+<li><p>Para isso, consideraremos algumas equações.</p>
+<ul>
+<li>A função <code>isEquiv</code> implementa as equações.</li>
+</ul></li>
+</ul>
+</section>
+<section id="autômatos-9" class="slide level1">
+<h1>Autômatos</h1>
+<ul>
+<li>Equivalência de REs.</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{ccc}
+(e_1e_2)e_3 \approx e_1(e_2 e_3) &amp; \emptyset e_1 \approx \emptyset &amp; e_1 \emptyset \approx \emptyset \\
+e_1 \lambda \approx e_1          &amp; \lambda e_1 \approx e_1         &amp; e_1 + e_2 \approx e_2 + e_1 \\
+\lambda^* \approx \lambda &amp; \emptyset + e_1 \approx e_1 &amp;  (e_1^*)^* \approx e_1^*\\
+\end{array}
+\]</span></p>
+</section>
+<section id="autômatos-10" class="slide level1">
+<h1>Autômatos</h1>
+<ul>
+<li>Equivalência de REs</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{cc}
+\emptyset^* \approx \lambda &amp; (e_1 + e_2) + e_3 \approx e_1 + (e_2 + e_3) \\
+\end{array}
+\]</span></p>
+</section>
+<section id="exemplo-10" class="slide level1">
+<h1>Exemplo</h1>
+<ul>
+<li>Construir um AFD para <span class="math inline">\(e_1 = b(a + b)^*\)</span>.</li>
+</ul>
+<p><img data-src="/Users/rodrigo/Documents/aulas/2021-1/teoria/slides/aula04/69dc83d8135a729ae62fae5cd0f50fe66158f6e1.svg" /></p>
+</section>
+<section id="exemplo-11" class="slide level1">
+<h1>Exemplo</h1>
+<ul>
+<li>Construir um AFD para <span class="math inline">\(e_1 = b(a + b)^*\)</span>.
+<ul>
+<li><span class="math inline">\(\partial(e_1,a) = \emptyset\)</span></li>
+</ul></li>
+</ul>
+<p><img data-src="/Users/rodrigo/Documents/aulas/2021-1/teoria/slides/aula04/b20f453eb1e9da046debee46f5cc5f4976ef3f1c.svg" /></p>
+</section>
+<section id="exemplo-12" class="slide level1">
+<h1>Exemplo</h1>
+<ul>
+<li>Construir um AFD para <span class="math inline">\(e_1 = b(a + b)^*\)</span>.
+<ul>
+<li><span class="math inline">\(\partial(\emptyset,a) = \partial(\emptyset,b) = \emptyset\)</span></li>
+</ul></li>
+</ul>
+<p><img data-src="/Users/rodrigo/Documents/aulas/2021-1/teoria/slides/aula04/635787f70bed16b0232c1ab1108ceb4495f4b6f8.svg" /></p>
+</section>
+<section id="exemplo-13" class="slide level1">
+<h1>Exemplo</h1>
+<ul>
+<li>Construir um AFD para <span class="math inline">\(e_1 = b(a + b)^*\)</span>.
+<ul>
+<li><span class="math inline">\(e_2 = \partial(b(a + b)^*,b) = (a + b)^*\)</span></li>
+</ul></li>
+</ul>
+<p><img data-src="/Users/rodrigo/Documents/aulas/2021-1/teoria/slides/aula04/6df50bf171329e4450bb7aa146447dca71ad595a.svg" /></p>
+</section>
+<section id="exemplo-14" class="slide level1">
+<h1>Exemplo</h1>
+<ul>
+<li>Construir um AFD para <span class="math inline">\(e_1 = b(a + b)^*\)</span>.
+<ul>
+<li><span class="math inline">\(\partial((a + b)^*,a) = \partial((a + b)^*,b) = (a + b)^*\)</span></li>
+</ul></li>
+</ul>
+<p><img data-src="/Users/rodrigo/Documents/aulas/2021-1/teoria/slides/aula04/35ef23ec5663750e50b752d2d0d28f9d806cab18.svg" /></p>
+</section>
+<section id="exercícios" class="slide level1">
+<h1>Exercícios</h1>
+<ul>
+<li>Apresente provas dos teoremas 1 e 2.</li>
+</ul>
+</section>
+<section id="referências" class="slide level1">
+<h1>Referências</h1>
+<ul>
+<li>Owens, et. al. Regular-expression derivatives reexamined. Journal of Functional Programming, 2009.</li>
+</ul>
+</section>
+    </div>
+  </div>
+
+  <script src="../../revealjs/dist/reveal.js"></script>
+
+  <!-- reveal.js plugins -->
+  <script src="../../revealjs/plugin/notes/notes.js"></script>
+  <script src="../../revealjs/plugin/search/search.js"></script>
+  <script src="../../revealjs/plugin/zoom/zoom.js"></script>
+  <script src="../../revealjs/plugin/math/math.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+      
+        // Push each slide change to the browser history
+        history: true,
+        math: {
+          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // reveal.js plugins
+        plugins: [
+          RevealMath,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    </body>
+</html>
