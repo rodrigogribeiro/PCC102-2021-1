@@ -108,10 +108,10 @@
 <section id="derivadas" class="slide level1">
 <h1>Derivadas</h1>
 <ul>
-<li>Definição: Seja <span class="math inline">\(L \subseteq \Sigma^*\)</span> e <span class="math inline">\(a \in \Sigma\)</span>. A derivada de <span class="math inline">\(L\)</span> com respeito a <span class="math inline">\(a\)</span>, <span class="math inline">\(\delta(L,a)\)</span>, é definida como:</li>
+<li>Definição: Seja <span class="math inline">\(L \subseteq \Sigma^*\)</span> e <span class="math inline">\(a \in \Sigma\)</span>. A derivada de <span class="math inline">\(L\)</span> com respeito a <span class="math inline">\(a\)</span>, <span class="math inline">\(\partial(L,a)\)</span>, é definida como:</li>
 </ul>
 <p><span class="math display">\[
- \delta(L,a) =\{w \in \Sigma^*\,|\,aw \in L\}
+ \partial(L,a) =\{w \in \Sigma^*\,|\,aw \in L\}
 \]</span></p>
 </section>
 <section id="derivadas-1" class="slide level1">
@@ -342,6 +342,17 @@ b(ab + a)^* + (ab + a)^*\\
 <section id="autômatos-4" class="slide level1">
 <h1>Autômatos</h1>
 <ul>
+<li>Visão intuitiva do algoritmo:
+<ul>
+<li>Crie novos estados usando a derivada para cada <span class="math inline">\(a \in \Sigma\)</span>.</li>
+<li>Evite criar estados desnecessários usando equivalência entre REs.</li>
+<li>Continue enquanto novos estados forem criados.</li>
+</ul></li>
+</ul>
+</section>
+<section id="autômatos-5" class="slide level1">
+<h1>Autômatos</h1>
+<ul>
 <li>Algoritmo para conversão em um AFD</li>
 </ul>
 <div class="sourceCode" id="cb2"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>mkDFA e</span>
@@ -351,7 +362,7 @@ b(ab + a)^* + (ab + a)^*\\
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>     finals <span class="ot">=</span> <span class="fu">filter</span> acceptNull states</span>
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">in</span> <span class="dt">DFA</span> states delta q0 finals</span></code></pre></div>
 </section>
-<section id="autômatos-5" class="slide level1">
+<section id="autômatos-6" class="slide level1">
 <h1>Autômatos</h1>
 <ul>
 <li>Função auxiliar: <code>explore</code>.
@@ -362,7 +373,7 @@ b(ab + a)^* + (ab + a)^*\\
 <div class="sourceCode" id="cb3"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>explore states delta e</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="ot">=</span> fold (goto e) (states, delta) alphabet</span></code></pre></div>
 </section>
-<section id="autômatos-6" class="slide level1">
+<section id="autômatos-7" class="slide level1">
 <h1>Autômatos</h1>
 <ul>
 <li>Função auxiliar: <code>goto</code>
@@ -381,17 +392,17 @@ b(ab + a)^* + (ab + a)^*\\
 <span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>                 (((e,c), <span class="fu">head</span> es) <span class="op">:</span> delta)</span>
 <span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>                 (<span class="fu">head</span> es)</span></code></pre></div>
 </section>
-<section id="autômatos-7" class="slide level1">
+<section id="autômatos-8" class="slide level1">
 <h1>Autômatos</h1>
 <ul>
-<li>Problema central: testar equivalência entre duas REs.
+<li>Problema central: testar equivalência entre REs.
 <ul>
 <li>No código, representado pela função <code>isEquiv</code></li>
 <li>Como testar a equivalência de REs?</li>
 </ul></li>
 </ul>
 </section>
-<section id="autômatos-8" class="slide level1">
+<section id="autômatos-9" class="slide level1">
 <h1>Autômatos</h1>
 <ul>
 <li><p>Idealmente, devemos ser capazes de testar a equivalência considerando apenas a sintaxe das REs.</p></li>
@@ -401,7 +412,7 @@ b(ab + a)^* + (ab + a)^*\\
 </ul></li>
 </ul>
 </section>
-<section id="autômatos-9" class="slide level1">
+<section id="autômatos-10" class="slide level1">
 <h1>Autômatos</h1>
 <ul>
 <li>Equivalência de REs.</li>
@@ -414,7 +425,7 @@ e_1 \lambda \approx e_1          &amp; \lambda e_1 \approx e_1         &amp; e_1
 \end{array}
 \]</span></p>
 </section>
-<section id="autômatos-10" class="slide level1">
+<section id="autômatos-11" class="slide level1">
 <h1>Autômatos</h1>
 <ul>
 <li>Equivalência de REs</li>
@@ -475,7 +486,8 @@ e_1 \lambda \approx e_1          &amp; \lambda e_1 \approx e_1         &amp; e_1
 <section id="exercícios" class="slide level1">
 <h1>Exercícios</h1>
 <ul>
-<li>Apresente provas dos teoremas 1 e 2.</li>
+<li><p>Apresente provas dos teoremas 1 e 2.</p></li>
+<li><p>Implemente o algoritmo de matching baseado em derivadas em sua linguagem de programação favorita.</p></li>
 </ul>
 </section>
 <section id="referências" class="slide level1">

@@ -165,8 +165,8 @@ Semântica
 
 - Teorema: Para todo $s\in\Sigma^*$ e para todo $e$, temos que $s \in [\![e]\!]$ se 
 e somente se $s\in |\!| e |\!|$.
-   - $(\to)$ Prova por indução bem formada sobre $(e,s)$
-   - $(\leftarrow)$ Prova por indução bem formada sobre $(e,s)$
+   - $(\to)$ Indução bem formada sobre $(e,s)$
+   - $(\leftarrow)$ Indução bem formada sobre $(e,s)$
 
 
 Semântica

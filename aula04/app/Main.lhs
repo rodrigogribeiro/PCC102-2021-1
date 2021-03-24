@@ -22,11 +22,11 @@ Derivadas
 =========
 
 - Definição: Seja $L \subseteq \Sigma^*$ e $a \in \Sigma$.
-A derivada de $L$ com respeito a $a$, $\delta(L,a)$, é definida
+A derivada de $L$ com respeito a $a$, $\partial(L,a)$, é definida
 como:
 
 $$
- \delta(L,a) =\{w \in \Sigma^*\,|\,aw \in L\}
+ \partial(L,a) =\{w \in \Sigma^*\,|\,aw \in L\}
 $$
 
 Derivadas
@@ -266,6 +266,18 @@ $$
 Autômatos
 =========
 
+- Visão intuitiva do algoritmo:
+   - Crie novos estados usando a derivada
+     para cada $a \in \Sigma$.
+   - Evite criar estados desnecessários
+     usando equivalência entre REs.
+   - Continue enquanto novos estados
+     forem criados.
+
+
+Autômatos
+=========
+
 - Algoritmo para conversão em um AFD
 
 ```haskell
@@ -310,7 +322,7 @@ goto e (c, (states, delta))
 Autômatos
 =========
 
-- Problema central: testar equivalência entre duas REs.
+- Problema central: testar equivalência entre REs.
    - No código, representado pela função `isEquiv`
    - Como testar a equivalência de REs?
 
@@ -429,6 +441,9 @@ Exercícios
 ==========
 
 - Apresente provas dos teoremas 1 e 2.
+
+- Implemente o algoritmo de matching baseado em derivadas
+em sua linguagem de programação favorita.
 
 Referências
 ===========
