@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="PCC102 - Teoria da Computação - Prof. Rodrigo Ribeiro">
+  <title>Regular Expression Parsing</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../revealjs/dist/reset.css">
+  <link rel="stylesheet" href="../revealjs/dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+  </style>
+  <link rel="stylesheet" href="../revealjs/dist/theme/white.css" id="theme">
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">Regular Expression Parsing</h1>
+  <p class="author">PCC102 - Teoria da Computação - Prof. Rodrigo Ribeiro</p>
+</section>
+
+<section id="objetivos" class="slide level1">
+<h1>Objetivos</h1>
+<ul>
+<li><p>Definir o problema de parsing para expressões regulares.</p></li>
+<li><p>Apresentar a interpretação baseada em tipos para o parsing.</p></li>
+</ul>
+</section>
+<section id="objetivos-1" class="slide level1">
+<h1>Objetivos</h1>
+<ul>
+<li>Apresentar o problema de ambiguidade e as estratégias greedy e POSIX de desambiguação.</li>
+</ul>
+</section>
+<section id="objetivos-2" class="slide level1">
+<h1>Objetivos</h1>
+<ul>
+<li>Discutir como derivadas podem ser utilizadas para solucionar o problema de parsing.</li>
+</ul>
+</section>
+<section id="anteriormente" class="slide level1">
+<h1>Anteriormente</h1>
+<ul>
+<li><p>Estudamos RE: sintaxe e semântica</p></li>
+<li><p>Derivadas: algoritmo eficiente e de simples implementação para problema de <em>casamento</em> para RE.</p></li>
+</ul>
+</section>
+<section id="anteriormente-1" class="slide level1">
+<h1>Anteriormente</h1>
+<ul>
+<li><p>Problema de casamento: Dados uma RE <span class="math inline">\(e\)</span> e uma string <span class="math inline">\(s\)</span>, determinar se <span class="math inline">\(s \in[\![e]\!]\)</span>.</p></li>
+<li><p>Apesar de relevante, o casamento não é útil para a solução de muitos problemas envolvendo RE.</p></li>
+</ul>
+</section>
+<section id="problema" class="slide level1">
+<h1>Problema</h1>
+<ul>
+<li>Vamos entender as limitações do casamento no contexto de um problema prático.</li>
+</ul>
+</section>
+<section id="problema-1" class="slide level1">
+<h1>Problema</h1>
+<ul>
+<li>Considere a tarefa de formatar texto que possui strings denotando valores monetários.</li>
+</ul>
+</section>
+<section id="problema-2" class="slide level1">
+<h1>Problema</h1>
+<ul>
+<li>O texto utiliza dois formatos distintos:
+<ul>
+<li>Algumas strings utilizam “.” como agrupador outras usam “,”</li>
+</ul></li>
+</ul>
+</section>
+<section id="problema-3" class="slide level1">
+<h1>Problema</h1>
+<ul>
+<li>Como converter todas essas strings para um único formato?</li>
+</ul>
+</section>
+<section id="problema-4" class="slide level1">
+<h1>Problema</h1>
+<ul>
+<li>Como representar esses formatos como uma RE?
+<ul>
+<li>Representando dígitos.</li>
+</ul></li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{lcl}
+  D   &amp; = &amp; 0 + 1 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 \\
+\end{array}
+\]</span></p>
+</section>
+<section id="problema-5" class="slide level1">
+<h1>Problema</h1>
+<ul>
+<li>Primeiro formato:
+<ul>
+<li>Agrupando dígitos usando “.”</li>
+</ul></li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{lcl}
+  F_1 &amp; = &amp; (\underbrace{(D\:D^*)}_{1}\,.)^*(\underbrace{(D\:D^*)}_{2}\,.)\,,(\underbrace{(D\:D^*)}_{3})^*\\
+\end{array}
+\]</span></p>
+</section>
+<section id="problema-6" class="slide level1">
+<h1>Problema</h1>
+<ul>
+<li>Segundo formato:
+<ul>
+<li>Agrupando dígitos usando “,”</li>
+</ul></li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{lcl}
+  F_2 &amp; = &amp; (\underbrace{(D\:D^*)}_{1}\,,)^*(\underbrace{(D\:D^*)}_{2}\,,)\,.(\underbrace{(D\:D^*)}_{3})^*\\
+\end{array}
+\]</span></p>
+</section>
+<section id="problema-7" class="slide level1">
+<h1>Problema</h1>
+<ul>
+<li>Usando <em>casamento</em> de REs, não é simples identificar os agrupamentos de dígitos e separadores.</li>
+</ul>
+</section>
+<section id="problema-8" class="slide level1">
+<h1>Problema</h1>
+<ul>
+<li>O problema ocorre quando temos um padrão de interesse em um operador Kleene star.
+<ul>
+<li>Nessa situação, ocorre o problema de <em>ambiguidade</em>.</li>
+</ul></li>
+</ul>
+</section>
+<section id="problema-9" class="slide level1">
+<h1>Problema</h1>
+<ul>
+<li>Considere a string 1.234.567,89
+<ul>
+<li>Temos que o padrão “1” gera dois casamentos na string.</li>
+<li>Como identificar esses sub casamentos?</li>
+</ul></li>
+</ul>
+<p><span class="math display">\[
+\underbrace{1}_{1}.\underbrace{234}_{1}.\underbrace{567}_{2},\underbrace{89}_{3}
+\]</span></p>
+</section>
+<section id="problema-10" class="slide level1">
+<h1>Problema</h1>
+<ul>
+<li>Para solucionar o problema apresentado é conveniente nos valermos de uma generalização.</li>
+</ul>
+</section>
+<section id="problema-11" class="slide level1">
+<h1>Problema</h1>
+<ul>
+<li>Ao invés de retornarmos apenas as posições do texto que foram reconhecidas, o melhor é produzir uma <strong>estrutura de dados</strong> que representa como o casamento ocorreu.</li>
+</ul>
+</section>
+<section id="parsing" class="slide level1">
+<h1>Parsing</h1>
+<ul>
+<li>Denominamos por <em>parsing</em> o problema de construir uma árvore de parsing que denota o casamento de uma string por uma expressão regular.</li>
+</ul>
+</section>
+<section id="parsing-1" class="slide level1">
+<h1>Parsing</h1>
+<ul>
+<li><p>Para isso, é conveniente intepretarmos expressões regulares como tipos.</p></li>
+<li><p>Árvores de parsing são termos que possuem o tipo de sua expressão subjacente.</p></li>
+</ul>
+</section>
+<section id="parsing-2" class="slide level1">
+<h1>Parsing</h1>
+<ul>
+<li>O conjunto de árvores <span class="math inline">\(\mathcal{T}(e)\)</span> é definido como:</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{lcl}
+\mathcal{T}(\emptyset) &amp; = &amp; \emptyset \\
+\mathcal{T}(\lambda)   &amp; = &amp; \{()\} \\
+\mathcal{T}(a)         &amp; = &amp; \{a\} \\
+\mathcal{T}(e_1\:e_2)  &amp; = &amp; \mathcal{T}(e_1)\times\mathcal{T}(e_2)\\
+\end{array}
+\]</span></p>
+</section>
+<section id="parsing-3" class="slide level1">
+<h1>Parsing</h1>
+<ul>
+<li>O conjunto de árvores <span class="math inline">\(\mathcal{T}(e)\)</span> é definido como:</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{lcl}
+\mathcal{T}(e_1 + e_2)  &amp; = &amp; \{\textrm{inl }t\,|\,t \in\mathcal{T}(e_1)\} \cup \\
+                        &amp;   &amp; \{\textrm{inr }t\,|\,t \in\mathcal{T}(e_2)\} \\
+\mathcal{T}(e_1^*)      &amp; = &amp; \{[t_0,...,t_n]\,|\,t_i \in \mathcal{T}(e_1)\}\\
+\end{array}
+\]</span></p>
+</section>
+<section id="parsing-4" class="slide level1">
+<h1>Parsing</h1>
+<ul>
+<li>Exemplo:</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{lc}
+\mathcal{T}((a + b)^*) &amp; = \\
+\end{array}
+\]</span></p>
+</section>
+<section id="parsing-5" class="slide level1">
+<h1>Parsing</h1>
+<ul>
+<li>Exemplo:</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{lc}
+\mathcal{T}((a + b)^*) &amp; = \\
+\{[t_0,...,t_n]\,|\,t_i \in \mathcal{T}(a + b)\} &amp; = \\
+\end{array}
+\]</span></p>
+</section>
+<section id="parsing-6" class="slide level1">
+<h1>Parsing</h1>
+<ul>
+<li>Exemplo:</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{lc}
+\mathcal{T}((a + b)^*) &amp; = \\
+\{[t_0,...,t_n]\,|\,t_i \in \mathcal{T}(a + b)\} &amp; = \\
+\{[t_0,...,t_n]\,|\,t_i \in \{\textrm{inl }v\,|\,v \in \mathcal{T}(a)\}\:\cup \\
+\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:\{\textrm{inr }w\,|\,w \in \mathcal{T}(b)\}\} &amp; = 
+\end{array}
+\]</span></p>
+</section>
+<section id="parsing-7" class="slide level1">
+<h1>Parsing</h1>
+<ul>
+<li>Exemplo:</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{lc}
+\{[t_0,...,t_n]\,|\,t_i \in \{\textrm{inl }v\,|\,v \in \mathcal{T}(a)\}\:\cup \\
+\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:\{\textrm{inr }w\,|\,w \in \mathcal{T}(b)\}\} &amp; = \\
+\{[t_0,...,t_n]\,|\,t_i \in \{\textrm{inl }v\,|\,v \in \{a\}\}\:\cup \\
+\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:\{\textrm{inr }w\,|\,w \in \{b\}\}\} &amp; = 
+\end{array}
+\]</span></p>
+</section>
+<section id="parsing-8" class="slide level1">
+<h1>Parsing</h1>
+<ul>
+<li>Exemplo:</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{lc}
+\{[t_0,...,t_n]\,|\,t_i \in \{\textrm{inl }v\,|\,v \in \{a\}\}\:\cup \\
+\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:\:\{\textrm{inr }w\,|\,w \in \{b\}\}\} &amp; = \\
+\{[t_0,...,t_n]\,|\,t_i \in \{\textrm{inl a},\,\textrm{inr b}\}\} &amp;  \\
+\end{array}
+\]</span></p>
+</section>
+<section id="parsing-9" class="slide level1">
+<h1>Parsing</h1>
+<ul>
+<li>Árvore de parsing para <span class="math inline">\(((ab)+c)^*\)</span> e string <span class="math inline">\(abcab\)</span></li>
+</ul>
+<p><img data-src="/Users/rodrigo/Documents/aulas/2021-1/teoria/slides/aula05/5ee09e10e1fbc5f5f25d9c5a83f7ee84a0df9a7e.svg" /></p>
+</section>
+<section id="parsing-10" class="slide level1">
+<h1>Parsing</h1>
+<ul>
+<li><p>Como relacionar árvores de parsing a strings e expressões regulares?</p></li>
+<li><p>Para isso, vamos utilizar algumas definições auxiliares.</p></li>
+</ul>
+</section>
+<section id="parsing-11" class="slide level1">
+<h1>Parsing</h1>
+<ul>
+<li>Flattening converte uma árvore de parsing na string por ela representada.</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{lcl}
+  |()|                      &amp; = &amp; \lambda \\
+  |a|                       &amp; = &amp; a \\
+  |\langle t_1, t_2\rangle| &amp; = &amp; |t_1|\,|t_2|\\
+  |\textrm{inl }t|          &amp; = &amp; |t|\\
+  |\textrm{inr }t|          &amp; = &amp; |t|\\
+  |t :: ts|                 &amp; = &amp; |t|\,|ts|\\
+\end{array}
+\]</span></p>
+</section>
+<section id="parsing-12" class="slide level1">
+<h1>Parsing</h1>
+<ul>
+<li>Parsing: Dados uma RE <span class="math inline">\(e\)</span> e uma string <span class="math inline">\(s\)</span>, o problema de <em>parsing</em> é o de encontrar uma árvore <span class="math inline">\(t \in \mathcal{T}(e)\)</span> tal que <span class="math inline">\(|t| = s\)</span>.</li>
+</ul>
+</section>
+<section id="parsing-13" class="slide level1">
+<h1>Parsing</h1>
+<ul>
+<li>Representamos <span class="math inline">\(t \in \mathcal{T}(e)\)</span> usando um sistema de regras para atribuir tipos (RE) a árvores.</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{ccc}
+    \dfrac{}{\vdash () : \lambda} &amp; \dfrac{}{\vdash a : a} &amp; \dfrac{\vdash t_1 : e_1}{\vdash \textrm{inl }t_1 : e_1 + e_2}\\
+\end{array}
+\]</span></p>
+</section>
+<section id="parsing-14" class="slide level1">
+<h1>Parsing</h1>
+<ul>
+<li>Representamos <span class="math inline">\(t \in \mathcal{T}(e)\)</span> usando um sistema de regras para atribuir tipos (RE) a árvores.</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{cc}
+   \dfrac{\vdash t_1 : e_1\:\:\:\:\vdash t_2 : e_2}{\vdash \langle t_1 , t_2 \rangle : e_1\,e_2} &amp; \dfrac{\vdash t_2 : e_2}{\vdash \textrm{inr }t_2 : e_1 + e_2}\\
+\end{array}
+\]</span></p>
+</section>
+<section id="parsing-15" class="slide level1">
+<h1>Parsing</h1>
+<ul>
+<li>Representamos <span class="math inline">\(t \in \mathcal{T}(e)\)</span> usando um sistema de regras para atribuir tipos (RE) a árvores.</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{cc}
+   \dfrac{}{\vdash [] : e_1^*} &amp; \dfrac{\vdash t_1 : e_1\:\:\:\:\vdash t_2 : e_1^*}{\vdash t_1 :: t_2 : e_1^*}\\
+\end{array}
+\]</span></p>
+</section>
+<section id="ambiguidade" class="slide level1">
+<h1>Ambiguidade</h1>
+<ul>
+<li>Dizemos que uma RE é ambígua se:</li>
+</ul>
+<p><span class="math display">\[
+\exists t_1,\,t_2\in\mathcal{T}(e). t_1 \neq t_2 \land |t_1| = |t_2| 
+\]</span></p>
+</section>
+<section id="ambiguidade-1" class="slide level1">
+<h1>Ambiguidade</h1>
+<ul>
+<li><p>Um algoritmo de parsing deve calcular uma única árvore de parsing para uma dada RE <span class="math inline">\(e\)</span> e string <span class="math inline">\(s\)</span>.</p></li>
+<li><p>Para garantir o determinismo, algoritmos recorrem a uma política para remoção de ambiguidade.</p></li>
+</ul>
+</section>
+<section id="ambiguidade-2" class="slide level1">
+<h1>Ambiguidade</h1>
+<ul>
+<li><p>Políticas para remoção de ambiguidade são definidas em termos de uma relação de ordem sobre árvores de parsing.</p></li>
+<li><p>Uma política garante que o maior / menor elemento da ordem é o escolhido.</p></li>
+</ul>
+</section>
+<section id="ambiguidade-3" class="slide level1">
+<h1>Ambiguidade</h1>
+<ul>
+<li>Política greedy:
+<ul>
+<li>Em <span class="math inline">\(e_1 + e_2\)</span>: tentar o parsing usando <span class="math inline">\(e_1\)</span>.</li>
+<li>Em <span class="math inline">\(e_1^*\)</span>: considerar a igualdade <span class="math inline">\(e_1^* = e_1e_1^* + \lambda\)</span>.</li>
+</ul></li>
+</ul>
+</section>
+<section id="ambiguidade-4" class="slide level1">
+<h1>Ambiguidade</h1>
+<ul>
+<li>Política greedy, formalmente: menor elemento de acordo com a ordem:</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{lcl}
+() &lt; () &amp; = &amp; \bot\\
+a &lt; a  &amp; = &amp; \bot\\
+\langle t_1, t_2 \rangle &lt; \langle t&#39;_1 , t&#39;_2\rangle &amp; = &amp; (t_1 &lt; t&#39;_1) \lor (t_1 = t&#39;_1 \land t_2 &lt; t_2&#39;)\\
+\end{array}
+\]</span></p>
+</section>
+<section id="ambiguidade-5" class="slide level1">
+<h1>Ambiguidade</h1>
+<p><span class="math display">\[
+\begin{array}{lcl}
+\textrm{inl }t_1 &lt; \textrm{inl }t&#39;_1 &amp; = &amp; t_1 &lt; t&#39;_1\\
+\textrm{inl }t_1 &lt; \textrm{inr }t_2  &amp; = &amp; \top \\
+\textrm{inr }t_2 &lt; \textrm{inl }t_1  &amp; = &amp; \bot\\
+\textrm{inr }t_2 &lt; \textrm{inr }t&#39;_2 &amp; = &amp; t_2 &lt; t&#39;_2\\
+\end{array}
+\]</span></p>
+</section>
+<section id="ambiguidade-6" class="slide level1">
+<h1>Ambiguidade</h1>
+<p><span class="math display">\[
+\begin{array}{lcl}
+[] &lt; t &amp; = &amp; t \neq [] \\
+t :: ts &lt; t&#39; :: ts&#39; &amp; = &amp; (t &lt; t&#39;) \land (ts &lt; ts&#39;) \\
+t :: ts &lt; [] &amp; = &amp; \bot \\
+\end{array}
+\]</span></p>
+</section>
+<section id="ambiguidade-7" class="slide level1">
+<h1>Ambiguidade</h1>
+<ul>
+<li><strong>Expressões problemáticas.</strong> Dizemos que uma expressão <span class="math inline">\(e\)</span> é problemática se existe <span class="math inline">\(e_1\)</span> tal que <span class="math inline">\(e = e_1^*\)</span> e <span class="math inline">\(\lambda \in [\![e_1]\!]\)</span>.</li>
+</ul>
+</section>
+<section id="ambiguidade-8" class="slide level1">
+<h1>Ambiguidade</h1>
+<ul>
+<li>Algoritmos seguindo a política greedy podem não terminar na presença de expressões problemáticas.
+<ul>
+<li>Algoritmos greedy tentam construir a maior árvore de parsing.</li>
+</ul></li>
+</ul>
+</section>
+<section id="ambiguidade-9" class="slide level1">
+<h1>Ambiguidade</h1>
+<ul>
+<li>Outra possível estratégia é o POSIX, que intuitivamente resolve a ambiguidade ao considerar que uma RE deve processar o maior prefixo de uma string.</li>
+</ul>
+</section>
+<section id="ambiguidade-10" class="slide level1">
+<h1>Ambiguidade</h1>
+<ul>
+<li>Ordenação POSIX</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{cc}
+    \dfrac{t_1 = t&#39;_1\:\:\:\:t_2 &lt; t&#39;_2}
+          {\langle t_1, t_2\rangle &lt; \langle t&#39;_1, t&#39;_2\rangle} &amp;
+     \dfrac{t_1 &lt; t&#39;_1}
+          {\langle t_1, t_2\rangle &lt; \langle t&#39;_1, t&#39;_2\rangle} \\ 
+\end{array}
+\]</span></p>
+</section>
+<section id="ambiguidade-11" class="slide level1">
+<h1>Ambiguidade</h1>
+<ul>
+<li>Ordenação POSIX</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{cc}
+    \dfrac{\textrm{length }|t_2| &gt; \textrm{length }|t_1|}
+          {\textrm{inr }t_2 &lt; \textrm{inl }t_1} &amp;
+     \dfrac{\textrm{length }|t_1| \geq \textrm{length }|t_2|}
+           {\textrm{inl }t_1 &lt; \textrm{inr }t_2} \\ 
+\end{array}
+\]</span></p>
+</section>
+<section id="ambiguidade-12" class="slide level1">
+<h1>Ambiguidade</h1>
+<ul>
+<li>Ordenação POSIX</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{cc}
+    \dfrac{t_1 &lt; t&#39;_1}
+          {\textrm{inl }t_1 &lt; \textrm{inl }t&#39;_1} &amp;
+     \dfrac{t_2 &lt; t&#39;_2}
+           {\textrm{inr }t_2 &lt; \textrm{inr }t&#39;_2} \\ 
+\end{array}
+\]</span></p>
+</section>
+<section id="ambiguidade-13" class="slide level1">
+<h1>Ambiguidade</h1>
+<ul>
+<li>Ordenação POSIX</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{cc}
+   \dfrac{|t :: ts| = \lambda}{[] &lt; t :: ts} &amp; 
+   \dfrac{|t :: ts| \neq \lambda}{t :: ts &lt; []}\\
+\end{array}
+\]</span></p>
+</section>
+<section id="ambiguidade-14" class="slide level1">
+<h1>Ambiguidade</h1>
+<ul>
+<li>Ordenação POSIX</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{cc}
+    \dfrac{t_1 &lt; t_2}{t_1 :: ts_1 &lt; t_2 :: ts_2} &amp; 
+    \dfrac{t_1 = t_2\:\:\:\:ts_1 &lt; ts_2}{t_1 :: ts_1 &lt; t_2 :: ts_2}
+\end{array}
+\]</span></p>
+</section>
+<section id="parsing-16" class="slide level1">
+<h1>Parsing</h1>
+<ul>
+<li><p>Ao contrário da política greedy, POSIX não é influenciada por expressões problemáticas.</p></li>
+<li><p>Além disso, a política POSIX pode ser implementada facilmente em termos de derivadas.</p></li>
+</ul>
+</section>
+<section id="parsing-17" class="slide level1">
+<h1>Parsing</h1>
+<ul>
+<li>A ideia do algoritmo de parsing consiste em uma adaptação do algoritmo de matching baseado em derivadas.</li>
+</ul>
+</section>
+<section id="parsing-18" class="slide level1">
+<h1>Parsing</h1>
+<ul>
+<li><p>Ao término do matching, o algoritmo constrói uma árvore de parsing para representar para <span class="math inline">\(\lambda\)</span>.</p></li>
+<li><p>No retorno de chamadas recursivas, uma função realiza o “injection” de um símbolo da string modificando a árvore de parsing.</p></li>
+</ul>
+</section>
+<section id="parsing-19" class="slide level1">
+<h1>Parsing</h1>
+<ul>
+<li>Construindo uma árvore de parsing para <span class="math inline">\(\lambda\)</span>.</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{lcl}
+\textrm{mkEps}(e^*) &amp; = &amp; [] \\
+\textrm{mkEps}(e_1\,e_2) &amp; = &amp; \langle \textrm{mkEps}(e_1),\textrm{mkEps}(e_2)\rangle \\
+\textrm{mkEps}(e_1+e_2) &amp; = &amp; \textrm{inl (mkEps(}e_1\textrm{)), se } \lambda\in[\![e_1]\!]\\
+\textrm{mkEps}(e_1+e_2) &amp; = &amp; \textrm{inr (mkEps(}e_2\textrm{)), se } \lambda\in[\![e_2]\!]\\
+\textrm{mkEps}(\lambda) &amp; = &amp; ()
+\end{array}
+\]</span></p>
+</section>
+<section id="parsing-20" class="slide level1">
+<h1>Parsing</h1>
+<ul>
+<li>Injection de um símbolo em uma árvore.
+<ul>
+<li>Lembre-se: <span class="math inline">\(\partial(e^*,a) = \partial(e,a)e^*\)</span></li>
+</ul></li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{lcl}
+\textrm{inj}(\partial(e^*, a), \langle t, ts \rangle) &amp; = &amp; \textrm{inj}(\partial(e,a), t) :: ts\\
+\end{array}
+\]</span></p>
+</section>
+<section id="parsing-21" class="slide level1">
+<h1>Parsing</h1>
+<ul>
+<li>Injection de um símbolo em uma árvore.</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{l}
+\textrm{inj}(\partial(e_1\,e_2,a), \langle t_1,t_2\rangle) = \langle \textrm{inj}(\partial(e_1,a), t_1), t_2\rangle\\
+\textrm{inj}(\partial(e_1\,e_2,a),\textrm{inl}(\langle t_1, t_2\rangle)) = \langle \textrm{inj}(\partial(e_1,a), t_1), t_2\rangle\\
+\textrm{inj}(\partial(e_1\,e_2,a),\textrm{inr }t_2) = \langle \textrm{mkEps}(e_1), \textrm{inj}(\partial(e_2,a),t_2)\rangle\\
+\end{array}
+\]</span></p>
+</section>
+<section id="parsing-22" class="slide level1">
+<h1>Parsing</h1>
+<ul>
+<li>Injection de um símbolo em uma árvore</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{lcl}
+\textrm{inj}(\partial(e_1 + e_2,a), \textrm{inl }t_1) &amp; = &amp; \textrm{inl}(\textrm{inj}(\partial(e_1,a), t_1))\\
+\textrm{inj}(\partial(e_1 + e_2,a), \textrm{inr }t_2) &amp; = &amp; \textrm{inr}(\textrm{inj}(\partial(e_2,a), t_2))\\
+\textrm{inj}(\partial(a,a),()) &amp; = &amp; a \\
+\end{array}
+\]</span></p>
+</section>
+<section id="parsing-23" class="slide level1">
+<h1>Parsing</h1>
+<ul>
+<li>Função de parsing</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{lcl}
+parse(e,\lambda) &amp; = &amp; \textrm{mkEps}(e)\textrm{; se } \lambda\in [\![e]\!] \\
+parse(e,ay)      &amp; = &amp; \textrm{inj}(\partial(e,a),parse(\partial(e,a), y))\\
+\end{array}
+\]</span></p>
+</section>
+<section id="exercício" class="slide level1">
+<h1>Exercício</h1>
+<ul>
+<li>Implemente o algoritmo de parsing de expressões regulares em sua linguagem de programação preferida.</li>
+</ul>
+</section>
+<section id="referências" class="slide level1">
+<h1>Referências</h1>
+<ul>
+<li><p>Frisch, Alain; Cardelli, Luca. Greedy Regular Expression Parsing.</p></li>
+<li><p>Nielsen, Lasse; Heinglein, Fritz. Bit-coded Regular Expression Parsing.</p></li>
+</ul>
+</section>
+<section id="referências-1" class="slide level1">
+<h1>Referências</h1>
+<ul>
+<li>Sulzmann, Martin; Lu, Kenny. POSIX regular expression parsing with derivatives.</li>
+</ul>
+</section>
+    </div>
+  </div>
+
+  <script src="../revealjs/dist/reveal.js"></script>
+
+  <!-- reveal.js plugins -->
+  <script src="../revealjs/plugin/notes/notes.js"></script>
+  <script src="../revealjs/plugin/search/search.js"></script>
+  <script src="../revealjs/plugin/zoom/zoom.js"></script>
+  <script src="../revealjs/plugin/math/math.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+      
+        // Push each slide change to the browser history
+        history: true,
+        math: {
+          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // reveal.js plugins
+        plugins: [
+          RevealMath,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    </body>
+</html>

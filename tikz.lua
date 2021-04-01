@@ -3,7 +3,7 @@ local system = require 'pandoc.system'
 local tikz_doc_template = [[
 \documentclass{standalone}
 \usepackage{xcolor}
-\usepackage{amsmath,amssymb}
+\usepackage{amsmath,amssymb,proof}
 \usepackage{graphicx}
 \usepackage{tikz}
 \usetikzlibrary{automata}
