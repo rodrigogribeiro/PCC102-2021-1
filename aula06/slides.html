@@ -186,7 +186,8 @@
 </ul>
 <div class="sourceCode" id="cb4"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ot">code ::</span> <span class="dt">Tree</span> <span class="ot">-&gt;</span> <span class="dt">RE</span> <span class="ot">-&gt;</span> [<span class="dt">Bit</span>]</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co">-- code from previous slides</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>code ts       (<span class="dt">Star</span> e)   <span class="ot">=</span> <span class="fu">concatMap</span> (<span class="fu">flip</span> code) ts</span></code></pre></div>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>code []       (<span class="dt">Star</span> _)   <span class="ot">=</span> [<span class="dv">1</span>]</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>code (t <span class="op">:</span> ts) (<span class="dt">Star</span> e) <span class="ot">=</span> code t e <span class="op">++</span> <span class="dv">0</span> <span class="op">:</span> code ts (<span class="dt">Star</span> e)</span></code></pre></div>
 </section>
 <section id="parsing-8" class="slide level1">
 <h1>Parsing</h1>
@@ -252,10 +253,11 @@
 </ul>
 <div class="sourceCode" id="cb8"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ot">decode&#39; ::</span> [<span class="dt">Bit</span>] <span class="ot">-&gt;</span> <span class="dt">RE</span> <span class="ot">-&gt;</span> (<span class="dt">Tree</span>, [<span class="dt">Bit</span>])</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co">-- code from previous slides</span></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>decode&#39; bs (<span class="dt">Star</span> e)</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="ot">=</span> <span class="kw">let</span> (t, bs1) <span class="ot">=</span> decode&#39; bs e</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>        (ts, bs&#39;) <span class="ot">=</span> decode bs1 (<span class="dt">Star</span> e)</span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">in</span> (t <span class="op">:</span> ts, bs&#39;)</span></code></pre></div>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>decode&#39; (<span class="dv">1</span> <span class="op">:</span> bs) (<span class="dt">Star</span> e) <span class="ot">=</span> ([], bs)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>decode&#39; (<span class="dv">0</span> <span class="op">:</span> bs) (<span class="dt">Star</span> e)</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="ot">=</span> <span class="kw">let</span> (t, bs1) <span class="ot">=</span> decode&#39; bs e</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>        (ts, bs&#39;) <span class="ot">=</span> decode bs1 (<span class="dt">Star</span> e)</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">in</span> (t <span class="op">:</span> ts, bs&#39;)</span></code></pre></div>
 </section>
 <section id="parsing-13" class="slide level1">
 <h1>Parsing</h1>
@@ -270,7 +272,7 @@
 <section id="parsing-14" class="slide level1">
 <h1>Parsing</h1>
 <ul>
-<li>Propriedade: Se <span class="math inline">\(\vdash e : t\)</span> então <code>code t e = bs</code> e <code>decode bs e = t</code>.</li>
+<li>Propriedade: Se <span class="math inline">\(\vdash e : t\)</span> então <code>code t e = bs</code> e <code>decode bs e = Just t</code>.</li>
 </ul>
 </section>
 <section id="coercions" class="slide level1">
@@ -643,7 +645,7 @@ f : \mathcal{T}(e) \to \mathcal{T}(e&#39;)_{\bot}
 <section id="exercício" class="slide level1">
 <h1>Exercício</h1>
 <ul>
-<li>Prove, por indução, a seguinte propriedade: Se <span class="math inline">\(\vdash e : t\)</span> então <code>code t e = bs</code> e <code>decode bs e = t</code>.</li>
+<li>Prove, por indução, a seguinte propriedade: Se <span class="math inline">\(\vdash e : t\)</span> então <code>code t e = bs</code> e <code>decode bs e = Just t</code>.</li>
 </ul>
 </section>
 <section id="referências" class="slide level1">

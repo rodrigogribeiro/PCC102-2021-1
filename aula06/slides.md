@@ -102,7 +102,8 @@ Parsing
 ```haskell
 code :: Tree -> RE -> [Bit]
 -- code from previous slides
-code ts       (Star e)   = concatMap (flip code) ts
+code []       (Star _)   = [1]
+code (t : ts) (Star e) = code t e ++ 0 : code ts (Star e)
 ```
 
 Parsing
@@ -168,7 +169,8 @@ Parsing
 ```haskell
 decode' :: [Bit] -> RE -> (Tree, [Bit])
 -- code from previous slides
-decode' bs (Star e)
+decode' (1 : bs) (Star e) = ([], bs)
+decode' (0 : bs) (Star e)
   = let (t, bs1) = decode' bs e
         (ts, bs') = decode bs1 (Star e)
     in (t : ts, bs')
@@ -189,7 +191,7 @@ decode bs e = let (t,bs') = decode' bs e
 Parsing
 =======
 
-- Propriedade: Se $\vdash e : t$ então `code t e = bs` e `decode bs e = t`.
+- Propriedade: Se $\vdash e : t$ então `code t e = bs` e `decode bs e = Just t`.
 
 Coercions
 =========
@@ -593,7 +595,7 @@ Exercício
 =========
 
 - Prove, por indução, a seguinte propriedade: 
- Se $\vdash e : t$ então `code t e = bs` e `decode bs e = t`.
+ Se $\vdash e : t$ então `code t e = bs` e `decode bs e = Just t`.
 
 Referências
 ===========
