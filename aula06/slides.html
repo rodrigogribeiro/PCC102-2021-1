@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="PCC102 - Teoria da Computação - Prof. Rodrigo Ribeiro">
+  <title>Bit-codes e containment</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../revealjs/dist/reset.css">
+  <link rel="stylesheet" href="../revealjs/dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../revealjs/dist/theme/white.css" id="theme">
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">Bit-codes e containment</h1>
+  <p class="author">PCC102 - Teoria da Computação - Prof. Rodrigo Ribeiro</p>
+</section>
+
+<section id="objetivos" class="slide level1">
+<h1>Objetivos</h1>
+<ul>
+<li>Aplicar a interpretação de tipos para representação de árvores de parsing como códigos de bits.</li>
+</ul>
+</section>
+<section id="objetivos-1" class="slide level1">
+<h1>Objetivos</h1>
+<ul>
+<li>Apresentar um sistema de provas para o problema de containment para RE</li>
+</ul>
+</section>
+<section id="objetivos-2" class="slide level1">
+<h1>Objetivos</h1>
+<ul>
+<li>Apresentar a interpretação computacional do sistema de containment para RE como coerções entre árvores de parsing.</li>
+</ul>
+</section>
+<section id="parsing" class="slide level1">
+<h1>Parsing</h1>
+<ul>
+<li><p>Na última aula, apresentamos o problema de parsing para RE.</p></li>
+<li><p>Mostramos como intepretando REs como tipos, obtemos uma representação para árvores como termos.</p></li>
+</ul>
+</section>
+<section id="parsing-1" class="slide level1">
+<h1>Parsing</h1>
+<ul>
+<li><p>Porém, representar o resultado como árvores possui um custo de espaço maior que a própria string.</p></li>
+<li><p>Será possível melhorar o custo de espaço?</p></li>
+</ul>
+</section>
+<section id="parsing-2" class="slide level1">
+<h1>Parsing</h1>
+<ul>
+<li>Sim! Resposta: representar árvores usando bits</li>
+</ul>
+</section>
+<section id="parsing-3" class="slide level1">
+<h1>Parsing</h1>
+<ul>
+<li>Intuitivamente, bits representam:
+<ul>
+<li>Qual sub-expressão da união foi usada no casamento</li>
+<li>Marcam início e fim de um casamento para o operador Kleene star.</li>
+</ul></li>
+</ul>
+</section>
+<section id="parsing-4" class="slide level1">
+<h1>Parsing</h1>
+<ul>
+<li>Codificação de árvores em bits.
+<ul>
+<li>Codificação guiada por tipos (RE).</li>
+</ul></li>
+<li>Casos base: <span class="math inline">\(\lambda\)</span> e um símbolo.</li>
+</ul>
+<div class="sourceCode" id="cb1"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ot">code ::</span> <span class="dt">Tree</span> <span class="ot">-&gt;</span> <span class="dt">RE</span> <span class="ot">-&gt;</span> [<span class="dt">Bit</span>]</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>code ()       <span class="dt">Lambda</span>  <span class="ot">=</span> []</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>code (<span class="dt">TChr</span> a) (<span class="dt">Sym</span> _) <span class="ot">=</span> []</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co">-- omitted</span></span></code></pre></div>
+</section>
+<section id="parsing-5" class="slide level1">
+<h1>Parsing</h1>
+<ul>
+<li>Codificação de árvores para união
+<ul>
+<li>Bit 0: árvore para RE esquerda</li>
+<li>Bit 1: árvore para RE direita</li>
+</ul></li>
+</ul>
+<div class="sourceCode" id="cb2"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ot">code ::</span> <span class="dt">Tree</span> <span class="ot">-&gt;</span> <span class="dt">RE</span> <span class="ot">-&gt;</span> [<span class="dt">Bit</span>]</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co">-- code from previous slides</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>code (<span class="dt">Inl</span> t)  (e <span class="op">:+:</span> _)  <span class="ot">=</span> <span class="dv">0</span> <span class="op">:</span> code t e </span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>code (<span class="dt">Inr</span> t&#39;) (_ <span class="op">:+:</span> e&#39;) <span class="ot">=</span> <span class="dv">1</span> <span class="op">:</span> code t&#39; e&#39;</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co">-- omitted</span></span></code></pre></div>
+</section>
+<section id="parsing-6" class="slide level1">
+<h1>Parsing</h1>
+<ul>
+<li>Codificação de árvores para concatenação</li>
+</ul>
+<div class="sourceCode" id="cb3"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ot">code ::</span> <span class="dt">Tree</span> <span class="ot">-&gt;</span> <span class="dt">RE</span> <span class="ot">-&gt;</span> [<span class="dt">Bit</span>]</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co">-- code from previous slides</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>code (t, t&#39;)  (e <span class="op">:@:</span> e&#39;) <span class="ot">=</span> code t e <span class="op">++</span> code e&#39; t&#39; </span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co">-- omitted</span></span></code></pre></div>
+</section>
+<section id="parsing-7" class="slide level1">
+<h1>Parsing</h1>
+<ul>
+<li>Codificação de árvores para o fecho de Kleene.</li>
+</ul>
+<div class="sourceCode" id="cb4"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ot">code ::</span> <span class="dt">Tree</span> <span class="ot">-&gt;</span> <span class="dt">RE</span> <span class="ot">-&gt;</span> [<span class="dt">Bit</span>]</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co">-- code from previous slides</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>code ts       (<span class="dt">Star</span> e)   <span class="ot">=</span> <span class="fu">concatMap</span> (<span class="fu">flip</span> code) ts</span></code></pre></div>
+</section>
+<section id="parsing-8" class="slide level1">
+<h1>Parsing</h1>
+<ul>
+<li>Decodificamos bits em árvores usando a estrutura da RE subjacente.
+<ul>
+<li>Essencialmente, a decodificação consiste em um parser de bits em árvores.</li>
+</ul></li>
+</ul>
+</section>
+<section id="parsing-9" class="slide level1">
+<h1>Parsing</h1>
+<ul>
+<li>Decodificação de bits.
+<ul>
+<li>Casos base</li>
+</ul></li>
+</ul>
+<div class="sourceCode" id="cb5"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ot">decode&#39; ::</span> [<span class="dt">Bit</span>] <span class="ot">-&gt;</span> <span class="dt">RE</span> <span class="ot">-&gt;</span> (<span class="dt">Tree</span>, [<span class="dt">Bit</span>])</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>decode&#39; bs <span class="dt">Lambda</span> <span class="ot">=</span> ((), bs)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>decode&#39; bs (<span class="dt">Chr</span> a) <span class="ot">=</span> (<span class="dt">TChr</span> a, bs)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co">-- omitted</span></span></code></pre></div>
+</section>
+<section id="parsing-10" class="slide level1">
+<h1>Parsing</h1>
+<ul>
+<li>Decodificação de bits
+<ul>
+<li>União: usa marcadores para continuar decodificação.</li>
+</ul></li>
+</ul>
+<div class="sourceCode" id="cb6"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ot">decode&#39; ::</span> [<span class="dt">Bit</span>] <span class="ot">-&gt;</span> <span class="dt">RE</span> <span class="ot">-&gt;</span> (<span class="dt">Tree</span>, [<span class="dt">Bit</span>])</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co">-- code from previous slides</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>decode&#39; (<span class="dv">0</span> <span class="op">:</span> bs) (e <span class="op">:+:</span> _) <span class="ot">=</span> <span class="kw">let</span> (t,bs&#39;) <span class="ot">=</span> decode&#39; bs e </span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>                              <span class="kw">in</span> (<span class="dt">Inl</span> t, bs&#39;)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>decode&#39; (<span class="dv">1</span> <span class="op">:</span> bs) (_ <span class="op">:+:</span> e&#39;) <span class="ot">=</span> <span class="kw">let</span> (t,bs&#39;) <span class="ot">=</span> decode&#39; bs e&#39; </span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>                              <span class="kw">in</span> (<span class="dt">Inr</span> t, bs&#39;)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co">-- omitted</span></span></code></pre></div>
+</section>
+<section id="parsing-11" class="slide level1">
+<h1>Parsing</h1>
+<ul>
+<li>Decodificação de bits
+<ul>
+<li>Concatenação: passagem de estado para continuidade do parsing.</li>
+</ul></li>
+</ul>
+<div class="sourceCode" id="cb7"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ot">decode&#39; ::</span> [<span class="dt">Bit</span>] <span class="ot">-&gt;</span> <span class="dt">RE</span> <span class="ot">-&gt;</span> (<span class="dt">Tree</span>, [<span class="dt">Bit</span>])</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co">-- code from previous slides</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>decode&#39; bs (e <span class="op">:@:</span> e&#39;)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="ot">=</span> <span class="kw">let</span> (t, bs1) <span class="ot">=</span> decode&#39; bs e</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>        (t&#39;, bs&#39;) <span class="ot">=</span> decode&#39; bs1 e&#39; </span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">in</span> ((t, t&#39;), bs&#39;)</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co">-- omitted</span></span></code></pre></div>
+</section>
+<section id="parsing-12" class="slide level1">
+<h1>Parsing</h1>
+<ul>
+<li>Decodificação de bits
+<ul>
+<li>Fecho de Kleene.</li>
+</ul></li>
+</ul>
+<div class="sourceCode" id="cb8"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ot">decode&#39; ::</span> [<span class="dt">Bit</span>] <span class="ot">-&gt;</span> <span class="dt">RE</span> <span class="ot">-&gt;</span> (<span class="dt">Tree</span>, [<span class="dt">Bit</span>])</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co">-- code from previous slides</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>decode&#39; bs (<span class="dt">Star</span> e)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="ot">=</span> <span class="kw">let</span> (t, bs1) <span class="ot">=</span> decode&#39; bs e</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>        (ts, bs&#39;) <span class="ot">=</span> decode bs1 (<span class="dt">Star</span> e)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">in</span> (t <span class="op">:</span> ts, bs&#39;)</span></code></pre></div>
+</section>
+<section id="parsing-13" class="slide level1">
+<h1>Parsing</h1>
+<ul>
+<li>Decodificação</li>
+</ul>
+<div class="sourceCode" id="cb9"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ot">decode ::</span> [<span class="dt">Bit</span>] <span class="ot">-&gt;</span> <span class="dt">RE</span> <span class="ot">-&gt;</span> <span class="dt">Maybe</span> <span class="dt">Tree</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>decode bs e <span class="ot">=</span> <span class="kw">let</span> (t,bs&#39;) <span class="ot">=</span> decode&#39; bs e</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>              <span class="kw">in</span> <span class="kw">if</span> <span class="fu">null</span> bs&#39; <span class="kw">then</span> <span class="dt">Just</span> t </span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>                 <span class="kw">else</span> <span class="dt">Nothing</span></span></code></pre></div>
+</section>
+<section id="parsing-14" class="slide level1">
+<h1>Parsing</h1>
+<ul>
+<li>Propriedade: Se <span class="math inline">\(\vdash e : t\)</span> então <code>code t e = bs</code> e <code>decode bs e = t</code>.</li>
+</ul>
+</section>
+<section id="coercions" class="slide level1">
+<h1>Coercions</h1>
+<ul>
+<li>Se temos que <span class="math inline">\(e \equiv e&#39;\)</span> e <span class="math inline">\(\vdash t : e\)</span> como obter uma árvore <span class="math inline">\(t&#39;\)</span> tal que <span class="math inline">\(\vdash t&#39; : e&#39;\)</span> e <span class="math inline">\(|t| = |t&#39;|\)</span>?</li>
+</ul>
+</section>
+<section id="coercions-1" class="slide level1">
+<h1>Coercions</h1>
+<ul>
+<li><p>Se expressões regulares são interpretadas como tipos, podemos obter uma intepretação computacional de equivalências?</p></li>
+<li><p>Sim! Basta intepretarmos equivalências como coerções entre tipos.</p></li>
+</ul>
+</section>
+<section id="coercions-2" class="slide level1">
+<h1>Coercions</h1>
+<ul>
+<li>Intuitivamente, entendemos que uma RE é subtipo de outra se temos uma relação de subconjunto entre as linguagens por elas denotadas, isto é:</li>
+</ul>
+<p><span class="math display">\[
+e \le e&#39; \Leftrightarrow [\![e]\!] \subseteq [\![e&#39;]\!]
+\]</span></p>
+</section>
+<section id="coercions-3" class="slide level1">
+<h1>Coercions</h1>
+<ul>
+<li>Formalmente, denominamos por coerção uma função</li>
+</ul>
+<p><span class="math display">\[
+f : \mathcal{T}(e) \to \mathcal{T}(e&#39;)_{\bot}
+\]</span></p>
+<p>tal que para todo <span class="math inline">\(t\)</span>, tal que <span class="math inline">\(\vdash t : e\)</span>, temos <span class="math inline">\(|t| = |f(t)|\)</span>.</p>
+</section>
+<section id="coercions-4" class="slide level1">
+<h1>Coercions</h1>
+<ul>
+<li><p>Funções de coerção serão termos de um sistema de prova para deduzir <span class="math inline">\(\Gamma \vdash p : e \le e&#39;\)</span>.</p></li>
+<li><p><span class="math inline">\(\Gamma\)</span>: conjunto de hipóteses sobre coerções da forma <span class="math inline">\(x : e \le e&#39;\)</span>.</p></li>
+</ul>
+</section>
+<section id="coercions-5" class="slide level1">
+<h1>Coercions</h1>
+<ul>
+<li><span class="math inline">\(\Gamma \vdash e \equiv e&#39;\)</span> denota o par</li>
+</ul>
+<p><span class="math display">\[(\Gamma \vdash p : e \le e&#39;, \Gamma \vdash p^{-1} : e&#39; \le e)\]</span>.</p>
+</section>
+<section id="coercions-6" class="slide level1">
+<h1>Coercions</h1>
+<ul>
+<li>Sistema de coerções</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{c}
+   \dfrac{}{\Gamma \vdash \textrm{shuffle} : e_1 + (e_2 + e_3) \equiv (e_1 + e_2) + e_3} \\ 
+\end{array}
+\]</span></p>
+</section>
+<section id="coercions-7" class="slide level1">
+<h1>Coercions</h1>
+<ul>
+<li>Sistema de coerções</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{c}
+   \dfrac{}{\Gamma \vdash\textrm{distL} : e_1(e_2 + e_3) \equiv (e_1\,e_2)+(e_1\,e_3)}\\
+\end{array}
+\]</span></p>
+</section>
+<section id="coercions-8" class="slide level1">
+<h1>Coercions</h1>
+<ul>
+<li>Sistema de coerções</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{c}
+   \dfrac{}{\Gamma \vdash\textrm{distR} : (e_1 + e_2)e_3 \equiv (e_1\,e_3)+(e_2\,e_3)}\\
+\end{array}
+\]</span></p>
+</section>
+<section id="coercions-9" class="slide level1">
+<h1>Coercions</h1>
+<ul>
+<li>Sistema de coerções</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{cc}
+  \dfrac{}{\Gamma \vdash\textrm{retag} : e_1 + e_2 \equiv e_2 + e_1} &amp; 
+  \dfrac{}{\Gamma\vdash\textrm{untagL} : \emptyset + e_1 \equiv e_1} 
+\end{array}
+\]</span></p>
+</section>
+<section id="coercions-10" class="slide level1">
+<h1>Coercions</h1>
+<ul>
+<li>Sistema de coerções</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{cc}
+   \dfrac{}{\Gamma \vdash\textrm{tagL} : e \le e + e&#39;} &amp; 
+   \dfrac{}{\Gamma \vdash\textrm{untag} : e + e \le e}
+\end{array}
+\]</span></p>
+</section>
+<section id="coercions-11" class="slide level1">
+<h1>Coercions</h1>
+<ul>
+<li>Sistema de coerções</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{cc}
+   \dfrac{}{\Gamma\vdash\textrm{assoc}: e_1(e_2\,e_3) \equiv (e_\,e_2)e_3} &amp;
+   \dfrac{}{\Gamma\vdash\textrm{swap} : e\,\lambda \equiv \lambda\,e}
+\end{array}
+\]</span></p>
+</section>
+<section id="coercions-12" class="slide level1">
+<h1>Coercions</h1>
+<ul>
+<li>Sistema de coerções</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{cc}
+   \dfrac{}{\Gamma\vdash\textrm{proj} : \lambda\,e \equiv e} &amp; 
+   \dfrac{}{\Gamma\vdash\textrm{abortR} : e\,\emptyset \equiv \emptyset}
+\end{array}
+\]</span></p>
+</section>
+<section id="coercions-13" class="slide level1">
+<h1>Coercions</h1>
+<ul>
+<li>Sistema de coerções</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{cc}
+   \dfrac{}{\Gamma\vdash\textrm{abortL} : \emptyset\,e \equiv \emptyset} &amp;
+   \dfrac{}{\Gamma\vdash\textrm{wrap} : \lambda + e\,e^* \equiv e^*} \\ &amp; \\
+   \dfrac{}{\Gamma\vdash\textrm{id} : e \equiv e}
+\end{array}
+\]</span></p>
+</section>
+<section id="coercions-14" class="slide level1">
+<h1>Coercions</h1>
+<ul>
+<li>Sistema de coerções</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{c}
+   \dfrac{\Gamma \vdash p : e_1 \le e_2\:\:\:\:\Gamma \vdash p&#39; : e_2 \le e_3}{\Gamma\vdash p;p&#39; : e_1 \le e_3}
+\end{array}
+\]</span></p>
+</section>
+<section id="coercions-15" class="slide level1">
+<h1>Coercions</h1>
+<ul>
+<li>Sistema de coerções</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{c}
+   \dfrac{\Gamma \vdash p : e_1 \le e_2\:\:\:\:\Gamma \vdash p&#39; : e&#39;_1 \le e&#39;_2}{\Gamma\vdash p + p&#39; : e_1 + e&#39;_1 \le e_2 + e&#39;_2}
+\end{array}
+\]</span></p>
+</section>
+<section id="coercions-16" class="slide level1">
+<h1>Coercions</h1>
+<ul>
+<li>Sistema de coerções</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{c}
+   \dfrac{\Gamma \vdash p : e_1 \le e_2\:\:\:\:\Gamma \vdash p&#39; : e&#39;_1 \le e&#39;_2}{\Gamma\vdash p + p&#39; : e_1 \times e&#39;_1 \le e_2 \times e&#39;_2}
+\end{array}
+\]</span></p>
+</section>
+<section id="coercions-17" class="slide level1">
+<h1>Coercions</h1>
+<ul>
+<li>Sistema de coerções</li>
+</ul>
+<p><span class="math display">\[
+\dfrac{}{\Gamma,\,f : e \le e&#39; \vdash f : e \le e&#39; }
+\]</span></p>
+</section>
+<section id="coercions-18" class="slide level1">
+<h1>Coercions</h1>
+<ul>
+<li>Sistema de coerções: regra de co-indução
+<ul>
+<li>Sujeita a condições de boa formação para garantir a correção.</li>
+</ul></li>
+</ul>
+<p><span class="math display">\[
+\dfrac{\Gamma, f : e \le e&#39; \vdash c : e \le e&#39;}{\Gamma\vdash\textrm{fix }f.\:c : e\le e&#39;}
+\]</span></p>
+</section>
+<section id="coercions-19" class="slide level1">
+<h1>Coercions</h1>
+<ul>
+<li>Left-guardedness: Seja <span class="math inline">\(\Gamma \vdash\textrm{fix }f.\:c : e \le e&#39;\)</span>. Dizemos que uma ocorrência de <span class="math inline">\(f\)</span> em <span class="math inline">\(c\)</span> é left-guarded se:
+<ul>
+<li>Existe um sub-termo <span class="math inline">\(d\)</span> tal que a ocorrência de <span class="math inline">\(f\)</span> está em <span class="math inline">\(d&#39;\)</span> em um termo <span class="math inline">\(d \times d&#39;\)</span> em <span class="math inline">\(c\)</span>.</li>
+</ul></li>
+</ul>
+</section>
+<section id="coercions-20" class="slide level1">
+<h1>Coercions</h1>
+<ul>
+<li>Exemplo:</li>
+</ul>
+<p><span class="math display">\[
+\textrm{fix }f.\underbrace{(\textrm{id} \times f)}_{left-guarded}
+\]</span></p>
+</section>
+<section id="coercions-21" class="slide level1">
+<h1>Coercions</h1>
+<ul>
+<li>Dizemos que um uso da regra de co-indução é correto se toda ocorrência de <span class="math inline">\(f\)</span> em <span class="math inline">\(c\)</span> é left-guarded por um <span class="math inline">\(d : e \le e&#39;\)</span> tal que que <span class="math inline">\(\lambda \not\in[\![e]\!]\)</span>.</li>
+</ul>
+</section>
+<section id="coercions-22" class="slide level1">
+<h1>Coercions</h1>
+<ul>
+<li><p>Depois de definir o sistema de coerções, falta apresetnar sua intepretação computacional.</p></li>
+<li><p>A semântica de coerções consiste em funções para manipulação de árvores de parsing.</p></li>
+</ul>
+</section>
+<section id="coercions-23" class="slide level1">
+<h1>Coercions</h1>
+<ul>
+<li><span class="math inline">\(\textrm{shuffle} : e_1 + (e_2 + e_3) \equiv (e_1 + e_2) + e_3\)</span>.
+<ul>
+<li>Representamos por <code>shuffle'</code> a coerção <span class="math inline">\(\textrm{shuffle}^{-1}\)</span>.</li>
+</ul></li>
+</ul>
+<div class="sourceCode" id="cb10"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>shuffle (<span class="dt">Inl</span> t) <span class="ot">=</span> <span class="dt">Inl</span> (<span class="dt">Inl</span> t)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>shuffle (<span class="dt">Inr</span> (<span class="dt">Inl</span> t)) <span class="ot">=</span> <span class="dt">Inl</span> (<span class="dt">Inr</span> t)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>shuffle (<span class="dt">Inr</span> (<span class="dt">Inr</span> t)) <span class="ot">=</span> <span class="dt">Inr</span> t</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>shuffle&#39; (<span class="dt">Inl</span> (<span class="dt">Inl</span> t)) <span class="ot">=</span> <span class="dt">Inl</span> t</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>shuffle&#39; (<span class="dt">Inl</span> (<span class="dt">Inr</span> t)) <span class="ot">=</span> <span class="dt">Inr</span> (<span class="dt">Inl</span> t)</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>shuffle&#39; (<span class="dt">Inr</span> t)       <span class="ot">=</span> <span class="dt">Inr</span> (<span class="dt">Inr</span> t)</span></code></pre></div>
+</section>
+<section id="coercions-24" class="slide level1">
+<h1>Coercions</h1>
+<ul>
+<li><span class="math inline">\(\textrm{retag} : e + e&#39; \equiv e&#39; + e\)</span>.</li>
+</ul>
+<div class="sourceCode" id="cb11"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>retag (<span class="dt">Inl</span> t) <span class="ot">=</span> <span class="dt">Inr</span> t</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>retag (<span class="dt">Inr</span> t) <span class="ot">=</span> <span class="dt">Inl</span> t</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>retag&#39; (<span class="dt">Inr</span> t) <span class="ot">=</span> <span class="dt">Inl</span> t</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>retag&#39; (<span class="dt">Inl</span> t) <span class="ot">=</span> <span class="dt">Inr</span> t</span></code></pre></div>
+</section>
+<section id="coercions-25" class="slide level1">
+<h1>Coercions</h1>
+<ul>
+<li><span class="math inline">\(\textrm{untagL} : \emptyset + e \equiv e\)</span>.</li>
+</ul>
+<div class="sourceCode" id="cb12"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>untagL (<span class="dt">Inr</span> t) <span class="ot">=</span> t</span></code></pre></div>
+</section>
+<section id="coercions-26" class="slide level1">
+<h1>Coercions</h1>
+<ul>
+<li><span class="math inline">\(\textrm{untag} : e + e \equiv e\)</span></li>
+</ul>
+<div class="sourceCode" id="cb13"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>untag (<span class="dt">Inl</span> t) <span class="ot">=</span> t</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>untag (<span class="dt">Inr</span> t) <span class="ot">=</span> t</span></code></pre></div>
+</section>
+<section id="coercions-27" class="slide level1">
+<h1>Coercions</h1>
+<ul>
+<li><span class="math inline">\(\textrm{tagL} : e \le e + e&#39;\)</span></li>
+</ul>
+<div class="sourceCode" id="cb14"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>tagL t <span class="ot">=</span> <span class="dt">Inl</span> t</span></code></pre></div>
+</section>
+<section id="coercions-28" class="slide level1">
+<h1>Coercions</h1>
+<ul>
+<li><span class="math inline">\(\textrm{assoc} : e_1(e_2\,e_3) \equiv (e_1\,e_2)e_3\)</span>.</li>
+</ul>
+<div class="sourceCode" id="cb15"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>assoc (t1, (t2, t3)) <span class="ot">=</span> ((t1, t2), t3)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>assoc&#39; ((t1, t2), t3) <span class="ot">=</span> (t1, (t2, t3))</span></code></pre></div>
+</section>
+<section id="coercions-29" class="slide level1">
+<h1>Coercions</h1>
+<ul>
+<li><span class="math inline">\(\textrm{swap} : \lambda\,e \equiv e\,\lambda\)</span></li>
+</ul>
+<div class="sourceCode" id="cb16"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>swap ((), t) <span class="ot">=</span> (t, ())</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>swap&#39; (t, ()) <span class="ot">=</span> ((), t)</span></code></pre></div>
+</section>
+<section id="coercions-30" class="slide level1">
+<h1>Coercions</h1>
+<ul>
+<li><span class="math inline">\(\textrm{proj} : \lambda\,e \equiv e\)</span></li>
+</ul>
+<div class="sourceCode" id="cb17"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>proj ((), t) <span class="ot">=</span> t</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>proj&#39; t <span class="ot">=</span> ((), t)</span></code></pre></div>
+</section>
+<section id="coercions-31" class="slide level1">
+<h1>Coercions</h1>
+<ul>
+<li><span class="math inline">\(\textrm{distL} : e_1(e_2 + e_3) \equiv (e_1\,e_2)+(e_1\,e_3)\)</span></li>
+</ul>
+<div class="sourceCode" id="cb18"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>distL (t, <span class="dt">Inl</span> t&#39;) <span class="ot">=</span> <span class="dt">Inl</span> (t, t&#39;)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>distL (t, <span class="dt">Inr</span> t&#39;) <span class="ot">=</span> <span class="dt">Inr</span> (t, t&#39;)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>distL&#39; (<span class="dt">Inl</span> (t, t&#39;)) <span class="ot">=</span> (t, <span class="dt">Inl</span> t&#39;)</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>distL&#39; (<span class="dt">Inr</span> (t, t&#39;)) <span class="ot">=</span> (t, <span class="dt">Inr</span> t&#39;)</span></code></pre></div>
+</section>
+<section id="coercions-32" class="slide level1">
+<h1>Coercions</h1>
+<ul>
+<li><span class="math inline">\(\textrm{distR} : (e_1 + e_2)e_3 \equiv (e_1\,e_3) + (e_2\,e_3)\)</span></li>
+</ul>
+<div class="sourceCode" id="cb19"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>distR (<span class="dt">Inl</span> t, t&#39;) <span class="ot">=</span> <span class="dt">Inl</span> (t, t&#39;)</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>distR (<span class="dt">Inr</span> t, t&#39;) <span class="ot">=</span> <span class="dt">Inr</span> (t, t&#39;)</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>distR&#39; (<span class="dt">Inl</span> (t, t&#39;)) <span class="ot">=</span> (<span class="dt">Inl</span> t, t&#39;)</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>distR&#39; (<span class="dt">Inr</span> (t, t&#39;)) <span class="ot">=</span> (<span class="dt">Inr</span> t, t&#39;)</span></code></pre></div>
+</section>
+<section id="coercions-33" class="slide level1">
+<h1>Coercions</h1>
+<ul>
+<li><span class="math inline">\(\textrm{wrap} : \lambda + ee^* \equiv e^*\)</span></li>
+</ul>
+<div class="sourceCode" id="cb20"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>wrap t <span class="ot">=</span> toList t</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>wrap&#39; [] <span class="ot">=</span> ()</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>wrap&#39; (t <span class="op">:</span> ts) <span class="ot">=</span> (t, wrap&#39; ts)</span></code></pre></div>
+</section>
+<section id="coercions-34" class="slide level1">
+<h1>Coercions</h1>
+<ul>
+<li>Composição</li>
+</ul>
+<div class="sourceCode" id="cb21"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>(c ; d) t <span class="ot">=</span> d (c t)</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>(c <span class="op">+</span> d) (<span class="dt">Inl</span> t) <span class="ot">=</span> <span class="dt">Inl</span> (c t)</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>(c <span class="op">+</span> d) (<span class="dt">Inr</span> t) <span class="ot">=</span> <span class="dt">Inr</span> (d t)</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>(c <span class="op">*</span> d) (t, t&#39;) <span class="ot">=</span> (c t, d t&#39;)</span></code></pre></div>
+</section>
+<section id="coercions-35" class="slide level1">
+<h1>Coercions</h1>
+<ul>
+<li>Ponto-fixo</li>
+</ul>
+<p><span class="math display">\[
+(\textrm{fix }f.c)\: t = ([f \mapsto \textrm{fix }f. c]\,c)\,t 
+\]</span></p>
+</section>
+<section id="coercions-36" class="slide level1">
+<h1>Coercions</h1>
+<ul>
+<li>Coerções que atendem a restrição sobre a regra de co-indução são corretas e completas.
+<ul>
+<li>São capazes de provar todas as equivalências sobre expressões regulares.</li>
+</ul></li>
+</ul>
+</section>
+<section id="coercions-37" class="slide level1">
+<h1>Coercions</h1>
+<ul>
+<li>Usando a interpretação computacional, conseguimos converter árvores de parsing entre expressões equivalentes.</li>
+</ul>
+</section>
+<section id="exercício" class="slide level1">
+<h1>Exercício</h1>
+<ul>
+<li>Prove, por indução, a seguinte propriedade: Se <span class="math inline">\(\vdash e : t\)</span> então <code>code t e = bs</code> e <code>decode bs e = t</code>.</li>
+</ul>
+</section>
+<section id="referências" class="slide level1">
+<h1>Referências</h1>
+<p>Henglein, Fritz; Nielsen, Lasse. Regular Expression Containment: Coinductive Axiomatization and Computational Interpretation.</p>
+</section>
+    </div>
+  </div>
+
+  <script src="../revealjs/dist/reveal.js"></script>
+
+  <!-- reveal.js plugins -->
+  <script src="../revealjs/plugin/notes/notes.js"></script>
+  <script src="../revealjs/plugin/search/search.js"></script>
+  <script src="../revealjs/plugin/zoom/zoom.js"></script>
+  <script src="../revealjs/plugin/math/math.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+      
+        // Push each slide change to the browser history
+        history: true,
+        math: {
+          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // reveal.js plugins
+        plugins: [
+          RevealMath,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    </body>
+</html>
