@@ -191,12 +191,112 @@ decode bs e = let (t,bs') = decode' bs e
 Parsing
 =======
 
+- Para construção de árvores de parsing baseadas em bits, vamos 
+modificar a sintaxe de expressões regulares para armazenar códigos
+de bits.
+
+$$
+ri \to \emptyset \,|\, bs@\lambda \,|\, bs@ a \,|\, bs@ ri + ri \,|\, bs@ ri\:\:ri \,|\, bs@ ri^*
+$$
+
+Parsing
+=======
+
+- Função fuse: concatena uma sequência de bits em uma expressão anotada.
+
+```haskell
+fuse bs Empty = Empty
+fuse bs (p @ Lambda) = (bs ++ p) @ Lambda
+fuse bs (p @ (Chr a)) = (bs ++ p) @ (Chr a)
+fuse bs (p @ (e1 :+: e2)) = (bs ++ p) @ (e1 :+: e2)
+fuse bs (p @ (e1 :@: e2)) = (bs ++ p) @ (e1 :@: e2)
+fuse bs (p @ (Star e)) = (bs ++ p) @ (Star e)
+```
+
+Parsing
+=======
+
+- Função internalize: convertendo uma RE em uma expressão anotada.
+
+```haskell
+internalize Empty = Empty
+internalize Lambda = [] @ Lambda
+internalize (Chr a) = [] @ (Chr a)
+internalize (e1 :+: e2) 
+    = let r1 = fuse [0] (internalize e1)
+          r2 = fuse [1] (internalize e2)
+      in []@(r1 :+: r2)
+internalize (e1 :@: e2)
+    = []@(internalize e1) :@: (internalize e2)
+internalize (Star e1)
+    = []@ (Star (internalize e1))
+```
+
+Parsing
+=======
+
+- Criando código para uma árvore de $\lambda$.
+
+```haskell
+mkEpsBC (bs @ Lambda) = bs
+mkEpsBC (bs @ (e1 :+: e2))
+    | null e1 = bs ++ mkEpsBC e1
+    | null e2 = bs ++ mkEpsBC e2
+mkEpsBC (bs @ (e1 :@: e2))
+    = bs ++ mkEpsBC e1 ++ mkEpsBC e2
+mkEpsBC (bs @(Star e))
+    = bs ++ [1]
+```
+
+Parsing
+=======
+
+- Modificando o cálculo de derivada
+
+```haskell
+bderiv Empty _ = Empty
+bderiv (bs @ Lambda) _ = Empty
+bderiv (bs @(Chr a)) b 
+    | a == b = bs @ Lambda
+    | otherwise = Empty
+bderiv (bs@(e1 :+: e2)) a
+    = bs@((bderiv e1 a) :+: (bderiv e2 a))
+```
+
+Parsing
+=======
+
+- Modificando o cálculo de derivada
+
+```haskell
+bderiv (bs@ (e1 :@: e2)) b
+    | null e1 = (bs @ ((bderiv e1 b) :@: e2)) :+:
+                (fuse (mkEpsBC e1) (bderiv e2 b))
+    | otherwise = bs @ ((bderiv e1 b) :@: e2)
+bderiv (bs@ (Star e)) b
+    = bs@ (fuse [0] (bderiv e b)) :@: ([]@ (Star e)) 
+```
+
+Parsing
+=======
+
+- A função de parsing.
+
+```haskell
+parse e []
+    | null e = mkEpsBC e
+parse e (x : xs) = parse (bderiv e x) xs
+```
+
+Parsing
+=======
+
 - Propriedade: Se $\vdash e : t$ então `code t e = bs` e `decode bs e = Just t`.
 
 Coercions
 =========
 
-- Se temos que $e \equiv e'$ e $\vdash t : e$ como obter uma árvore 
+- Se $e \equiv e'$ e $\vdash t : e$ como obter uma árvore 
 $t'$ tal que $\vdash t' : e'$ e $|t| = |t'|$?
 
 Coercions
@@ -600,5 +700,7 @@ Exercício
 Referências
 ===========
 
-Henglein, Fritz; Nielsen, Lasse. Regular Expression Containment:
+- Henglein, Fritz; Nielsen, Lasse. Regular Expression Containment:
 Coinductive Axiomatization and Computational Interpretation.
+
+- Sulzmann, Martin; Lu, Kenny. POSIX regular expression parsing with derivatives.
