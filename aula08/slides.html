@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="PCC102 - Teoria da Computação - Prof. Rodrigo Ribeiro">
+  <title>Minimização</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../revealjs/dist/reset.css">
+  <link rel="stylesheet" href="../revealjs/dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../revealjs/dist/theme/white.css" id="theme">
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">Minimização</h1>
+  <p class="author">PCC102 - Teoria da Computação - Prof. Rodrigo Ribeiro</p>
+</section>
+
+<section id="objetivos" class="slide level1">
+<h1>Objetivos</h1>
+<ul>
+<li><p>Apresentar o algoritmo de Brzozowski de minimização de AFDs e sua correção.</p></li>
+<li><p>Apresentar um algoritmo de minimização para AFNs.</p></li>
+</ul>
+</section>
+<section id="revisão" class="slide level1">
+<h1>Revisão</h1>
+<ul>
+<li><p>Antes de apresentar o algoritmo de Brzozowski, devemos revisar algumas construções sobre AFs.</p></li>
+<li><p>Seja <span class="math inline">\(M=(E,\Sigma,\delta,i,F)\)</span> um AFD que aceita <span class="math inline">\(L(M)\)</span></p></li>
+</ul>
+</section>
+<section id="revisão-1" class="slide level1">
+<h1>Revisão</h1>
+<ul>
+<li>O AFN <span class="math inline">\(M&#39; = (E,\Sigma,\delta&#39;,F,\{i\})\)</span> aceita <span class="math inline">\(L(M)^{R}\)</span>.
+<ul>
+<li><span class="math inline">\(\delta&#39;(e&#39;,a) = \{e \in E\,|\,\delta(e,a) = e&#39;\}\)</span>.</li>
+</ul></li>
+</ul>
+</section>
+<section id="revisão-2" class="slide level1">
+<h1>Revisão</h1>
+<ul>
+<li>Seja <span class="math inline">\(M = (E,\Sigma,\delta,I,F)\)</span> um <span class="math inline">\(AFN\)</span> que aceita <span class="math inline">\(L(M)\)</span>.</li>
+</ul>
+</section>
+<section id="revisão-3" class="slide level1">
+<h1>Revisão</h1>
+<ul>
+<li>O AFD <span class="math inline">\(M&#39; = (\mathcal{P}(E),\Sigma,\delta&#39;,i,F&#39;)\)</span> aceita <span class="math inline">\(L(M)\)</span>:
+<ul>
+<li><span class="math inline">\(\delta&#39;(X,a) = \bigcup_{e\in X}\delta(e,a)\)</span></li>
+<li><span class="math inline">\(i = I\)</span></li>
+<li><span class="math inline">\(F&#39; = \{X \in\mathcal{P}(E)\,|,X \cap F \neq \emptyset\}\)</span>.</li>
+</ul></li>
+</ul>
+</section>
+<section id="brzozowski" class="slide level1">
+<h1>Brzozowski</h1>
+<ul>
+<li>O algoritmo de Brzozowski
+<ul>
+<li><code>rev</code>: Construção de reverso.</li>
+<li><code>determ</code>: Construção de um AFD a partir de um AFN.</li>
+</ul></li>
+</ul>
+<div class="sourceCode" id="cb1"><pre class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>minimize <span class="ot">=</span> determ <span class="op">.</span> rev <span class="op">.</span> determ <span class="op">.</span> rev</span></code></pre></div>
+</section>
+<section id="brzozowski-1" class="slide level1">
+<h1>Brzozowski</h1>
+<ul>
+<li>Exemplo</li>
+</ul>
+<p><img data-src="/Users/rodrigo/Documents/aulas/2021-1/teoria/slides/aula08/435c301515f94fccdeeaea6488898b3f65d5fe8c.svg" /></p>
+</section>
+<section id="brzozowski-2" class="slide level1">
+<h1>Brzozowski</h1>
+<ul>
+<li>Aplicando a construção de reverso.</li>
+</ul>
+<p><img data-src="/Users/rodrigo/Documents/aulas/2021-1/teoria/slides/aula08/540e8e44eb8a44ab6932a4b649711c28cabbc58a.svg" /></p>
+</section>
+<section id="brzozowski-3" class="slide level1">
+<h1>Brzozowski</h1>
+<ul>
+<li>Convertendo para um AFD.
+<ul>
+<li><span class="math inline">\(A = \{q_2,q_3\}\)</span>.</li>
+<li><span class="math inline">\(B = \{q_1,q_2,q_3\}\)</span>.</li>
+</ul></li>
+</ul>
+<p><img data-src="/Users/rodrigo/Documents/aulas/2021-1/teoria/slides/aula08/5d690b6f7ded1fa86ef4c9bf4a40976de4c102c2.svg" /></p>
+</section>
+<section id="brzozowski-4" class="slide level1">
+<h1>Brzozowski</h1>
+<ul>
+<li>Construção de reverso.
+<ul>
+<li><span class="math inline">\(A = \{q_2,q_3\}\)</span>.</li>
+<li><span class="math inline">\(B = \{q_1,q_2,q_3\}\)</span>.</li>
+</ul></li>
+</ul>
+<p><img data-src="/Users/rodrigo/Documents/aulas/2021-1/teoria/slides/aula08/7e3f7cf7c60b56ac51d159167aec0660bc866618.svg" /></p>
+</section>
+<section id="brzozowski-5" class="slide level1">
+<h1>Brzozowski</h1>
+<ul>
+<li>Convertendo em um AFD.
+<ul>
+<li><span class="math inline">\(A = \{q_2,q_3\}\)</span>.</li>
+<li><span class="math inline">\(B = \{q_1,q_2,q_3\}\)</span>.</li>
+<li><span class="math inline">\(C = \{B\}\)</span></li>
+<li><span class="math inline">\(D = \{A,B\}\)</span></li>
+</ul></li>
+</ul>
+<p><img data-src="/Users/rodrigo/Documents/aulas/2021-1/teoria/slides/aula08/8b759e0495ae4c86d0290cab5153145ee31b8969.svg" /></p>
+</section>
+<section id="brzozowski-6" class="slide level1">
+<h1>Brzozowski</h1>
+<ul>
+<li><p>A correção do algoritmo de Brzozowski é consequência do seguinte resultado.</p></li>
+<li><p>Seja <span class="math inline">\(M=(E,\Sigma,\delta,i,F)\)</span> um AFD para <span class="math inline">\(L\)</span> sem estados inalcançáveis a partir de <span class="math inline">\(i\)</span>. Então, <span class="math inline">\(determ(rev(M))\)</span> é o AFD mínimo para <span class="math inline">\(L^R\)</span>.</p></li>
+</ul>
+</section>
+<section id="brzozowski-7" class="slide level1">
+<h1>Brzozowski</h1>
+<ul>
+<li><p>Seja <span class="math inline">\(M^R = (E, \Sigma, \delta&#39;, F, \{i\})\)</span> o resultado de <span class="math inline">\(rev\:M\)</span>.</p></li>
+<li><p>Seja <span class="math inline">\(N = (E_N, \Sigma, \delta_N, i_N, F_N)\)</span> o resultado de <span class="math inline">\(determ\:M^R\)</span>.</p></li>
+</ul>
+</section>
+<section id="brzozowski-8" class="slide level1">
+<h1>Brzozowski</h1>
+<ul>
+<li>Para mostrar que <span class="math inline">\(N\)</span> é mínimo basta mostrar que <span class="math inline">\(N\)</span> não possui estados equivalentes.</li>
+</ul>
+</section>
+<section id="brzozowski-9" class="slide level1">
+<h1>Brzozowski</h1>
+<ul>
+<li>Para isso, suponha <span class="math inline">\(A,B \in E_N\)</span> e que <span class="math inline">\(A\)</span> é equivalente a <span class="math inline">\(B\)</span>
+<ul>
+<li><span class="math inline">\(A,B\)</span> correspondem a conjuntos de estados em <span class="math inline">\(M^R\)</span>.</li>
+<li>Vamos mostrar que <span class="math inline">\(A = B\)</span>.</li>
+</ul></li>
+</ul>
+</section>
+<section id="brzozowski-10" class="slide level1">
+<h1>Brzozowski</h1>
+<ul>
+<li><p>Suponha <span class="math inline">\(e \in A\)</span>. Como todo estado de <span class="math inline">\(M\)</span> é alcançável a partir de <span class="math inline">\(i\)</span>, temos que existe <span class="math inline">\(w\)</span> tal que <span class="math inline">\(\widehat{\delta}(i,w) = e\)</span>.</p></li>
+<li><p>Logo, <span class="math inline">\(i \in \widehat{\delta}&#39;(e,w^R)\)</span>.</p></li>
+<li><p>Portanto, <span class="math inline">\(\widehat{\delta}_N(A,w^R) \in F_N\)</span>.</p></li>
+</ul>
+</section>
+<section id="brzozowski-11" class="slide level1">
+<h1>Brzozowski</h1>
+<ul>
+<li><p>Como <span class="math inline">\(A\)</span> é equivalente a <span class="math inline">\(B\)</span>, temos que <span class="math inline">\(\widehat{\delta}_N(B,w^R) \in F_N\)</span>.</p></li>
+<li><p>Logo, existe <span class="math inline">\(e&#39; \in B\)</span> tal que <span class="math inline">\(i \in \widehat{\delta}&#39;(e&#39;,w^R)\)</span> em <span class="math inline">\(M^R\)</span>.</p></li>
+<li><p>Portanto, <span class="math inline">\(e&#39; = \widehat{\delta}(i,w)\)</span> em <span class="math inline">\(M\)</span>.</p></li>
+</ul>
+</section>
+<section id="brzozowski-12" class="slide level1">
+<h1>Brzozowski</h1>
+<ul>
+<li>Como <span class="math inline">\(M\)</span> é um AFD e
+<ul>
+<li><span class="math inline">\(\widehat{\delta}(i,w) = e\)</span></li>
+<li><span class="math inline">\(\widehat{\delta}(i,w) = e&#39;\)</span></li>
+</ul></li>
+<li>Temos que que <span class="math inline">\(e = e&#39;\)</span>. Como <span class="math inline">\(e \in A\)</span> e <span class="math inline">\(e&#39; \in B\)</span> são arbitrários, temos que <span class="math inline">\(A = B\)</span>.</li>
+</ul>
+</section>
+<section id="brzozowski-13" class="slide level1">
+<h1>Brzozowski</h1>
+<ul>
+<li><p>Portanto, <span class="math inline">\(determ(rev(M))\)</span> é o AFD mínimo para <span class="math inline">\(L^R\)</span>.</p></li>
+<li><p>Podemos concluir que o algoritmo de Brzozowski produz um AFD mínimo aplicando o teorema anterior duas vezes.</p></li>
+</ul>
+</section>
+<section id="minimização-para-afn" class="slide level1">
+<h1>Minimização para AFN</h1>
+</section>
+<section id="minimização" class="slide level1">
+<h1>Minimização</h1>
+<ul>
+<li>Para minimizar AFNs é necessário nos valer do conceito de bissimulação.</li>
+</ul>
+</section>
+<section id="definições" class="slide level1">
+<h1>Definições</h1>
+<ul>
+<li>Considere os seguintes AFNs.
+<ul>
+<li><span class="math inline">\(M_1 = (E_1,\Sigma,\delta_1,I_1,F_1)\)</span></li>
+<li><span class="math inline">\(M_2 = (E_2,\Sigma,\delta_2,I_2,F_2)\)</span></li>
+</ul></li>
+<li>Seja <span class="math inline">\(\approx\)</span> uma relação entre <span class="math inline">\(E_1\)</span> e <span class="math inline">\(E_2\)</span>.</li>
+</ul>
+</section>
+<section id="definições-1" class="slide level1">
+<h1>Definições</h1>
+<ul>
+<li>Para <span class="math inline">\(B\subseteq E_2\)</span>, definimos:</li>
+</ul>
+<p><span class="math display">\[
+C_{\approx}(B) = \{e \in E_1\,|\, \exists e&#39; \in B. e \approx e&#39;\}
+\]</span></p>
+</section>
+<section id="definições-2" class="slide level1">
+<h1>Definições</h1>
+<ul>
+<li>Para <span class="math inline">\(A \subseteq E_1\)</span>, definimos:</li>
+</ul>
+<p><span class="math display">\[
+C_{\approx}(A) = \{e&#39; \in E_2\,|\, \exists e \in A. e \approx e&#39;\}
+\]</span></p>
+</section>
+<section id="definições-3" class="slide level1">
+<h1>Definições</h1>
+<ul>
+<li>Podemos estender a relação <span class="math inline">\(\approx\)</span> para conjuntos de estados.</li>
+</ul>
+<p><span class="math display">\[
+A \approx B = A \subseteq C_{\approx}(B) \land B \subseteq C_{\approx}(A)
+\]</span></p>
+</section>
+<section id="definições-4" class="slide level1">
+<h1>Definições</h1>
+<ul>
+<li>Dizemos que uma relação <span class="math inline">\(\approx\)</span> é uma bissimulação:
+<ol type="1">
+<li><span class="math inline">\(i_1 \approx i_2\)</span></li>
+<li>Se <span class="math inline">\(e_1 \approx e_2\)</span> então <span class="math inline">\(\forall a\in\Sigma. \delta_1(e_1,a)\approx\delta_2(e_2,a)\)</span></li>
+<li>Se <span class="math inline">\(e_1 \approx e_2\)</span> então <span class="math inline">\(e_1 \in F_1\)</span> sse <span class="math inline">\(e_2 \in F_2\)</span></li>
+</ol></li>
+</ul>
+</section>
+<section id="definições-5" class="slide level1">
+<h1>Definições</h1>
+<ul>
+<li><p>Dizemos que AFNs <span class="math inline">\(M_1\)</span> e <span class="math inline">\(M_2\)</span> são bissimilares se existe uma bissimulação entre eles.</p></li>
+<li><p>Mostraremos que AFNs bissimilares aceitam a mesma linguagem.</p></li>
+</ul>
+</section>
+<section id="propriedades" class="slide level1">
+<h1>Propriedades</h1>
+<ul>
+<li><p>Bissimulações são relações simétricas e transitivas.</p></li>
+<li><p>A união de qualquer família de bissimulações é uma bissimulação.</p></li>
+</ul>
+</section>
+<section id="propriedades-1" class="slide level1">
+<h1>Propriedades</h1>
+<ul>
+<li><p>Seja <span class="math inline">\(\approx\)</span> uma bissimulação entre dois AFNs <span class="math inline">\(M_1\)</span> e <span class="math inline">\(M_2\)</span>.</p></li>
+<li><p>Se <span class="math inline">\(A \approx B\)</span> então <span class="math inline">\(\widehat{\delta}_1(A,w)\approx\widehat{\delta}_2(B,w)\)</span>.</p></li>
+</ul>
+</section>
+<section id="propriedades-2" class="slide level1">
+<h1>Propriedades</h1>
+<ul>
+<li><p>Autômatos bissimilares aceitam a mesma linguagem.</p>
+<ul>
+<li><p>Suponha que <span class="math inline">\(\approx\)</span> é uma bissimulação de <span class="math inline">\(M_1\)</span> e <span class="math inline">\(M_2\)</span>.</p></li>
+<li><p>Temos então que <span class="math inline">\(\widehat{\delta}_1(I_1,w)\approx\widehat{\delta}_2(I_2,w)\)</span>.</p></li>
+</ul></li>
+</ul>
+</section>
+<section id="propriedades-3" class="slide level1">
+<h1>Propriedades</h1>
+<ul>
+<li>Como, <span class="math inline">\(\approx\)</span> é uma bissimulação (item 3) temos que
+<ul>
+<li><span class="math inline">\(\widehat{\delta}_1(I_1,w)\cap F_1 \neq \emptyset\)</span> sse <span class="math inline">\(\widehat{\delta}_2(I_2,w)\cap F_2 \neq \emptyset\)</span>.</li>
+</ul></li>
+</ul>
+</section>
+<section id="propriedades-4" class="slide level1">
+<h1>Propriedades</h1>
+<ul>
+<li>Pela def. de aceitação em AFN, temos que <span class="math inline">\(w \in L(M_1) \leftrightarrow w\in L(M_2)\)</span>.</li>
+</ul>
+</section>
+<section id="propriedades-5" class="slide level1">
+<h1>Propriedades</h1>
+<ul>
+<li>Como <span class="math inline">\(w\)</span> é arbitrário, temos que <span class="math inline">\(L(M_1) = L(M_2)\)</span>.</li>
+</ul>
+</section>
+<section id="definição" class="slide level1">
+<h1>Definição</h1>
+<ul>
+<li>Uma auto-bissimulação é uma bissimulação entre um autômato e si próprio.</li>
+</ul>
+</section>
+<section id="definição-1" class="slide level1">
+<h1>Definição</h1>
+<ul>
+<li><p>Seja <span class="math inline">\(\approx_M\)</span> uma auto-bissimulação maximal para um AFN <span class="math inline">\(M=(E,\Sigma,\delta,I,F)\)</span>.</p></li>
+<li><p>Definimos o AFN minimal <span class="math inline">\(M&#39; = (E&#39;,\Sigma,\delta&#39;,I&#39;,F&#39;)\)</span> em que:</p>
+<ul>
+<li><span class="math inline">\(E&#39; = \{[e]\,|\,e \in E\}\)</span></li>
+<li><span class="math inline">\(\delta&#39;([e],a) = [\delta(e,a)]\)</span></li>
+<li><span class="math inline">\(I&#39; = \{[i]\,|\,i\in I\}\)</span></li>
+<li><span class="math inline">\(F&#39; = \{[f]\,|\,f \in F\}\)</span></li>
+</ul></li>
+</ul>
+</section>
+<section id="minimização-1" class="slide level1">
+<h1>Minimização</h1>
+<ul>
+<li><p>Logo, o problema de minimizar um AFN consiste em determinar uma auto-bissimulação maximal.</p></li>
+<li><p>Apresentaremos um algoritmo capaz de calcular uma bissimulação entre dois AFNs</p>
+<ul>
+<li>Auto-bissimulação: considerar o mesmo AFN</li>
+</ul></li>
+</ul>
+</section>
+<section id="algoritmo" class="slide level1">
+<h1>Algoritmo</h1>
+<ol type="1">
+<li><p>Escrever uma tabela de estados em que todas as entradas estão não marcadas.</p></li>
+<li><p>Marcar pares de estados <span class="math inline">\(e \in F_1\)</span> e <span class="math inline">\(e&#39; \not\in F_2\)</span> ou vice-versa.</p></li>
+</ol>
+</section>
+<section id="algoritmo-1" class="slide level1">
+<h1>Algoritmo</h1>
+<ol start="3" type="1">
+<li>Repetir - marque a entrada <span class="math inline">\((e,e&#39;)\)</span>:
+<ul>
+<li>Existe <span class="math inline">\(e_1 \in \delta_1(e,a)\)</span> para todo <span class="math inline">\(e_2 \in \delta_2(e&#39;,a)\)</span> em que <span class="math inline">\((e_1,e_2)\)</span> está marcado ; ou</li>
+<li>Existe <span class="math inline">\(e_2 \in \delta_2(e&#39;,a)\)</span> para todo <span class="math inline">\(e_1 \in \delta_1(e,a)\)</span> em que <span class="math inline">\((e_2,e_1)\)</span> está marcado.</li>
+</ul></li>
+</ol>
+</section>
+<section id="algoritmo-2" class="slide level1">
+<h1>Algoritmo</h1>
+<ol start="4" type="1">
+<li><p>Temos que <span class="math inline">\(e \approx e&#39;\)</span> se a entrada <span class="math inline">\((e,e&#39;)\)</span> não está marcada.</p></li>
+<li><p>Se <span class="math inline">\(I_1 \approx I_2\)</span> então existe bissimulação. Caso contrário, não.</p>
+<ul>
+<li>Note que <span class="math inline">\(\approx\)</span> é reflexiva, logo a existência da auto-bissimulação é garantida.</li>
+</ul></li>
+</ol>
+</section>
+<section id="exemplo" class="slide level1">
+<h1>Exemplo</h1>
+<ul>
+<li>Encontrar a auto-bissimulação para:</li>
+</ul>
+<p><img data-src="/Users/rodrigo/Documents/aulas/2021-1/teoria/slides/aula08/919ed977e1883775c5513c3e4c204e1ca90cadbf.svg" /></p>
+</section>
+<section id="exemplo-1" class="slide level1">
+<h1>Exemplo</h1>
+<ol type="1">
+<li>Escrever uma tabela de estados em que todas as entradas estão não marcadas.</li>
+</ol>
+<p><span class="math display">\[
+\begin{array}{c|c|c|c}
+   &amp; A &amp; B &amp; C \\ \hline
+ A &amp;   &amp;   &amp;   \\ \hline 
+ B &amp;   &amp;   &amp;   \\ \hline
+ C &amp;   &amp;   &amp;   \\ 
+\end{array}
+\]</span></p>
+</section>
+<section id="exemplo-2" class="slide level1">
+<h1>Exemplo</h1>
+<ol start="2" type="1">
+<li>Marcar pares de estados <span class="math inline">\(e \in F\)</span> e <span class="math inline">\(e&#39; \not\in F\)</span> ou vice-versa.</li>
+</ol>
+<p><span class="math display">\[
+\begin{array}{c|c|c|c}
+   &amp; A &amp; B &amp; C \\ \hline
+ A &amp;   &amp;   &amp; X \\ \hline 
+ B &amp;   &amp;   &amp; X \\ \hline
+ C &amp; X &amp; X &amp;   \\ 
+\end{array}
+\]</span></p>
+</section>
+<section id="exemplo-3" class="slide level1">
+<h1>Exemplo</h1>
+<ol start="3" type="1">
+<li>Se existe <span class="math inline">\(e_1 \in \delta_1(e,a)\)</span> para todo <span class="math inline">\(e_2 \in \delta_2(e&#39;,a)\)</span> em que <span class="math inline">\((e_1,e_2)\)</span> está marcado. Marcamos <span class="math inline">\((e,e&#39;)\)</span>.
+<ul>
+<li>Considerando <span class="math inline">\(e = C\)</span>, temos que <span class="math inline">\(\delta_1(e,a) = \emptyset\)</span>.</li>
+</ul></li>
+</ol>
+<p><span class="math display">\[
+\begin{array}{c|c|c|c}
+   &amp; A &amp; B &amp; C \\ \hline
+ A &amp;   &amp;   &amp; X \\ \hline 
+ B &amp;   &amp;   &amp; X \\ \hline
+ C &amp; X &amp; X &amp;   \\ 
+\end{array}
+\]</span></p>
+</section>
+<section id="exemplo-4" class="slide level1">
+<h1>Exemplo</h1>
+<ol start="3" type="1">
+<li>Se existe <span class="math inline">\(e_1 \in \delta_1(e,a)\)</span> para todo <span class="math inline">\(e_2 \in \delta_2(e&#39;,a)\)</span> em que <span class="math inline">\((e_1,e_2)\)</span> está marcado. Marcamos <span class="math inline">\((e,e&#39;)\)</span>.
+<ul>
+<li>Considerando <span class="math inline">\(e&#39; = C\)</span>, temos que <span class="math inline">\(\delta_2(e,a) = \emptyset\)</span>.</li>
+</ul></li>
+</ol>
+<p><span class="math display">\[
+\begin{array}{c|c|c|c}
+   &amp; A &amp; B &amp; C \\ \hline
+ A &amp;   &amp;   &amp; X \\ \hline 
+ B &amp;   &amp;   &amp; X \\ \hline
+ C &amp; X &amp; X &amp;   \\ 
+\end{array}
+\]</span></p>
+</section>
+<section id="exemplo-5" class="slide level1">
+<h1>Exemplo</h1>
+<ol start="3" type="1">
+<li>Se existe <span class="math inline">\(e_1 \in \delta_1(e,a)\)</span> para todo <span class="math inline">\(e_2 \in \delta_2(e&#39;,a)\)</span> em que <span class="math inline">\((e_1,e_2)\)</span> está marcado. Marcamos <span class="math inline">\((e,e&#39;)\)</span>.
+<ul>
+<li>Considerando <span class="math inline">\(e = A\)</span>, temos que <span class="math inline">\(\delta_1(e,0) = \{A,B\}\)</span>.</li>
+</ul></li>
+</ol>
+</section>
+<section id="exemplo-6" class="slide level1">
+<h1>Exemplo</h1>
+<ol start="3" type="1">
+<li>Se existe <span class="math inline">\(e_1 \in \delta_1(e,a)\)</span> para todo <span class="math inline">\(e_2 \in \delta_2(e&#39;,a)\)</span> em que <span class="math inline">\((e_1,e_2)\)</span> está marcado. Marcamos <span class="math inline">\((e,e&#39;)\)</span>.
+<ul>
+<li>Considerando <span class="math inline">\(e = A\)</span>, temos que <span class="math inline">\(\delta_1(e,1) = \{A\}\)</span>.</li>
+<li>Considerando <span class="math inline">\(e&#39; = B\)</span>, temos que <span class="math inline">\(\delta_2(e&#39;,a) = \{C\}\)</span></li>
+</ul></li>
+</ol>
+</section>
+<section id="exemplo-7" class="slide level1">
+<h1>Exemplo</h1>
+<ul>
+<li>Como as entradas <span class="math inline">\((A,C)\)</span> e <span class="math inline">\((B,C)\)</span> estão marcadas, devemos marcar <span class="math inline">\((A,B)\)</span> e <span class="math inline">\((B,A)\)</span>.</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{c|c|c|c}
+   &amp; A &amp; B &amp; C \\ \hline
+ A &amp;   &amp; X &amp; X \\ \hline 
+ B &amp; X &amp;   &amp; X \\ \hline
+ C &amp; X &amp; X &amp;   \\ 
+\end{array}
+\]</span></p>
+</section>
+<section id="exemplo-8" class="slide level1">
+<h1>Exemplo</h1>
+<ul>
+<li>Logo, o AFN é minimal para a linguagem.</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{c|c|c|c}
+   &amp; A &amp; B &amp; C \\ \hline
+ A &amp;   &amp; X &amp; X \\ \hline 
+ B &amp; X &amp;   &amp; X \\ \hline
+ C &amp; X &amp; X &amp;   \\ 
+\end{array}
+\]</span></p>
+</section>
+<section id="exercício" class="slide level1">
+<h1>Exercício</h1>
+<ul>
+<li>AFNs produzidos pela minimização são minimais e não mínimos. Logo, pode existir dois ou mais AFNs diferentes para a mesma linguagem. Apresente um exemplo de AFNs minimais diferentes que aceitam a mesma linguagem.</li>
+</ul>
+</section>
+    </div>
+  </div>
+
+  <script src="../revealjs/dist/reveal.js"></script>
+
+  <!-- reveal.js plugins -->
+  <script src="../revealjs/plugin/notes/notes.js"></script>
+  <script src="../revealjs/plugin/search/search.js"></script>
+  <script src="../revealjs/plugin/zoom/zoom.js"></script>
+  <script src="../revealjs/plugin/math/math.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+      
+        // Push each slide change to the browser history
+        history: true,
+        math: {
+          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // reveal.js plugins
+        plugins: [
+          RevealMath,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    </body>
+</html>
