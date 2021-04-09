@@ -433,3 +433,8 @@ Exercício
 =========
 
 - Prove que a relação $\equiv A$ atende as propriedades 1 e 2.
+
+Referência
+==========
+
+- Kozen, Dexter. Automata and Computability.

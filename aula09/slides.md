@@ -484,9 +484,3 @@ Exercício
 pode existir dois ou mais AFNs diferentes para a mesma linguagem. 
 Apresente um exemplo de AFNs minimais diferentes que aceitam a mesma 
 linguagem.
-
-
-Referências
-===========
-
-- Kozen, Dexter. Automata and Computability.
