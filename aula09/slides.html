@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="PCC102 - Teoria da Computação - Prof. Rodrigo Ribeiro">
+  <title>Derivadas parciais</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../revealjs/dist/reset.css">
+  <link rel="stylesheet" href="../revealjs/dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+  </style>
+  <link rel="stylesheet" href="../revealjs/dist/theme/white.css" id="theme">
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">Derivadas parciais</h1>
+  <p class="author">PCC102 - Teoria da Computação - Prof. Rodrigo Ribeiro</p>
+</section>
+
+<section id="objetivos" class="slide level1">
+<h1>Objetivos</h1>
+<ul>
+<li><p>Apresentar o conceito de derivada parcial para expressões regulares.</p></li>
+<li><p>Mostrar como obter um AFN para uma expressão regular usando derivadas parciais</p></li>
+</ul>
+</section>
+<section id="objetivos-1" class="slide level1">
+<h1>Objetivos</h1>
+<ul>
+<li>Apresentar um algoritmo de casamento usando derivadas parciais.</li>
+</ul>
+</section>
+<section id="derivadas" class="slide level1">
+<h1>Derivadas</h1>
+<ul>
+<li>Anteriormente vimos como derivadas de Brzozowski podem ser usadas para criar um AFD a partir de uma RE.</li>
+</ul>
+</section>
+<section id="derivadas-1" class="slide level1">
+<h1>Derivadas</h1>
+<ul>
+<li>As derivadas parciais foram criadas por Antimirov para criar AFNs sem transições <span class="math inline">\(\lambda\)</span> a partir de uma RE.</li>
+</ul>
+</section>
+<section id="derivadas-2" class="slide level1">
+<h1>Derivadas</h1>
+<ul>
+<li>Intuitivamente, <span class="math inline">\(\nabla_a(e)\)</span> denota o conjunto de expressões regulares obtidas ao processar o símbolo <span class="math inline">\(a\)</span>.</li>
+</ul>
+</section>
+<section id="derivadas-3" class="slide level1">
+<h1>Derivadas</h1>
+<ul>
+<li>Assim como as derivadas de Brzozowski, as derivadas parciais também utilizam a função <span class="math inline">\(\nu(e)\)</span> que retorna <span class="math inline">\(\lambda\)</span> se <span class="math inline">\(\lambda \in[\![e]\!]\)</span> e <span class="math inline">\(\emptyset\)</span>, caso contrário.</li>
+</ul>
+</section>
+<section id="derivadas-4" class="slide level1">
+<h1>Derivadas</h1>
+<ul>
+<li>A definição de derivada parcial usa a seguinte operação.</li>
+</ul>
+<p><span class="math display">\[
+S \odot e&#39; = \{e ∙ e&#39;\,\mid\, e \in S\}
+\]</span></p>
+</section>
+<section id="derivadas-5" class="slide level1">
+<h1>Derivadas</h1>
+<ul>
+<li>Definição de derivada parcial.</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{lclr}
+  \nabla_a(\emptyset) &amp; = &amp; \emptyset\\
+  \nabla_a(\lambda) &amp; = &amp; \emptyset \\
+  \nabla_a(b) &amp; = &amp; \left\{
+                      \begin{array}{lr}
+                        \{\lambda\} &amp; \text{se } b = a\\
+                        \emptyset &amp; \text{caso contrário}
+                      \end{array}
+                                \right.\\
+\end{array}
+\]</span></p>
+</section>
+<section id="derivadas-6" class="slide level1">
+<h1>Derivadas</h1>
+<ul>
+<li>Definição de derivada parcial.</li>
+</ul>
+<p><span class="math display">\[
+  \begin{array}{lclr}
+    \nabla_a(e\:e&#39;) &amp; = &amp; \left \{
+                           \begin{array}{lr}
+                              \nabla_a(e) \odot e&#39; \cup \nabla_a(e&#39;) &amp; \text{se }\nu(e) = \lambda \\
+                              \nabla_a(e) \odot e&#39; &amp; \text{caso contrário} \\
+                           \end{array} \right . \\
+  \end{array}
+\]</span></p>
+</section>
+<section id="derivadas-7" class="slide level1">
+<h1>Derivadas</h1>
+<ul>
+<li>Definição de derivada parcial.</li>
+</ul>
+<p><span class="math display">\[
+  \begin{array}{lclr}
+    \nabla_a(e + e&#39;) &amp; = &amp; \nabla_a(e) \cup \nabla_a(e&#39;) \\
+    \nabla_a(e^\star) &amp; = &amp; \nabla_a(e) \odot e^\star\\
+  \end{array}
+\]</span></p>
+</section>
+<section id="derivadas-8" class="slide level1">
+<h1>Derivadas</h1>
+<ul>
+<li>Correção: <span class="math inline">\(w \in[\![\nabla_a(e)]\!]\)</span> se e somente se <span class="math inline">\(aw\in[\![e]\!]\)</span>.</li>
+<li>Demonstração: Indução sobre a estrutura de <span class="math inline">\(e\)</span>.</li>
+</ul>
+</section>
+<section id="matching" class="slide level1">
+<h1>Matching</h1>
+<ul>
+<li>O algoritmo de matching pode ser adaptado de maneira imediata.</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{lcl}
+   \nabla^*(S,\lambda) &amp; = &amp; \exists e \in S. \nu(e) = \lambda \\
+   \nabla^*(S,aw)      &amp; = &amp; \nabla^*(\bigcup_{e \in S}\nabla(e,a),w) \\
+\end{array}
+\]</span></p>
+</section>
+<section id="conversão-em-nfa" class="slide level1">
+<h1>Conversão em NFA</h1>
+<ul>
+<li>Seja <span class="math inline">\(\mathcal{D}(e)\)</span> o conjunto de derivadas parciais para uma RE.
+<ul>
+<li>Esse conjunto é finito.</li>
+</ul></li>
+</ul>
+</section>
+<section id="conversão-em-nfa-1" class="slide level1">
+<h1>Conversão em NFA</h1>
+<ul>
+<li><span class="math inline">\(M=(\mathcal{D}(e),\Sigma,\delta,I,F)\)</span>
+<ul>
+<li><span class="math inline">\(\delta(e&#39;,a)=\nabla_a(e&#39;)\)</span>.</li>
+<li><span class="math inline">\(I = \{e\}\)</span></li>
+<li><span class="math inline">\(F=\{e&#39;\,|\, \nu(e&#39;) = \lambda\}\)</span></li>
+</ul></li>
+</ul>
+</section>
+<section id="conversão-em-nfa-2" class="slide level1">
+<h1>Conversão em NFA</h1>
+<ul>
+<li>O AFNs produzido usando derivadas parciais possui no máximo <span class="math inline">\(\varphi(e) + 1\)</span> estamos.
+<ul>
+<li><span class="math inline">\(\varphi(e)\)</span> é o número de símbolos do alfabeto em <span class="math inline">\(e\)</span>.</li>
+</ul></li>
+</ul>
+</section>
+<section id="exemplo" class="slide level1">
+<h1>Exemplo</h1>
+<ul>
+<li>Construir um AFN para <span class="math inline">\(e = aa^* +ab^*\)</span>.</li>
+</ul>
+<p><img data-src="/Users/rodrigo/Documents/aulas/2021-1/teoria/slides/aula09/7d3268c170e3ec2c286914b28be1978b509017c9.svg" /></p>
+</section>
+<section id="exemplo-1" class="slide level1">
+<h1>Exemplo</h1>
+<ul>
+<li>Construir um AFN para <span class="math inline">\(e = aa^* +ab^*\)</span>.</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{lc}
+\nabla_a(aa^* + ab^*) &amp; = \\
+\nabla_a(aa^*) \cup \nabla_a(ab^*) &amp; = \\
+\nabla_a(a)\odot a^* \cup \nabla_a(a) \odot b^* &amp; =\\ 
+\{\lambda\} \odot a^* \cup \{\lambda\}\odot b^* &amp; = \\
+\{a^*, b^*\}
+\end{array}
+\]</span></p>
+</section>
+<section id="exemplo-2" class="slide level1">
+<h1>Exemplo</h1>
+<ul>
+<li><span class="math inline">\(e_1 = \{a^*, b^*\}\)</span>.</li>
+</ul>
+<p><img data-src="/Users/rodrigo/Documents/aulas/2021-1/teoria/slides/aula09/61fe73682abacb995e7fa07c21074d7b88e90176.svg" /></p>
+</section>
+<section id="exemplo-3" class="slide level1">
+<h1>Exemplo</h1>
+<ul>
+<li>Construir um AFN para <span class="math inline">\(e = aa^* +ab^*\)</span>.</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{lc}
+\nabla_b(aa^* + ab^*) &amp; = \\
+\nabla_b(aa^*) \cup \nabla_a(ab^*) &amp; = \\
+\nabla_b(a)\odot a^* \cup \nabla_b(a) \odot b^* &amp; =\\ 
+\emptyset \odot a^* \cup \emptyset\odot b^* &amp; = \\
+\emptyset
+\end{array}
+\]</span></p>
+</section>
+<section id="exemplo-4" class="slide level1">
+<h1>Exemplo</h1>
+<ul>
+<li>Adicionando estados para <span class="math inline">\(\{a^*,b^*\}\)</span>.</li>
+</ul>
+<p><img data-src="/Users/rodrigo/Documents/aulas/2021-1/teoria/slides/aula09/3676f218b535192f820bee10021f8bf38dc94e2c.svg" /></p>
+</section>
+<section id="exemplo-5" class="slide level1">
+<h1>Exemplo</h1>
+<p><span class="math display">\[
+\begin{array}{lcl}
+\nabla_a(a^*) &amp; = &amp; \{a^*\} \\
+\nabla_a(b^*) &amp; = &amp; \emptyset \\
+\nabla_b(a^*) &amp; = &amp; \emptyset\\
+\nabla_b(b^*) &amp; = &amp; \{b^*\} \\
+\end{array}
+\]</span></p>
+</section>
+<section id="exemplo-6" class="slide level1">
+<h1>Exemplo</h1>
+<ul>
+<li>Adicionando transições.</li>
+</ul>
+<p><img data-src="/Users/rodrigo/Documents/aulas/2021-1/teoria/slides/aula09/3f4038a626b2b60b309104150cf1d4b94963bbe2.svg" /></p>
+</section>
+<section id="exercício" class="slide level1">
+<h1>Exercício</h1>
+<ul>
+<li>Implemente o algoritmo de matching baseado em derivadas parciais em sua linguagem de programação favorita.</li>
+</ul>
+</section>
+<section id="referências" class="slide level1">
+<h1>Referências</h1>
+<ul>
+<li>Antimirov, Valentin. Partial derivatives of regular expressions and finite automaton constructions. Theoretical Computer Science.</li>
+</ul>
+</section>
+    </div>
+  </div>
+
+  <script src="../revealjs/dist/reveal.js"></script>
+
+  <!-- reveal.js plugins -->
+  <script src="../revealjs/plugin/notes/notes.js"></script>
+  <script src="../revealjs/plugin/search/search.js"></script>
+  <script src="../revealjs/plugin/zoom/zoom.js"></script>
+  <script src="../revealjs/plugin/math/math.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+      
+        // Push each slide change to the browser history
+        history: true,
+        math: {
+          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // reveal.js plugins
+        plugins: [
+          RevealMath,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    </body>
+</html>
