@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="PCC102 - Teoria da Computação - Prof. Rodrigo Ribeiro">
+  <title>Expressões livres de contexto</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../revealjs/dist/reset.css">
+  <link rel="stylesheet" href="../revealjs/dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+  </style>
+  <link rel="stylesheet" href="../revealjs/dist/theme/white.css" id="theme">
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">Expressões livres de contexto</h1>
+  <p class="author">PCC102 - Teoria da Computação - Prof. Rodrigo Ribeiro</p>
+</section>
+
+<section id="objetivos" class="slide level1">
+<h1>Objetivos</h1>
+<ul>
+<li>Apresentar a sintaxe e semântica de expressões livres de contexto (<span class="math inline">\(\mu\)</span>-regular expressions).</li>
+</ul>
+</section>
+<section id="objetivos-1" class="slide level1">
+<h1>Objetivos</h1>
+<ul>
+<li>Estender as derivadas parciais para expressões livres de contexto.</li>
+</ul>
+</section>
+<section id="objetivos-2" class="slide level1">
+<h1>Objetivos</h1>
+<ul>
+<li>Apresentar como usar derivadas parciais para obter um autômato de pilha não determinístico equivalente a uma expressão livre de contexto.</li>
+</ul>
+</section>
+<section id="expressões-lc" class="slide level1">
+<h1>Expressões LC</h1>
+<ul>
+<li>Expressões livres de contexto estendem a sintaxe de expressões regulares com um operador de recursão.</li>
+</ul>
+</section>
+<section id="sintaxe" class="slide level1">
+<h1>Sintaxe</h1>
+<ul>
+<li>A sintaxe de expressões LC sobre um alfabeto <span class="math inline">\(\Sigma\)</span> e um conjunto de variáveis <span class="math inline">\(V\)</span> é definida como:</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{l}
+0 \in E(\Sigma,V)\\
+1 \in E(\Sigma,V)\\
+a \in E(\Sigma,V);\text{ se } a\in\Sigma\\
+\end{array}
+\]</span></p>
+</section>
+<section id="sintaxe-1" class="slide level1">
+<h1>Sintaxe</h1>
+<ul>
+<li>Considere <span class="math inline">\(e_1, e_2 \in E(\Sigma,V)\)</span>.</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{l}
+e_1\:e_2 \in E(\Sigma,V)\\
+e_1 + e_2 \in E(\Sigma,V)\\
+e_1^* \in E(\Sigma,V)\\
+\end{array}
+\]</span></p>
+</section>
+<section id="sintaxe-2" class="slide level1">
+<h1>Sintaxe</h1>
+<ul>
+<li>Considere <span class="math inline">\(e_1 \in E(\Sigma,V \cup \{v\})\)</span>.</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{l}
+v \in E(\Sigma,V); \text{ se }v \in V\\
+\mu v. e_1 \in E(\Sigma,V)\\
+\end{array}
+\]</span></p>
+</section>
+<section id="sintaxe-3" class="slide level1">
+<h1>Sintaxe</h1>
+<ul>
+<li>Dizemos que uma expressão <span class="math inline">\(e_1\)</span> é fechada se</li>
+</ul>
+<p><span class="math display">\[
+e_1 \in E(\Sigma, \emptyset)
+\]</span></p>
+</section>
+<section id="semântica" class="slide level1">
+<h1>Semântica</h1>
+<ul>
+<li><p>Para definirmos a semântica denotacional de ELC devemos utilizar um ambiente que associa variáveis a linguagens.</p></li>
+<li><p><span class="math inline">\(\eta : V \to \mathcal{P}(\Sigma^*)\)</span></p></li>
+</ul>
+</section>
+<section id="semântica-1" class="slide level1">
+<h1>Semântica</h1>
+<ul>
+<li>Casos base.</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{lcl}
+  [\![\emptyset]\!]_\eta &amp; = &amp; \emptyset \\
+  [\![\lambda]\!]_\eta &amp; = &amp; \{\lambda\} \\
+  [\![a]\!]_\eta &amp; = &amp; \{a\},\:a\in\Sigma \\
+  [\![v]\!]_\eta &amp; = &amp; \eta(v),\:v\in V \\
+\end{array}
+\]</span></p>
+</section>
+<section id="semântica-2" class="slide level1">
+<h1>Semântica</h1>
+<ul>
+<li>União, concatenação e Kleene</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{lcl}
+[\![e_1\:e_2]\!]_\eta &amp; = &amp; [\![e_1]\!]_\eta\:[\![e_2]\!]_\eta \\
+[\![e_1 + e_2]\!]_\eta &amp; = &amp; [\![e_1]\!]_\eta\cup[\![e_2]\!]_\eta \\
+[\![e_1^*]\!]_\eta &amp; = &amp; ([\![e_1]\!]_\eta)^*\\
+\end{array}
+\]</span></p>
+</section>
+<section id="semântica-3" class="slide level1">
+<h1>Semântica</h1>
+<ul>
+<li>Para definir a semântica do operador <span class="math inline">\(\mu\)</span>, precisamos recorrer ao teorema de Knaster-Tarski.</li>
+</ul>
+</section>
+<section id="semântica-4" class="slide level1">
+<h1>Semântica</h1>
+<ul>
+<li>Porém, para enunciar o teorema, precisamos de algumas definições.</li>
+</ul>
+</section>
+<section id="semântica-5" class="slide level1">
+<h1>Semântica</h1>
+<ul>
+<li>Conjunto parcialmente ordenado <span class="math inline">\((S,\le)\)</span>.
+<ul>
+<li><span class="math inline">\(\le\)</span> relação de ordem sobre <span class="math inline">\(S\)</span></li>
+</ul></li>
+</ul>
+</section>
+<section id="semântica-6" class="slide level1">
+<h1>Semântica</h1>
+<ul>
+<li><span class="math inline">\(a\)</span> é um limite inferior para <span class="math inline">\(S\)</span>:</li>
+</ul>
+<p><span class="math display">\[
+\forall x. x \in S \to a \le x
+\]</span></p>
+</section>
+<section id="semântica-7" class="slide level1">
+<h1>Semântica</h1>
+<ul>
+<li><span class="math inline">\(b\)</span> é o maior limite inferior de <span class="math inline">\(S\)</span>:</li>
+</ul>
+<p><span class="math display">\[
+\forall y. (\forall x. x \in S \to (y \le x))\to y \le b
+\]</span></p>
+</section>
+<section id="semântica-8" class="slide level1">
+<h1>Semântica</h1>
+<ul>
+<li><span class="math inline">\(a\)</span> é um limite superior para <span class="math inline">\(S\)</span>:</li>
+</ul>
+<p><span class="math display">\[
+\forall x. x \in S \to x \le a
+\]</span></p>
+</section>
+<section id="semântica-9" class="slide level1">
+<h1>Semântica</h1>
+<ul>
+<li><span class="math inline">\(b\)</span> é o menor limite superior de <span class="math inline">\(S\)</span>:</li>
+</ul>
+<p><span class="math display">\[
+\forall y. (\forall x. x \in S \to (x \le y))\to b \le y
+\]</span></p>
+</section>
+<section id="semântica-10" class="slide level1">
+<h1>Semântica</h1>
+<ul>
+<li><p>Dizemos que o conjunto parcialmente ordenado <span class="math inline">\((S,\le)\)</span> é um reticulado completo se todo <span class="math inline">\(X \subseteq S\)</span> possui maior limite inferior e menor limite superior.</p></li>
+<li><p>Consequência: reticulados completos são não vazios.</p></li>
+</ul>
+</section>
+<section id="semântica-11" class="slide level1">
+<h1>Semântica</h1>
+<ul>
+<li>Função monotônica.</li>
+</ul>
+<p><span class="math inline">\(\forall x\:y. x &lt; y \to f(x) &lt; f(y)\)</span>.</p>
+</section>
+<section id="semântica-12" class="slide level1">
+<h1>Semântica</h1>
+<ul>
+<li>Ponto fixo: <span class="math inline">\(x\)</span> é ponto fixo de <span class="math inline">\(f\)</span>, se:</li>
+</ul>
+<p><span class="math display">\[
+f(x) = x
+\]</span></p>
+</section>
+<section id="semântica-13" class="slide level1">
+<h1>Semântica</h1>
+<ul>
+<li>Teorema: Seja <span class="math inline">\(L\)</span> um reticulado completo e <span class="math inline">\(f : L \to L\)</span> uma função monotônica. Então, o conjunto de pontos fixos de <span class="math inline">\(f\)</span> forma um reticulado completo.</li>
+</ul>
+</section>
+<section id="semântica-14" class="slide level1">
+<h1>Semântica</h1>
+<ul>
+<li>O teorema de Knarster-Tarski garante a existência de um ponto fixo para funções monotônicas sobre reticulados completos.</li>
+</ul>
+</section>
+<section id="semântica-15" class="slide level1">
+<h1>Semântica</h1>
+<ul>
+<li><p>O conjunto parcialmente ordenado <span class="math inline">\((\mathcal{P}(\Sigma^*), \subseteq)\)</span> forma um reticulado completo.</p></li>
+<li><p>Logo, funções monotônicas sobre esse conjunto admitem ponto fixo.</p></li>
+</ul>
+</section>
+<section id="semântica-16" class="slide level1">
+<h1>Semântica</h1>
+<ul>
+<li>A notação <span class="math inline">\(\eta[v \mapsto L]\)</span> denota a função finita <span class="math inline">\(\eta&#39;\)</span> tal que</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{lcl}
+\eta&#39;(v_1) &amp; = &amp; \left\{
+              \begin{array}{lcl}
+                L &amp; \text{se }v = v_1\\
+                \eta(v_1) &amp; \text{caso contrário}\\
+              \end{array}
+            \right .
+\end{array}
+\]</span></p>
+</section>
+<section id="semântica-17" class="slide level1">
+<h1>Semântica</h1>
+<ul>
+<li><p>Seja <span class="math inline">\(e \in E(\Sigma,V \cup \{v\})\)</span>. A função <span class="math inline">\(L \mapsto [\![e]\!]_{\eta[v \mapsto L]}\)</span> é monotônica.</p></li>
+<li><p>Isto é, se <span class="math inline">\(L \subseteq L&#39;\)</span> então <span class="math inline">\([\![e]\!]_{\eta[v \mapsto L]} \subseteq [\![e]\!]_{\eta[v \mapsto L&#39;]}\)</span>.</p></li>
+</ul>
+</section>
+<section id="semântica-18" class="slide level1">
+<h1>Semântica</h1>
+<ul>
+<li>Denote por lfp o operador de menor ponto fixo no reticulado <span class="math inline">\(\mathcal{P}(\Sigma^*)\)</span>.</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{lcl}
+[\![\mu v.e]\!] &amp; = &amp; \text{lfp}\,[\![e]\!]_{\eta[v\mapsto L]}\\
+\end{array}
+\]</span></p>
+</section>
+<section id="derivadas" class="slide level1">
+<h1>Derivadas</h1>
+<ul>
+<li>Usando a definição da semântica, podemos especificar a derivada parcial para uma expressão livre de contexto.</li>
+</ul>
+</section>
+<section id="derivadas-1" class="slide level1">
+<h1>Derivadas</h1>
+<ul>
+<li><p>Primeiramente, vamos estender a definição do teste <span class="math inline">\(\lambda\in[\![e]\!]_\eta\)</span>.</p></li>
+<li><p>Para isso, vamos usar um ambiente, <span class="math inline">\(\nu : V \to \{\top,\bot\}\)</span>, que vai armazenar se a expressão associada a uma variável é ou não anulável.</p></li>
+</ul>
+</section>
+<section id="derivadas-2" class="slide level1">
+<h1>Derivadas</h1>
+<ul>
+<li>Verificando se uma expressão é anulável.</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{lcl}
+  \mathcal{N}(\emptyset)_\nu &amp; = &amp; \bot \\
+  \mathcal{N}(\lambda)_\nu   &amp; = &amp; \top \\
+  \mathcal{N}(a)_\nu         &amp; = &amp; \bot \\
+  \mathcal{N}(v)_\nu         &amp; = &amp; \nu(v) \\
+\end{array}
+\]</span></p>
+</section>
+<section id="derivadas-3" class="slide level1">
+<h1>Derivadas</h1>
+<ul>
+<li>Verificando se uma expressão é anulável.</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{lcl}
+  \mathcal{N}(e_1\:e_2)_\nu &amp; = &amp; \mathcal{N}(e_1)_\nu \land \mathcal{N}(e_2)_\nu \\
+  \mathcal{N}(e_1 + e_2)_\nu &amp; = &amp; \mathcal{N}(e_1)_\nu \lor \mathcal{N}(e_2)_\nu \\
+  \mathcal{N}(e_1^*)_\nu   &amp; = &amp; \top \\
+  \mathcal{N}(\mu\,v.e)_\nu &amp; = &amp; \mathcal{N}(e)_{\nu[v\mapsto \bot]}\\
+\end{array}
+\]</span></p>
+</section>
+<section id="exemplo" class="slide level1">
+<h1>Exemplo</h1>
+<ul>
+<li>Considere a expressão <span class="math inline">\(e = 1 + \mu v. v a\)</span>.</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{lc}
+\mathcal{N}(1 + \mu v. v a)_\emptyset &amp; = \\
+\end{array}
+\]</span></p>
+</section>
+<section id="exemplo-1" class="slide level1">
+<h1>Exemplo</h1>
+<ul>
+<li>Considere a expressão <span class="math inline">\(e = 1 + \mu v. v a\)</span>.</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{lc}
+\mathcal{N}(1 + \mu v. v a)_\emptyset &amp; = \\
+\mathcal{N}_\emptyset(1) \lor \mathcal{N}_\emptyset(\mu v. v a) &amp; = \\
+\end{array}
+\]</span></p>
+</section>
+<section id="exemplo-2" class="slide level1">
+<h1>Exemplo</h1>
+<ul>
+<li>Considere a expressão <span class="math inline">\(e = 1 + \mu v. v a\)</span>.</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{lc}
+\mathcal{N}(1 + \mu v. v a)_\emptyset &amp; = \\
+\mathcal{N}_\emptyset(1) \lor \mathcal{N}_\emptyset(\mu v. v a) &amp; = \\
+\top \lor \mathcal{N}_{\emptyset[v \mapsto \bot]}(v a) &amp; = \\
+\end{array}
+\]</span></p>
+</section>
+<section id="exemplo-3" class="slide level1">
+<h1>Exemplo</h1>
+<ul>
+<li>Considere a expressão <span class="math inline">\(e = 1 + \mu v. v a\)</span>.</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{lc}
+\mathcal{N}(1 + \mu v. v a)_\emptyset &amp; = \\
+\mathcal{N}_\emptyset(1) \lor \mathcal{N}_\emptyset(\mu v. v a) &amp; = \\
+\top \lor \mathcal{N}_{\emptyset[v \mapsto \bot]}(v a) &amp; = \\
+\top \lor \mathcal{N}_{[v\mapsto\bot]}(v a) &amp; = \\
+\end{array}
+\]</span></p>
+</section>
+<section id="exemplo-4" class="slide level1">
+<h1>Exemplo</h1>
+<ul>
+<li>Considere a expressão <span class="math inline">\(e = 1 + \mu v. v a\)</span>.</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{lc}
+\mathcal{N}(1 + \mu v. v a)_\emptyset &amp; = \\
+\mathcal{N}_\emptyset(1) \lor \mathcal{N}(\mu v. v a)_\emptyset &amp; = \\
+\top \lor \mathcal{N}(v a)_{\emptyset[v \mapsto \bot]} &amp; = \\
+\top \lor \mathcal{N}(v a)_{[v\mapsto\bot]} &amp; = \\
+\top \lor (\mathcal{N}_{[v\mapsto\bot]}(v)\land \mathcal{N}_{[v\mapsto\bot]}(a)) &amp; = \\
+\end{array}
+\]</span></p>
+</section>
+<section id="exemplo-5" class="slide level1">
+<h1>Exemplo</h1>
+<ul>
+<li>Considere a expressão <span class="math inline">\(e = 1 + \mu v. v a\)</span>.</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{lc}
+\mathcal{N}(1 + \mu v. v a)_\emptyset &amp; = \\
+\mathcal{N}_\emptyset(1) \lor \mathcal{N}(\mu v. v a)_\emptyset &amp; = \\
+\top \lor \mathcal{N}(v a)_{\emptyset[v \mapsto \bot]} &amp; = \\
+\top \lor \mathcal{N}(v a)_{[v\mapsto\bot]} &amp; = \\
+\top \lor (\mathcal{N}_{[v\mapsto\bot]}(v)\land \mathcal{N}_{[v\mapsto\bot]}(a)) &amp; = \\
+\top \lor (\bot \land \bot) &amp; = \\
+\top
+\end{array}
+\]</span></p>
+</section>
+<section id="derivadas-4" class="slide level1">
+<h1>Derivadas</h1>
+<ul>
+<li>A derivada de uma expressão livre de contexto produz uma lista não vazia de expressões regulares.</li>
+</ul>
+</section>
+<section id="derivadas-5" class="slide level1">
+<h1>Derivadas</h1>
+<ul>
+<li><p>A ideia é que essa lista simule a execução de uma pilha de um autômato de pilha não determinístico.</p></li>
+<li><p>Porém, como lidar com expressões envolvendo <span class="math inline">\(\mu\)</span>?</p></li>
+</ul>
+</section>
+<section id="derivadas-6" class="slide level1">
+<h1>Derivadas</h1>
+<ul>
+<li>Uma abordagem seria usar a equivalência:</li>
+</ul>
+<p><span class="math display">\[
+\nabla_a(\mu v.e) = \nabla_a([v \mapsto \mu v. e] e) : [1]
+\]</span></p>
+</section>
+<section id="derivadas-7" class="slide level1">
+<h1>Derivadas</h1>
+<ul>
+<li>Porém, considere a seguinte expressão que gera palavras da forma <span class="math inline">\(a^*\)</span>:</li>
+</ul>
+<p><span class="math display">\[\mu v. 1 + v a\]</span></p>
+</section>
+<section id="derivadas-8" class="slide level1">
+<h1>Derivadas</h1>
+<ul>
+<li>Qual seria o resultado de <span class="math inline">\(\nabla_a(\mu v. 1 + v a)\)</span> ?</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{lc}
+\nabla_a(\mu v. 1 + v a) &amp; = \\
+\end{array}
+\]</span></p>
+</section>
+<section id="derivadas-9" class="slide level1">
+<h1>Derivadas</h1>
+<ul>
+<li>Qual seria o resultado de <span class="math inline">\(\nabla_a(\mu v.1 + v a)\)</span> ?</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{lc}
+\nabla_a(\mu v. 1 + v a) &amp; = \\
+\nabla_a(1) \cup \nabla_a(\mu v. v a) &amp; = \\
+\end{array}
+\]</span></p>
+</section>
+<section id="derivadas-10" class="slide level1">
+<h1>Derivadas</h1>
+<ul>
+<li>Qual seria o resultado de <span class="math inline">\(\nabla_a(\mu v.1 + v a)\)</span> ?</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{lc}
+\nabla_a(\mu v. 1 + v a) &amp; = \\
+\nabla_a(1) \cup \nabla_a(\mu v. v a) &amp; = \\
+\emptyset \cup \nabla_a(\mu v. v a) &amp; =\\
+\end{array}
+\]</span></p>
+</section>
+<section id="derivadas-11" class="slide level1">
+<h1>Derivadas</h1>
+<ul>
+<li>Qual seria o resultado de <span class="math inline">\(\nabla_a(\mu v.1 + v a)\)</span> ?</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{lc}
+\nabla_a(\mu v. 1 + v a) &amp; = \\
+\nabla_a(1) \cup \nabla_a(\mu v. v a) &amp; = \\
+\emptyset \cup \nabla_a(\mu v. v a) &amp; =\\
+\nabla_a(\mu v. v a) &amp; =\\
+\end{array}
+\]</span></p>
+</section>
+<section id="derivadas-12" class="slide level1">
+<h1>Derivadas</h1>
+<ul>
+<li>Qual seria o resultado de <span class="math inline">\(\nabla_a(\mu v.1 + v a)\)</span> ?</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{lc}
+\nabla_a(\mu v. 1 + v a) &amp; = \\
+\nabla_a(1) \cup \nabla_a(\mu v. v a) &amp; = \\
+\emptyset \cup \nabla_a(\mu v. v a) &amp; =\\
+\nabla_a(\mu v. v a) &amp; =\\
+\nabla_a([v \mapsto \mu v. v a] (v a)) &amp; = \\
+\nabla_a((\mu v. v a)a) &amp; = \\
+\end{array}
+\]</span></p>
+</section>
+<section id="derivadas-13" class="slide level1">
+<h1>Derivadas</h1>
+<ul>
+<li>Veja que uma definição ingênua da derivada não consegue lidar com expressões equivalentes à gramáticas com recursão à esquerda.</li>
+</ul>
+</section>
+<section id="derivadas-14" class="slide level1">
+<h1>Derivadas</h1>
+<ul>
+<li>Para evitar esse problema, a derivada guarda uma substituição para todas as variáveis não precedidas por não terminais.</li>
+</ul>
+</section>
+<section id="derivadas-15" class="slide level1">
+<h1>Derivadas</h1>
+<ul>
+<li>Além da substituição, a operação de derivada usa um ambiente para variáveis anuláveis.</li>
+</ul>
+</section>
+<section id="derivadas-16" class="slide level1">
+<h1>Derivadas</h1>
+<ul>
+<li>Denotaremos uma substituição qualquer por <span class="math inline">\(\sigma\)</span> e aplicação por <span class="math inline">\(\sigma(e)\)</span>.</li>
+</ul>
+</section>
+<section id="derivadas-17" class="slide level1">
+<h1>Derivadas</h1>
+<ul>
+<li>Denotamos por <span class="math inline">\(\nabla_\alpha^{\sigma,\,\nu}(e)\)</span> a derivada para uma expressão <span class="math inline">\(e\)</span> e <span class="math inline">\(a \in \Sigma \cup\{\lambda\}\)</span>.</li>
+</ul>
+</section>
+<section id="derivadas-18" class="slide level1">
+<h1>Derivadas</h1>
+<ul>
+<li>Definição da derivada</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{lcl}
+  \nabla_\alpha^{\sigma,\,\nu}(\emptyset) &amp; = &amp; \emptyset\\
+  \nabla_\alpha^{\sigma,\,\nu}(\lambda) &amp; = &amp; \emptyset\\
+  \nabla_\alpha^{\sigma,\,\nu}(a) &amp; = &amp; \{[1]\,|\,\alpha = a\}\\
+  \nabla_\alpha^{\sigma,\,\nu}(e_1 + e_2) &amp; = &amp; \nabla_\alpha^{\sigma,\,\nu}(e_1) \cup 
+                                                \nabla_\alpha^{\sigma,\,\nu}(e_2)\\
+\end{array}
+\]</span></p>
+</section>
+<section id="derivadas-19" class="slide level1">
+<h1>Derivadas</h1>
+<ul>
+<li>Definição de derivada</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{lcl}
+  \nabla_\alpha^{\sigma,\,\nu}(e_1\:e_2) &amp; = &amp; \nabla_\alpha^{\sigma,\,\nu}(e_1)(\sigma(e_2)) \cup\\ 
+                                         &amp;   &amp; \{\overline{e}\,|\,\mathcal{N}_{\nu}(e_1) \land 
+                                               \overline{e}\in\nabla_\alpha^{\sigma,\,\nu}(\:e_2)\}\\
+  \nabla_\alpha^{\sigma,\,\nu}(e_1^*)    &amp; = &amp; \nabla_\alpha^{\sigma,\,\nu}(e_1)(\sigma(e_1^*))\\
+\end{array}
+\]</span></p>
+</section>
+<section id="derivadas-20" class="slide level1">
+<h1>Derivadas</h1>
+<ul>
+<li>Definição de derivada</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{lcl}
+  \nabla_\alpha^{\sigma,\,\nu}(\mu\,v.e) &amp; = &amp; \nabla_\alpha^{\sigma[v\mapsto \mu v.e],\,
+                                               [v \mapsto \mathcal{N}_{\nu[v\mapsto \bot]}(e)]}(e) 
+                                               : [1]\\
+  \nabla_\alpha^{\sigma,\,\nu}(v) &amp; = &amp; \{[\sigma(v)]\,|\,\alpha = \lambda\}\\
+\end{array}
+\]</span></p>
+</section>
+<section id="exemplo-6" class="slide level1">
+<h1>Exemplo</h1>
+<ul>
+<li>Calcular: <span class="math inline">\(\nabla_a^{\emptyset,\emptyset}(\mu v.1 + v a)\)</span></li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{lc}
+  \nabla_a^{\emptyset,\emptyset}(\mu v.1 + v a) &amp; = \\
+\end{array}
+\]</span></p>
+</section>
+<section id="exemplo-7" class="slide level1">
+<h1>Exemplo</h1>
+<ul>
+<li>Calcular: <span class="math inline">\(\nabla_a^{\emptyset,\emptyset}(\mu v.1 + v a)\)</span>
+<ul>
+<li><span class="math inline">\(\sigma = [v\mapsto \mu v. 1 + v a]\)</span></li>
+<li><span class="math inline">\(\nu = [v\mapsto \top]\)</span></li>
+</ul></li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{lc}
+  \nabla_a^{\emptyset,\emptyset}(\mu v.1 + v a) &amp; = \\
+  \nabla_a^{\sigma, \nu}(1 + v a) &amp; = \\
+\end{array}
+\]</span></p>
+</section>
+<section id="exemplo-8" class="slide level1">
+<h1>Exemplo</h1>
+<ul>
+<li>Calcular: <span class="math inline">\(\nabla_a^{\emptyset,\emptyset}(\mu v.1 + v a)\)</span>
+<ul>
+<li><span class="math inline">\(\sigma = [v\mapsto \mu v. 1 + v a]\)</span></li>
+<li><span class="math inline">\(\nu = [v\mapsto \top]\)</span></li>
+</ul></li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{lc}
+  \nabla_a^{\emptyset,\emptyset}(\mu v.1 + v a) &amp; = \\
+  \nabla_a^{\sigma, \nu}(1 + v a) &amp; = \\
+  \nabla_a^{\sigma, \nu}(1) \cup \nabla_a^{\sigma, \nu}(v a) &amp; =
+\end{array}
+\]</span></p>
+</section>
+<section id="exemplo-9" class="slide level1">
+<h1>Exemplo</h1>
+<ul>
+<li>Calcular: <span class="math inline">\(\nabla_a^{\emptyset,\emptyset}(\mu v.1 + v a)\)</span>
+<ul>
+<li><span class="math inline">\(\sigma = [v\mapsto \mu v. 1 + v a]\)</span></li>
+<li><span class="math inline">\(\nu = [v\mapsto \top]\)</span></li>
+</ul></li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{lc}
+  \nabla_a^{\emptyset,\emptyset}(\mu v.1 + v a) &amp; = \\
+  \nabla_a^{\sigma, \nu}(1 + v a) &amp; = \\
+  \nabla_a^{\sigma, \nu}(1) \cup \nabla_a^{\sigma, \nu}(v a) &amp; =\\
+  \emptyset  \cup \nabla_a^{\sigma, \nu}(v a) &amp; =
+\end{array}
+\]</span></p>
+</section>
+<section id="exemplo-10" class="slide level1">
+<h1>Exemplo</h1>
+<ul>
+<li>Calcular: <span class="math inline">\(\nabla_a^{\emptyset,\emptyset}(\mu v.1 + v a)\)</span></li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{lc}
+  \nabla_a^{\emptyset,\emptyset}(\mu v.1 + v a) &amp; = \\
+  \nabla_a^{\sigma, \nu}(1 + v a) : [1] &amp; = \\
+  \nabla_a^{\sigma, \nu}(1) \cup \nabla_a^{\sigma, \nu}(v a) : [1] &amp; =\\
+  \emptyset  \cup \nabla_a^{\sigma, \nu}(v a) : [1] &amp; =\\
+  \nabla_a^{\sigma, \nu}(v a) :[1]&amp; = \\
+\end{array}
+\]</span></p>
+</section>
+<section id="exemplo-11" class="slide level1">
+<h1>Exemplo</h1>
+<ul>
+<li>Calcular: <span class="math inline">\(\nabla_a^{\emptyset,\emptyset}(\mu v.1 + v a)\)</span></li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{l}
+  ... = \\
+  \nabla_a^{\sigma, \nu}(v)(\sigma(a)) : [1] \cup \\ 
+  \{e \,|\, \nu(v) = \top, e \in \nabla_a^{\sigma,\nu}(a)\} = \\
+\end{array}
+\]</span></p>
+</section>
+<section id="exemplo-12" class="slide level1">
+<h1>Exemplo</h1>
+<ul>
+<li>Calcular: <span class="math inline">\(\nabla_a^{\emptyset,\emptyset}(\mu v.1 + v a)\)</span></li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{l}
+  ... = \\
+  \nabla_a^{\sigma, \nu}(v)(\sigma(a)) : [1] \cup \\ 
+  \{e \,|\, \nu(v) = \top, e \in \nabla_a^{\sigma,\nu}(a)\} = \\
+  \emptyset \cup \{e \,|\, \nu(v) = \top, e \in \nabla_a^{\sigma,\nu}(a)\} : [1] = \\
+  \{[1]\} : [1] = \\
+\end{array}
+\]</span></p>
+</section>
+<section id="exemplo-13" class="slide level1">
+<h1>Exemplo</h1>
+<ul>
+<li>Calcular: <span class="math inline">\(\nabla_a^{\emptyset,\emptyset}(\mu v.1 + v a)\)</span></li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{l}
+  ... = \\
+  \nabla_a^{\sigma, \nu}(v)(\sigma(a)) : [1] \cup \\ 
+  \{e \,|\, \nu(v) = \top, e \in \nabla_a^{\sigma,\nu}(a)\} = \\
+  \emptyset \cup \{e \,|\, \nu(v) = \top, e \in \nabla_a^{\sigma,\nu}(a)\} : [1] = \\
+  \{[1]\} : [1] = \\
+  \{[1,1]\}
+\end{array}
+\]</span></p>
+</section>
+<section id="derivadas-21" class="slide level1">
+<h1>Derivadas</h1>
+<ul>
+<li>O número de derivadas produzidas a partir de uma expressão é finito.</li>
+</ul>
+</section>
+<section id="derivadas-22" class="slide level1">
+<h1>Derivadas</h1>
+<ul>
+<li>A construção de um autômato de pilha reside nesse fato.
+<ul>
+<li>Cada derivada corresponderá a um símbolo do alfabeto de pilha.</li>
+</ul></li>
+</ul>
+</section>
+<section id="derivadas-23" class="slide level1">
+<h1>Derivadas</h1>
+<ul>
+<li>Conjunto de derivadas, <span class="math inline">\(\Delta(e)\)</span>, é definido como:
+<ul>
+<li><span class="math inline">\(1\,e \in\Delta(e)\)</span></li>
+<li>Se <span class="math inline">\(e&#39;\in\Delta(e)\)</span> e <span class="math inline">\([e_1,...e_n]\in\nabla_\alpha^{\emptyset,\emptyset}(e)\)</span> então <span class="math inline">\(\forall k. 1 \leq k \leq n \to e_k \in \Delta(e)\)</span></li>
+</ul></li>
+</ul>
+</section>
+<section id="autômato" class="slide level1">
+<h1>Autômato</h1>
+<ul>
+<li>Autômato de pilha não determinístico <span class="math inline">\(M=(E,\Sigma,\Gamma,\delta,i)\)</span>:
+<ul>
+<li><span class="math inline">\(E\)</span>: conjunto finito de estados</li>
+<li><span class="math inline">\(\Sigma\)</span>: alfabeto de entrada</li>
+<li><span class="math inline">\(\Gamma\)</span>: alfabeto de pilha</li>
+<li><span class="math inline">\(\delta: E \times (\Sigma\cup\{\lambda\})\times\Gamma \to (E\times \Gamma^*)\)</span></li>
+</ul></li>
+</ul>
+</section>
+<section id="autômato-1" class="slide level1">
+<h1>Autômato</h1>
+<ul>
+<li>Linguagem aceita por um APN:</li>
+</ul>
+<p><span class="math display">\[
+L(M) = \{w \in \Sigma^*\,|\,[i,w,\lambda]\vdash^*[e,\lambda,\lambda]\}
+\]</span></p>
+</section>
+<section id="autômato-2" class="slide level1">
+<h1>Autômato</h1>
+<ul>
+<li>O APN equivalente a uma expressão fechada <span class="math inline">\(e\)</span> é <span class="math inline">\(M=(E,\Sigma,\Gamma,\delta,i)\)</span>:
+<ul>
+<li><span class="math inline">\(E = \{q\}\)</span></li>
+<li><span class="math inline">\(\Gamma = \Delta(e)\)</span></li>
+</ul></li>
+</ul>
+</section>
+<section id="autômato-3" class="slide level1">
+<h1>Autômato</h1>
+<ul>
+<li>A função de transição é definida como:
+<ul>
+<li><span class="math inline">\(\delta(q,a,e&#39;) = [q,\nabla_a^{\emptyset,\emptyset}(e&#39;)]\)</span>, para <span class="math inline">\(a \in \Sigma\)</span>.</li>
+<li><span class="math inline">\(\delta(q,\lambda,e&#39;) = [q,\nabla_\lambda^{\emptyset,\emptyset}(e&#39;)]\)</span>.</li>
+</ul></li>
+</ul>
+</section>
+<section id="exercício" class="slide level1">
+<h1>Exercício</h1>
+<ul>
+<li><p>Apresente uma definição para uma expressão livre de contexto para a linguagem de palíndromos sobre <span class="math inline">\(\Sigma = \{0,1\}\)</span>.</p></li>
+<li><p>Calcule o conjunto <span class="math inline">\(\Delta(e)\)</span> para a expressão produzida por você para a linguagem de palíndromos.</p></li>
+</ul>
+</section>
+<section id="referências" class="slide level1">
+<h1>Referências</h1>
+<ul>
+<li>Thiemann, Peter. Partial Derivatives for Context-Free Languages: From <span class="math inline">\(\mu\)</span>-Regular Expressions to Pushdown Automata.</li>
+</ul>
+</section>
+    </div>
+  </div>
+
+  <script src="../revealjs/dist/reveal.js"></script>
+
+  <!-- reveal.js plugins -->
+  <script src="../revealjs/plugin/notes/notes.js"></script>
+  <script src="../revealjs/plugin/search/search.js"></script>
+  <script src="../revealjs/plugin/zoom/zoom.js"></script>
+  <script src="../revealjs/plugin/math/math.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+      
+        // Push each slide change to the browser history
+        history: true,
+        math: {
+          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // reveal.js plugins
+        plugins: [
+          RevealMath,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    </body>
+</html>

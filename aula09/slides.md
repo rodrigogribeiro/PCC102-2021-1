@@ -132,7 +132,7 @@ Conversão em NFA
 Conversão em NFA
 ================
 
-- O AFNs produzido usando derivadas parciais possui no máximo $\varphi(e) + 1$ estamos.
+- O AFNs produzido usando derivadas parciais possui no máximo $\varphi(e) + 1$ estados.
    - $\varphi(e)$ é o número de símbolos do alfabeto em $e$.
 
 Exemplo
