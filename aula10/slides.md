@@ -93,8 +93,8 @@ Semântica
 
 $$
 \begin{array}{lcl}
-  [\![\emptyset]\!]_\eta & = & \emptyset \\
-  [\![\lambda]\!]_\eta & = & \{\lambda\} \\
+  [\![0]\!]_\eta & = & \emptyset \\
+  [\![1]\!]_\eta & = & \{\lambda\} \\
   [\![a]\!]_\eta & = & \{a\},\:a\in\Sigma \\
   [\![v]\!]_\eta & = & \eta(v),\:v\in V \\
 \end{array}
@@ -273,8 +273,8 @@ Derivadas
 
 $$
 \begin{array}{lcl}
-  \mathcal{N}(\emptyset)_\nu & = & \bot \\
-  \mathcal{N}(\lambda)_\nu   & = & \top \\
+  \mathcal{N}(0)_\nu & = & \bot \\
+  \mathcal{N}(1)_\nu   & = & \top \\
   \mathcal{N}(a)_\nu         & = & \bot \\
   \mathcal{N}(v)_\nu         & = & \nu(v) \\
 \end{array}
@@ -511,8 +511,8 @@ Derivadas
 
 $$
 \begin{array}{lcl}
-  \nabla_\alpha^{\sigma,\,\nu}(\emptyset) & = & \emptyset\\
-  \nabla_\alpha^{\sigma,\,\nu}(\lambda) & = & \emptyset\\
+  \nabla_\alpha^{\sigma,\,\nu}(0) & = & \emptyset\\
+  \nabla_\alpha^{\sigma,\,\nu}(1) & = & \emptyset\\
   \nabla_\alpha^{\sigma,\,\nu}(a) & = & \{[1]\,|\,\alpha = a\}\\
   \nabla_\alpha^{\sigma,\,\nu}(e_1 + e_2) & = & \nabla_\alpha^{\sigma,\,\nu}(e_1) \cup 
                                                 \nabla_\alpha^{\sigma,\,\nu}(e_2)\\

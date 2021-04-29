@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="PCC102 - Teoria da Computação - Prof. Rodrigo Ribeiro">
+  <title>Tipos para expressões livres de contexto.</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../revealjs/dist/reset.css">
+  <link rel="stylesheet" href="../revealjs/dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+  </style>
+  <link rel="stylesheet" href="../revealjs/dist/theme/white.css" id="theme">
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">Tipos para expressões livres de contexto.</h1>
+  <p class="author">PCC102 - Teoria da Computação - Prof. Rodrigo Ribeiro</p>
+</section>
+
+<section id="objetivos" class="slide level1">
+<h1>Objetivos</h1>
+<ul>
+<li>Apresentar um sistema de tipos para expressões <span class="math inline">\(\mu\)</span>-regulares.</li>
+</ul>
+</section>
+<section id="objetivos-1" class="slide level1">
+<h1>Objetivos</h1>
+<ul>
+<li>Descrever um algoritmo de parsing para expressões <span class="math inline">\(\mu\)</span>-regulares aceitas pelo sistema de tipos descrito.</li>
+</ul>
+</section>
+<section id="ambiguidade" class="slide level1">
+<h1>Ambiguidade</h1>
+<ul>
+<li><p>Como apresentado, expressões <span class="math inline">\(\mu\)</span>-regulares são equivalentes a GLC.</p></li>
+<li><p>Pergunta: Se são equivalentes, há expressões <span class="math inline">\(\mu\)</span>-regulares ambíguas?</p></li>
+</ul>
+</section>
+<section id="ambiguidade-1" class="slide level1">
+<h1>Ambiguidade</h1>
+<ul>
+<li>Sim! Expressões <span class="math inline">\(\mu\)</span>-regulares são sujeitas a problemas de ambiguidade.</li>
+</ul>
+</section>
+<section id="ambiguidade-2" class="slide level1">
+<h1>Ambiguidade</h1>
+<ul>
+<li><span class="math inline">\(e_1 + e_2\)</span>: é possível definir de maneira única qual expressão aceita a string em questão?</li>
+</ul>
+</section>
+<section id="ambiguidade-3" class="slide level1">
+<h1>Ambiguidade</h1>
+<ul>
+<li><span class="math inline">\(e_1\,e_2\)</span>: é possível definir de maneira única a divisão da palavra <span class="math inline">\(w\)</span> em <span class="math inline">\(w = w_1\,w_2\)</span> de forma que <span class="math inline">\(w_1 \in [\![e_1]\!]_{\eta}\)</span> e <span class="math inline">\(w_2 \in [\![e_2]\!]_{\eta}\)</span>?</li>
+</ul>
+</section>
+<section id="ambiguidade-4" class="slide level1">
+<h1>Ambiguidade</h1>
+<ul>
+<li>Sistema de tipos: caso uma expressão seja válida então ela é equivalente a uma gramática LL(1) e, portanto, não é ambígua.</li>
+</ul>
+</section>
+<section id="tipos" class="slide level1">
+<h1>Tipos</h1>
+<ul>
+<li>Tipos para expressões <span class="math inline">\(\mu\)</span>-regulares são um registro que contém as seguintes informações:
+<ul>
+<li><span class="math inline">\(null(e)\)</span>: determina se <span class="math inline">\(\lambda\in [\![e]\!]_{\eta}\)</span>.</li>
+<li><span class="math inline">\(first(e) = \{a\,|\,aw \in [\![e]\!]_{\eta}\}\)</span>.</li>
+<li><span class="math inline">\(flast(e) = \{a\,|\,waw&#39; \in [\![e]\!]_{\eta} \land w \neq \lambda\}\)</span>.</li>
+</ul></li>
+</ul>
+</section>
+<section id="tipos-1" class="slide level1">
+<h1>Tipos</h1>
+<ul>
+<li>Operações sobre tipos.</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{lcl}
+\tau_1 \otimes \tau_2 &amp; = &amp; (\tau_1.\text{flast} \cap \tau_2.\text{flast} = \emptyset) \land \neg \tau_1.\text{null}\\
+\tau_1 \# \tau_2      &amp; = &amp; (\tau_1.\text{first} \cap \tau_2.\text{first} = \emptyset) \land \\
+                      &amp;   &amp; \neg (\tau_1.\text{null} \land \tau_2.\text{null})\\
+b \Longrightarrow S   &amp; = &amp; \text{se }b\text{ então } S\text{ senão }\emptyset \\
+\end{array}
+\]</span></p>
+</section>
+<section id="tipos-2" class="slide level1">
+<h1>Tipos</h1>
+<ul>
+<li>Operações sobre tipos.</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{lcl}
+\tau_\bot &amp; = &amp; \{\text{null} = \text{false}; \text{first} = \emptyset ; \text{flast} = \emptyset\}\\
+\tau_\lambda &amp; = &amp; \{\text{null} = \text{true}; \text{first} = \emptyset ; \text{flast} = \emptyset\}\\
+\tau_c &amp; = &amp; \{\text{null} = \text{false}; \text{first} = \{c\} ; \text{flast} = \emptyset\}\\
+\end{array}
+\]</span></p>
+</section>
+<section id="tipos-3" class="slide level1">
+<h1>Tipos</h1>
+<ul>
+<li>Operações sobre tipos.</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{lcl}
+\tau_1 \lor \tau_2 &amp; = &amp; \left\{
+                            \begin{array}{lcl}
+                              \text{null}  &amp; = &amp; \tau_1.\text{null} \lor \tau_2.\text{null}\\
+                              \text{first} &amp; = &amp; \tau_1.\text{first} \cup \tau_2.\text{first}\\
+                              \text{flast} &amp; = &amp; \tau_1.\text{flast} \cup \tau_2.\text{flast}\\
+                            \end{array}
+                         \right .
+\end{array}
+\]</span></p>
+</section>
+<section id="tipos-4" class="slide level1">
+<h1>Tipos</h1>
+<ul>
+<li>Operações sobre tipos.</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{lcl}
+\tau_\bot \bullet \tau &amp; = &amp; \tau_\bot\\
+\tau \bullet \tau_\bot &amp; = &amp; \tau_\bot\\
+\end{array}
+\]</span></p>
+</section>
+<section id="tipos-5" class="slide level1">
+<h1>Tipos</h1>
+<ul>
+<li>Operações sobre tipos.</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{lcl}
+  \tau_1 \bullet \tau_2 &amp; = &amp; \left\{
+                            \begin{array}{lcl}
+                               \text{null}  &amp; = &amp; \tau_1.\text{null} \land \tau_2.\text{null}\\
+                               \text{first} &amp; = &amp; \left\{\begin{array}{l}
+                                                    \tau_1.\text{first}\, \cup \\ 
+                                                    \tau_1.\text{null}
+                                                    \Longrightarrow \tau_2.\text{first}\\
+                                                  \end{array} \right . \\
+                               \text{flast} &amp; = &amp; \left\{\begin{array}{l}
+                                                    \tau_1.\text{flast}\, \cup \\ 
+                                                    \tau_2.\text{null}
+                                                    \Longrightarrow (\tau_2.\text{first} \cup \\
+                                                      \tau_1.\text{flast})\\
+                                                  \end{array} \right . \\
+                            \end{array}
+                            \right .
+\end{array}
+\]</span></p>
+</section>
+<section id="tipos-6" class="slide level1">
+<h1>Tipos</h1>
+<ul>
+<li>Operações sobre tipos.</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{lcl}
+   \tau^* &amp; = &amp; \left\{
+                    \begin{array}{lcl}
+                      \text{null}  &amp; = &amp; \text{true}\\
+                      \text{first} &amp; = &amp; \tau.\text{first}\\
+                      \text{flast} &amp; = &amp; \tau.\text{first}\cup\tau.\text{flast}\\
+                    \end{array}
+                \right .
+\end{array}
+\]</span></p>
+</section>
+<section id="tipos-7" class="slide level1">
+<h1>Tipos</h1>
+<ul>
+<li>Definição de satisfazibilidade de uma linguagem por um tipo.</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{lcl}
+L \models \tau &amp; = &amp; \left\{
+                    \begin{array}{l}
+                       \text{null}(L) \to \tau.\text{null} \land \\
+                       \text{first}(L) \subseteq \tau.\text{first} \land \\
+                       \text{flast}(L) \subseteq \tau.\text{flast}
+                    \end{array}
+                    \right .
+\end{array}
+\]</span></p>
+</section>
+<section id="propriedades" class="slide level1">
+<h1>Propriedades</h1>
+<ul>
+<li>A relação de satisfazibilidade atende:
+<ul>
+<li><span class="math inline">\(L \models \tau_\bot\)</span> sse <span class="math inline">\(L = \emptyset\)</span></li>
+<li><span class="math inline">\(L \models \tau_\lambda\)</span> sse <span class="math inline">\(L =\{\lambda\}\)</span></li>
+<li><span class="math inline">\(L \models \tau_a\)</span> sse <span class="math inline">\(L = \{a\}\)</span>.</li>
+</ul></li>
+</ul>
+</section>
+<section id="propriedades-1" class="slide level1">
+<h1>Propriedades</h1>
+<ul>
+<li><p>Se <span class="math inline">\(L_1 \models \tau_1\)</span>, <span class="math inline">\(L_2 \models \tau_2\)</span> e <span class="math inline">\(\tau_1 \otimes \tau_2\)</span> então <span class="math inline">\(L_1L_2 \models \tau_1 \bullet \tau_2\)</span>.</p></li>
+<li><p>Se <span class="math inline">\(L_1 \models \tau_1\)</span>, <span class="math inline">\(L_2 \models \tau_2\)</span> e <span class="math inline">\(\tau_1 \# \tau_2\)</span> então <span class="math inline">\(L_1\cup L_2 \models \tau_1 \lor \tau_2\)</span>.</p></li>
+</ul>
+</section>
+<section id="propriedades-2" class="slide level1">
+<h1>Propriedades</h1>
+<ul>
+<li><p>Se <span class="math inline">\(L \models \tau\)</span> e <span class="math inline">\(\tau \otimes \tau\)</span> então <span class="math inline">\(L^* \models \tau^*\)</span>.</p></li>
+<li><p>Se <span class="math inline">\(\forall L. L \models \tau\)</span> implica <span class="math inline">\(f(L)\models \tau\)</span> então <span class="math inline">\(\mu F \models \tau\)</span>.</p>
+<ul>
+<li><span class="math inline">\(f\)</span> é monotônica.</li>
+</ul></li>
+</ul>
+</section>
+<section id="sistema-de-tipos" class="slide level1">
+<h1>Sistema de tipos</h1>
+<ul>
+<li>Regras da forma <span class="math inline">\(\Gamma ; \Delta \vdash e : \tau\)</span>
+<ul>
+<li><span class="math inline">\(\Gamma\)</span>: contexto de hipóteses.</li>
+<li><span class="math inline">\(\Delta\)</span>: contexto de hipóteses não “guarded”.</li>
+<li><span class="math inline">\(e\)</span>: expressão <span class="math inline">\(\mu\)</span>-regular</li>
+<li><span class="math inline">\(\tau\)</span>: tipo</li>
+</ul></li>
+</ul>
+</section>
+<section id="sistema-de-tipos-1" class="slide level1">
+<h1>Sistema de tipos</h1>
+<ul>
+<li>Regras</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{cc}
+    \dfrac{}{\Gamma ; \Delta \vdash \lambda : \tau_\lambda} &amp; 
+    \dfrac{}{\Gamma ; \Delta \vdash a : \tau_a} \\ \\
+    \dfrac{}{\Gamma ; \Delta \vdash \emptyset : \tau_\bot} &amp;
+    \dfrac{x : \tau \in \Gamma}{\Gamma ; \Delta \vdash x : \tau}\\ \\
+\end{array}
+\]</span></p>
+</section>
+<section id="sistema-de-tipos-2" class="slide level1">
+<h1>Sistema de tipos</h1>
+<ul>
+<li>Regras</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{c}
+   \dfrac{\Gamma;\Delta \vdash e : \tau\:\:\:\:\:\:\Gamma \cup \Delta ; [] \vdash e&#39; : \tau&#39;\:\: \:\:\:\: \tau\otimes \tau&#39; }{\Gamma ; \Delta \vdash e\,e&#39; : \tau \bullet \tau&#39;} \\ \\
+   \dfrac{\Gamma;\Delta \vdash e : \tau\:\:\:\:\:\:\Gamma ; \Delta \vdash e&#39; : \tau&#39;\:\: \:\:\:\: \tau\# \tau&#39; }{\Gamma ; \Delta \vdash e + e&#39; : \tau \lor \tau&#39;} \\ \\   
+\end{array}
+\]</span></p>
+</section>
+<section id="sistema-de-tipos-3" class="slide level1">
+<h1>Sistema de tipos</h1>
+<ul>
+<li>Regras</li>
+</ul>
+<p><span class="math display">\[
+   \dfrac{\Gamma ; \Delta, v : \tau \vdash e : \tau}{\Gamma ; \Delta \vdash \mu v. e : \tau}
+\]</span></p>
+</section>
+<section id="parsing" class="slide level1">
+<h1>Parsing</h1>
+<ul>
+<li>Podemos definir um algoritmo de parsing descendente recursivo sobre a estrutura da derivação de tipos.</li>
+</ul>
+</section>
+<section id="parsing-1" class="slide level1">
+<h1>Parsing</h1>
+<ul>
+<li>Algoritmo definido sobre a derivação e dois ambientes que armazenam expressões associadas a variáveis.</li>
+</ul>
+</section>
+<section id="parsing-2" class="slide level1">
+<h1>Parsing</h1>
+<p><span class="math display">\[
+\begin{array}{lcl}
+    \mathcal{P}(\Gamma ; \Delta \vdash \emptyset : \tau_\bot)\:\:\:\gamma\:\:\:\delta\:\:\:s &amp; = &amp;
+    \text{erro}\\
+    \mathcal{P}(\Gamma ; \Delta \vdash \lambda : \tau_\lambda)\:\:\:\gamma\:\:\:\delta\:\:\:s &amp; = &amp;
+    s\\
+\end{array}
+\]</span></p>
+</section>
+<section id="parsing-3" class="slide level1">
+<h1>Parsing</h1>
+<p><span class="math display">\[
+\begin{array}{lcl}
+    \mathcal{P}(\Gamma ; \Delta \vdash a : \tau_a)\:\:\:\gamma\:\:\:\delta\:\:\:(a\,s) &amp; = &amp; s \\
+    \mathcal{P}(\Gamma ; \Delta \vdash a : \tau_a)\:\:\:\gamma\:\:\:\delta\:\:\:\_ &amp; = &amp;
+    \text{erro}\\
+\end{array}
+\]</span></p>
+</section>
+<section id="parsing-4" class="slide level1">
+<h1>Parsing</h1>
+<p><span class="math display">\[
+\begin{array}{l}
+   \mathcal{P}(\Gamma ; \Delta \vdash e_1\,e_2 : \tau_1\bullet\tau_2)\:\:\:\gamma\:\:\:\delta\:\:\:s
+   = \\
+   \:\:\:\:\text{let }s&#39; = \mathcal{P}(\Gamma ; \Delta \vdash e_1 : \tau_1)
+   \:\:\:\gamma\:\:\:\delta\:\:\:s\\
+   \:\:\:\:\text{in }\mathcal{P}(\Gamma ; \Delta \vdash e_2 :
+   \tau_2)\:\:\:(\gamma\,\cup\,\delta)\:\:\:[]\:\:\:s&#39;\\
+\end{array}
+\]</span></p>
+</section>
+<section id="parsing-5" class="slide level1">
+<h1>Parsing</h1>
+<p><span class="math display">\[
+\begin{array}{lc}
+\mathcal{P}(\Gamma ; \Delta \vdash e_1 + e_2 : \tau_1\lor\tau_2)\:\:\:\gamma\:\:\:\delta\:\:\:\lambda
+   &amp; = \\ \left\{
+           \begin{array}{ll}
+              \lambda &amp; \text{se }\text{null}(\tau_1\lor\tau_2)\\
+              \text{erro} &amp; \text{caso contrário}\\
+           \end{array}
+         \right .
+\end{array}
+\]</span></p>
+</section>
+<section id="parsing-6" class="slide level1">
+<h1>Parsing</h1>
+<p><span class="math display">\[
+\begin{array}{lc}
+\mathcal{P}(\Gamma ; \Delta \vdash e_1 + e_2 : \tau_1\lor\tau_2)\:\:\:\gamma\:\:\:\delta\:\:\:(a\,s)
+   &amp; = \\ 
+   \mathcal{P}(\Gamma ; \Delta \vdash e_1 : \tau_1)\:\:\:\gamma\:\:\:\delta\:\:\:s &amp; \\
+   \text{se }a \in \tau_1.\text{first} \lor (\tau_1.\text{null} \land a \not\in (\tau_1\lor\tau_2).\text{first})  
+\end{array}
+\]</span></p>
+</section>
+<section id="parsing-7" class="slide level1">
+<h1>Parsing</h1>
+<p><span class="math display">\[
+\begin{array}{lc}
+\mathcal{P}(\Gamma ; \Delta \vdash e_1 + e_2 : \tau_1\lor\tau_2)\:\:\:\gamma\:\:\:\delta\:\:\:(a\,s)
+   &amp; = \\ 
+   \mathcal{P}(\Gamma ; \Delta \vdash e_2 : \tau_2)\:\:\:\gamma\:\:\:\delta\:\:\:s &amp; \\
+   \text{se }a \in \tau_2.\text{first} \lor (\tau_2.\text{null} \land a \not\in (\tau_1\lor\tau_2).\text{first})  
+\end{array}
+\]</span></p>
+</section>
+<section id="parsing-8" class="slide level1">
+<h1>Parsing</h1>
+<p><span class="math display">\[
+\begin{array}{lc}
+\mathcal{P}(\Gamma ; \Delta \vdash e_1 + e_2 : \tau_1\lor\tau_2)\:\:\:\gamma\:\:\:\delta\:\:\:(a\,s)
+   &amp; = \text{erro}\\ 
+   \text{caso contrário}\\
+\end{array}
+\]</span></p>
+</section>
+<section id="parsing-9" class="slide level1">
+<h1>Parsing</h1>
+<p><span class="math display">\[
+\begin{array}{lc}
+\mathcal{P}(\Gamma ; \Delta \vdash v : \tau)\:\:\:\gamma\:\:\:\delta\:\:\:s &amp; = \gamma(x)\,s
+\end{array}
+\]</span></p>
+</section>
+<section id="parsing-10" class="slide level1">
+<h1>Parsing</h1>
+<p><span class="math display">\[
+\begin{array}{lc}
+\mathcal{P}(\Gamma ; \Delta \vdash \mu v : \tau. e : \tau)\:\:\:\gamma\:\:\:\delta\:\:\:s &amp; = \\
+\text{fix}(\lambda f \to \mathcal{P}(\Gamma ; \Delta, v : \tau \vdash e : \tau) \gamma\:\:\: 
+(\delta, f/v))\:s
+\end{array}
+\]</span></p>
+</section>
+<section id="parsing-11" class="slide level1">
+<h1>Parsing</h1>
+<ul>
+<li>O algoritmo apresentado é correto, isto é, se <span class="math inline">\(w \in [\![e]\!]_{\eta}\)</span> e <span class="math inline">\(\emptyset;\emptyset\vdash e : \tau\)</span> então o algoritmo consegue fazer o parsing de <span class="math inline">\(w\)</span>.</li>
+</ul>
+</section>
+<section id="exercício" class="slide level1">
+<h1>Exercício</h1>
+<ul>
+<li>O algoritmo de parsing apresentado não lida com o operador de fecho de Kleene. Como ele poderia ser modificado para lidar com este operador?</li>
+</ul>
+</section>
+<section id="referências" class="slide level1">
+<h1>Referências</h1>
+<ul>
+<li>Krishnaswami, Neel; Yallop,Jeremy. A typed, algebraic approach to parsing. PLDI 2019.</li>
+</ul>
+</section>
+    </div>
+  </div>
+
+  <script src="../revealjs/dist/reveal.js"></script>
+
+  <!-- reveal.js plugins -->
+  <script src="../revealjs/plugin/notes/notes.js"></script>
+  <script src="../revealjs/plugin/search/search.js"></script>
+  <script src="../revealjs/plugin/zoom/zoom.js"></script>
+  <script src="../revealjs/plugin/math/math.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+      
+        // Push each slide change to the browser history
+        history: true,
+        math: {
+          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // reveal.js plugins
+        plugins: [
+          RevealMath,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    </body>
+</html>

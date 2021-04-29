@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="PCC102 - Teoria da Computação - Prof. Rodrigo Ribeiro">
+  <title>Expressões livres de contexto e gramáticas</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../revealjs/dist/reset.css">
+  <link rel="stylesheet" href="../revealjs/dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+  </style>
+  <link rel="stylesheet" href="../revealjs/dist/theme/white.css" id="theme">
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">Expressões livres de contexto e gramáticas</h1>
+  <p class="author">PCC102 - Teoria da Computação - Prof. Rodrigo Ribeiro</p>
+</section>
+
+<section id="objetivos" class="slide level1">
+<h1>Objetivos</h1>
+<ul>
+<li>Apresentar a equivalência entre gramáticas livres de contexto e <span class="math inline">\(\mu\)</span>-regular expressions.</li>
+</ul>
+</section>
+<section id="anteriormente" class="slide level1">
+<h1>Anteriormente</h1>
+<ul>
+<li>Foi apresentada a sintaxe e semântica de <span class="math inline">\(\mu\)</span>-regular expressions.</li>
+</ul>
+</section>
+<section id="anteriormente-1" class="slide level1">
+<h1>Anteriormente</h1>
+<ul>
+<li>Equivalência com autômatos de pilha não determinísticos</li>
+</ul>
+</section>
+<section id="anteriormente-2" class="slide level1">
+<h1>Anteriormente</h1>
+<ul>
+<li>É fato conhecido que autômatos de pilha não determinísticos são equivalentes a gramáticas livres de contexto.</li>
+</ul>
+</section>
+<section id="nessa-aula" class="slide level1">
+<h1>Nessa aula</h1>
+<ul>
+<li>Apresentaremos a equivalência entre <span class="math inline">\(\mu\)</span>-regular expressions e gramáticas livres de contexto.</li>
+</ul>
+</section>
+<section id="parte-1" class="slide level1">
+<h1>Parte 1</h1>
+<ul>
+<li>Como obter uma <span class="math inline">\(\mu\)</span>-regular expression a partir de uma gramática livre de contexto?</li>
+</ul>
+</section>
+<section id="parte-1-1" class="slide level1">
+<h1>Parte 1</h1>
+<ul>
+<li>Seja <span class="math inline">\(G = (V,\Sigma,R,P)\)</span> uma gramática livre de contexto.</li>
+</ul>
+<ol type="1">
+<li>Inicie com uma expressão formada pelas regras para <span class="math inline">\(P\)</span>, substituindo <span class="math inline">\(|\)</span> por <span class="math inline">\(+\)</span>.</li>
+</ol>
+</section>
+<section id="parte-1-2" class="slide level1">
+<h1>Parte 1</h1>
+<ol start="2" type="1">
+<li>Substitua cada variável livre por sua expressão correspondente até que não existam variáveis livres.</li>
+</ol>
+</section>
+<section id="parte-1-3" class="slide level1">
+<h1>Parte 1</h1>
+<ul>
+<li>Considere a seguinte gramática</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{lcl}
+S &amp; \to &amp; a ST\,|\,U\\
+T &amp; \to &amp; TU\,|\,S\\
+U &amp; \to &amp; \lambda
+\end{array}
+\]</span></p>
+</section>
+<section id="parte-1-4" class="slide level1">
+<h1>Parte 1</h1>
+<ul>
+<li>Convertendo para uma <span class="math inline">\(\mu\)</span>-regular expression.
+<ul>
+<li>Convertendo <span class="math inline">\(S \to a ST\,|\,U\)</span></li>
+</ul></li>
+</ul>
+<p><span class="math display">\[
+\mu S. a ST + U
+\]</span></p>
+</section>
+<section id="parte-1-5" class="slide level1">
+<h1>Parte 1</h1>
+<ul>
+<li>Próxima variável livre: <span class="math inline">\(T\)</span>
+<ul>
+<li>Expressão para <span class="math inline">\(T\)</span>: <span class="math inline">\(\mu T. TU + S\)</span></li>
+</ul></li>
+<li>Obtemos a expressão:</li>
+</ul>
+<p><span class="math display">\[
+\mu S. a S(\mu T. TU + S) + U
+\]</span></p>
+</section>
+<section id="parte-1-6" class="slide level1">
+<h1>Parte 1</h1>
+<ul>
+<li>Próxima variável livre: <span class="math inline">\(U\)</span>
+<ul>
+<li>Expressão para <span class="math inline">\(U\)</span>: <span class="math inline">\(\mu U. 0\)</span>.</li>
+</ul></li>
+<li>Obtemos a expressão:</li>
+</ul>
+<p><span class="math display">\[
+\mu S. a S(\mu T. T(\mu U. 0) + S) + (\mu U. 0)
+\]</span></p>
+</section>
+<section id="parte-2" class="slide level1">
+<h1>Parte 2</h1>
+<ul>
+<li>A segunda parte da equivalência envolve obter uma gramática a partir de uma expressão <span class="math inline">\(\mu\)</span>-regular.</li>
+</ul>
+</section>
+<section id="parte-2-1" class="slide level1">
+<h1>Parte 2</h1>
+<ul>
+<li>Para isso, vamos definir uma função que a partir de uma expressão <span class="math inline">\(\mu\)</span>-regular constrói uma gramática equivalente.</li>
+</ul>
+</section>
+<section id="parte-2-2" class="slide level1">
+<h1>Parte 2</h1>
+<ul>
+<li>Definição da função <span class="math inline">\(\varphi\)</span>:</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{lcl}
+   \varphi(0) &amp; = &amp; ({P},\Sigma,\emptyset,P)\\
+   \varphi(1) &amp; = &amp; ({P},\Sigma,\{P\to \lambda\},P)\\
+   \varphi(a) &amp; = &amp; ({P},\Sigma,\{P\to a\},P)\\
+   \varphi(v) &amp; = &amp; ({P,v},\Sigma,\{P\to v\},P)\\
+\end{array}
+\]</span></p>
+</section>
+<section id="parte-2-3" class="slide level1">
+<h1>Parte 2</h1>
+<ul>
+<li>Definição da função <span class="math inline">\(\varphi\)</span>:</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{lcl}
+   \varphi(e_1 + e_2) &amp; = &amp; (\{P\} \cup V_1 \cup V_2,\Sigma,R,P)\\
+   \text{em que:}     &amp;   &amp;\\
+   R                  &amp; = &amp; \{P \to P_1\,|\,P_2\}\cup R_1 \cup R_2\\
+   \varphi(e_1)       &amp; = &amp; (V_1,\Sigma,R_1,P_1)\\
+   \varphi(e_2)       &amp; = &amp; (V_2,\Sigma,R_2,P_2)\\
+\end{array}
+\]</span></p>
+</section>
+<section id="parte-2-4" class="slide level1">
+<h1>Parte 2</h1>
+<ul>
+<li>Definição da função <span class="math inline">\(\varphi\)</span>:</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{lcl}
+   \varphi(e_1\,e_2) &amp; = &amp; (\{P\} \cup V_1 \cup V_2,\Sigma,R,P)\\
+   \text{em que:}     &amp;   &amp;\\
+   R                  &amp; = &amp; \{P \to P_1\,P_2\}\cup R_1 \cup R_2\\
+   \varphi(e_1)       &amp; = &amp; (V_1,\Sigma,R_1,P_1)\\
+   \varphi(e_2)       &amp; = &amp; (V_2,\Sigma,R_2,P_2)\\
+\end{array}
+\]</span></p>
+</section>
+<section id="parte-2-5" class="slide level1">
+<h1>Parte 2</h1>
+<ul>
+<li>Definição da função <span class="math inline">\(\varphi\)</span>:</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{lcl}
+   \varphi(e_1^*) &amp; = &amp; (\{P\} \cup V_1,\Sigma,R,P)\\
+   \text{em que:}     &amp;   &amp;\\
+   R                  &amp; = &amp; \{P \to P_1\,P\,|\,\lambda\} \cup R_1\\
+   \varphi(e_1)       &amp; = &amp; (V_1,\Sigma,R_1,P_1)\\
+\end{array}
+\]</span></p>
+</section>
+<section id="parte-2-6" class="slide level1">
+<h1>Parte 2</h1>
+<ul>
+<li>Definição da função <span class="math inline">\(\varphi\)</span>:</li>
+</ul>
+<p><span class="math display">\[
+\begin{array}{lcl}
+   \varphi(\mu v. e_1) &amp; = &amp; (\{v\} \cup V_1,\Sigma,R,v)\\
+   \text{em que:}      &amp;   &amp;\\
+   R                   &amp; = &amp; \{v \to P_1\} \cup R_1\\
+   \varphi(e_1)        &amp; = &amp; (V_1,\Sigma,R_1,P_1)\\
+\end{array}
+\]</span></p>
+</section>
+<section id="exercício" class="slide level1">
+<h1>Exercício</h1>
+<ul>
+<li>Implemente, em sua linguagem de programação favorita, a transformação entre expressões <span class="math inline">\(\mu\)</span>-regulares e gramáticas livres de contexto.</li>
+</ul>
+</section>
+<section id="referências" class="slide level1">
+<h1>Referências</h1>
+<ul>
+<li>Leiß, Hans. Towards Kleene algebra with recursion.</li>
+</ul>
+</section>
+    </div>
+  </div>
+
+  <script src="../revealjs/dist/reveal.js"></script>
+
+  <!-- reveal.js plugins -->
+  <script src="../revealjs/plugin/notes/notes.js"></script>
+  <script src="../revealjs/plugin/search/search.js"></script>
+  <script src="../revealjs/plugin/zoom/zoom.js"></script>
+  <script src="../revealjs/plugin/math/math.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+      
+        // Push each slide change to the browser history
+        history: true,
+        math: {
+          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // reveal.js plugins
+        plugins: [
+          RevealMath,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    </body>
+</html>
