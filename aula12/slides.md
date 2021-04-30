@@ -213,9 +213,9 @@ Sistema de tipos
 
 $$
 \begin{array}{cc}
-    \dfrac{}{\Gamma ; \Delta \vdash \lambda : \tau_\lambda} & 
+    \dfrac{}{\Gamma ; \Delta \vdash 1 : \tau_\lambda} & 
     \dfrac{}{\Gamma ; \Delta \vdash a : \tau_a} \\ \\
-    \dfrac{}{\Gamma ; \Delta \vdash \emptyset : \tau_\bot} &
+    \dfrac{}{\Gamma ; \Delta \vdash 0 : \tau_\bot} &
     \dfrac{x : \tau \in \Gamma}{\Gamma ; \Delta \vdash x : \tau}\\ \\
 \end{array}
 $$

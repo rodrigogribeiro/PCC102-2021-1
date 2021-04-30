@@ -123,12 +123,12 @@ U &amp; \to &amp; \lambda
 <ul>
 <li>Próxima variável livre: <span class="math inline">\(U\)</span>
 <ul>
-<li>Expressão para <span class="math inline">\(U\)</span>: <span class="math inline">\(\mu U. 0\)</span>.</li>
+<li>Expressão para <span class="math inline">\(U\)</span>: <span class="math inline">\(\mu U. 1\)</span>.</li>
 </ul></li>
 <li>Obtemos a expressão:</li>
 </ul>
 <p><span class="math display">\[
-\mu S. a S(\mu T. T(\mu U. 0) + S) + (\mu U. 0)
+\mu S. a S(\mu T. T(\mu U. 1) + S) + (\mu U. 1)
 \]</span></p>
 </section>
 <section id="parte-2" class="slide level1">
@@ -150,10 +150,10 @@ U &amp; \to &amp; \lambda
 </ul>
 <p><span class="math display">\[
 \begin{array}{lcl}
-   \varphi(0) &amp; = &amp; ({P},\Sigma,\emptyset,P)\\
-   \varphi(1) &amp; = &amp; ({P},\Sigma,\{P\to \lambda\},P)\\
-   \varphi(a) &amp; = &amp; ({P},\Sigma,\{P\to a\},P)\\
-   \varphi(v) &amp; = &amp; ({P,v},\Sigma,\{P\to v\},P)\\
+   \varphi(0) &amp; = &amp; (\{P\},\Sigma,\emptyset,P)\\
+   \varphi(1) &amp; = &amp; (\{P\},\Sigma,\{P\to \lambda\},P)\\
+   \varphi(a) &amp; = &amp; (\{P\},\Sigma,\{P\to a\},P)\\
+   \varphi(v) &amp; = &amp; (\{P,v\},\Sigma,\{P\to v\},P)\\
 \end{array}
 \]</span></p>
 </section>
@@ -166,9 +166,9 @@ U &amp; \to &amp; \lambda
 \begin{array}{lcl}
    \varphi(e_1 + e_2) &amp; = &amp; (\{P\} \cup V_1 \cup V_2,\Sigma,R,P)\\
    \text{em que:}     &amp;   &amp;\\
-   R                  &amp; = &amp; \{P \to P_1\,|\,P_2\}\cup R_1 \cup R_2\\
-   \varphi(e_1)       &amp; = &amp; (V_1,\Sigma,R_1,P_1)\\
-   \varphi(e_2)       &amp; = &amp; (V_2,\Sigma,R_2,P_2)\\
+   \:\:\:\:R                  &amp; = &amp; \{P \to P_1\,|\,P_2\}\cup R_1 \cup R_2\\
+   \:\:\:\:\varphi(e_1)       &amp; = &amp; (V_1,\Sigma,R_1,P_1)\\
+   \:\:\:\:\varphi(e_2)       &amp; = &amp; (V_2,\Sigma,R_2,P_2)\\
 \end{array}
 \]</span></p>
 </section>
@@ -181,9 +181,9 @@ U &amp; \to &amp; \lambda
 \begin{array}{lcl}
    \varphi(e_1\,e_2) &amp; = &amp; (\{P\} \cup V_1 \cup V_2,\Sigma,R,P)\\
    \text{em que:}     &amp;   &amp;\\
-   R                  &amp; = &amp; \{P \to P_1\,P_2\}\cup R_1 \cup R_2\\
-   \varphi(e_1)       &amp; = &amp; (V_1,\Sigma,R_1,P_1)\\
-   \varphi(e_2)       &amp; = &amp; (V_2,\Sigma,R_2,P_2)\\
+   \:\:\:\:R                  &amp; = &amp; \{P \to P_1\,P_2\}\cup R_1 \cup R_2\\
+   \:\:\:\:\varphi(e_1)       &amp; = &amp; (V_1,\Sigma,R_1,P_1)\\
+   \:\:\:\:\varphi(e_2)       &amp; = &amp; (V_2,\Sigma,R_2,P_2)\\
 \end{array}
 \]</span></p>
 </section>
@@ -196,8 +196,8 @@ U &amp; \to &amp; \lambda
 \begin{array}{lcl}
    \varphi(e_1^*) &amp; = &amp; (\{P\} \cup V_1,\Sigma,R,P)\\
    \text{em que:}     &amp;   &amp;\\
-   R                  &amp; = &amp; \{P \to P_1\,P\,|\,\lambda\} \cup R_1\\
-   \varphi(e_1)       &amp; = &amp; (V_1,\Sigma,R_1,P_1)\\
+   \:\:\:\:R                  &amp; = &amp; \{P \to P_1\,P\,|\,\lambda\} \cup R_1\\
+   \:\:\:\:\varphi(e_1)       &amp; = &amp; (V_1,\Sigma,R_1,P_1)\\
 \end{array}
 \]</span></p>
 </section>
@@ -210,8 +210,8 @@ U &amp; \to &amp; \lambda
 \begin{array}{lcl}
    \varphi(\mu v. e_1) &amp; = &amp; (\{v\} \cup V_1,\Sigma,R,v)\\
    \text{em que:}      &amp;   &amp;\\
-   R                   &amp; = &amp; \{v \to P_1\} \cup R_1\\
-   \varphi(e_1)        &amp; = &amp; (V_1,\Sigma,R_1,P_1)\\
+   \:\:\:\:R                   &amp; = &amp; \{v \to P_1\} \cup R_1\\
+   \:\:\:\:\varphi(e_1)        &amp; = &amp; (V_1,\Sigma,R_1,P_1)\\
 \end{array}
 \]</span></p>
 </section>

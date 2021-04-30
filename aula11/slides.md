@@ -95,12 +95,12 @@ Parte 1
 =======
 
 - Próxima variável livre: $U$
-   - Expressão para $U$: $\mu U. 0$.
+   - Expressão para $U$: $\mu U. 1$.
    
 - Obtemos a expressão:
 
 $$
-\mu S. a S(\mu T. T(\mu U. 0) + S) + (\mu U. 0)
+\mu S. a S(\mu T. T(\mu U. 1) + S) + (\mu U. 1)
 $$
 
 Parte 2
@@ -124,10 +124,10 @@ Parte 2
 
 $$
 \begin{array}{lcl}
-   \varphi(0) & = & ({P},\Sigma,\emptyset,P)\\
-   \varphi(1) & = & ({P},\Sigma,\{P\to \lambda\},P)\\
-   \varphi(a) & = & ({P},\Sigma,\{P\to a\},P)\\
-   \varphi(v) & = & ({P,v},\Sigma,\{P\to v\},P)\\
+   \varphi(0) & = & (\{P\},\Sigma,\emptyset,P)\\
+   \varphi(1) & = & (\{P\},\Sigma,\{P\to \lambda\},P)\\
+   \varphi(a) & = & (\{P\},\Sigma,\{P\to a\},P)\\
+   \varphi(v) & = & (\{P,v\},\Sigma,\{P\to v\},P)\\
 \end{array}
 $$
 
@@ -140,9 +140,9 @@ $$
 \begin{array}{lcl}
    \varphi(e_1 + e_2) & = & (\{P\} \cup V_1 \cup V_2,\Sigma,R,P)\\
    \text{em que:}     &   &\\
-   R                  & = & \{P \to P_1\,|\,P_2\}\cup R_1 \cup R_2\\
-   \varphi(e_1)       & = & (V_1,\Sigma,R_1,P_1)\\
-   \varphi(e_2)       & = & (V_2,\Sigma,R_2,P_2)\\
+   \:\:\:\:R                  & = & \{P \to P_1\,|\,P_2\}\cup R_1 \cup R_2\\
+   \:\:\:\:\varphi(e_1)       & = & (V_1,\Sigma,R_1,P_1)\\
+   \:\:\:\:\varphi(e_2)       & = & (V_2,\Sigma,R_2,P_2)\\
 \end{array}
 $$
 
@@ -155,9 +155,9 @@ $$
 \begin{array}{lcl}
    \varphi(e_1\,e_2) & = & (\{P\} \cup V_1 \cup V_2,\Sigma,R,P)\\
    \text{em que:}     &   &\\
-   R                  & = & \{P \to P_1\,P_2\}\cup R_1 \cup R_2\\
-   \varphi(e_1)       & = & (V_1,\Sigma,R_1,P_1)\\
-   \varphi(e_2)       & = & (V_2,\Sigma,R_2,P_2)\\
+   \:\:\:\:R                  & = & \{P \to P_1\,P_2\}\cup R_1 \cup R_2\\
+   \:\:\:\:\varphi(e_1)       & = & (V_1,\Sigma,R_1,P_1)\\
+   \:\:\:\:\varphi(e_2)       & = & (V_2,\Sigma,R_2,P_2)\\
 \end{array}
 $$
 
@@ -170,8 +170,8 @@ $$
 \begin{array}{lcl}
    \varphi(e_1^*) & = & (\{P\} \cup V_1,\Sigma,R,P)\\
    \text{em que:}     &   &\\
-   R                  & = & \{P \to P_1\,P\,|\,\lambda\} \cup R_1\\
-   \varphi(e_1)       & = & (V_1,\Sigma,R_1,P_1)\\
+   \:\:\:\:R                  & = & \{P \to P_1\,P\,|\,\lambda\} \cup R_1\\
+   \:\:\:\:\varphi(e_1)       & = & (V_1,\Sigma,R_1,P_1)\\
 \end{array}
 $$
 
@@ -184,8 +184,8 @@ $$
 \begin{array}{lcl}
    \varphi(\mu v. e_1) & = & (\{v\} \cup V_1,\Sigma,R,v)\\
    \text{em que:}      &   &\\
-   R                   & = & \{v \to P_1\} \cup R_1\\
-   \varphi(e_1)        & = & (V_1,\Sigma,R_1,P_1)\\
+   \:\:\:\:R                   & = & \{v \to P_1\} \cup R_1\\
+   \:\:\:\:\varphi(e_1)        & = & (V_1,\Sigma,R_1,P_1)\\
 \end{array}
 $$
 
