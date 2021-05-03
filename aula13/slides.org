@@ -1,0 +1,227 @@
+#    -*- mode: org -*-
+#+OPTIONS: reveal_center:t reveal_progress:t reveal_history:t reveal_control:t
+#+OPTIONS: reveal_mathjax:t reveal_rolling_links:t reveal_keyboard:t num:nil
+#+OPTIONS: reveal_width:1200 reveal_height:800
+#+OPTIONS: toc:nil
+#+REVEAL_MARGIN: 0.2
+#+REVEAL_MIN_SCALE: 0.5
+#+REVEAL_MAX_SCALE: 2.5
+#+REVEAL_TRANS: none
+#+REVEAL_THEME: white
+#+REVEAL_HLEVEL: 999
+#+REVEAL_TITLE_SLIDE: <h1>%t</h1><h2>%s</h2><h3>%A %a</h3>
+
+#+TITLE: Derivadas de Gramáticas
+#+SUBTITLE: PCC102 - Teoria da computação
+#+AUTHOR: Rodrigo Ribeiro
+#+EMAIL: rodrigo.ribeiro@ufop.edu.br
+
+* Objetivos
+- Apresentar o conceito de derivadas de gramáticas livres de contexto.
+- Utilizar esse conceito para o parsing usando derivadas de  gramáticas
+
+* Derivadas
+- Até o presente momento, vimos que o conceito de derivada pode ser usado para lidar tanto com
+  expressões regulares quanto com expressões \mu-regulares.
+
+* Derivadas
+- Nesta aula, veremos como estender esse conceito para gramáticas livres de contexto.
+
+* Derivadas
+- Intuitivamente, vamos definir um algoritmo que irá construir uma nova gramática que
+  representa o processamento de um símbolo.
+
+- Diremos que uma string $w$ será gerada por uma gramática só se a gramática produzida
+  após processar todos os símbolos de $w$ gerar a string $\lambda$.
+
+* Derivadas de gramáticas
+- Dada uma gramática $G = (V,\Sigma,R,P)$, vamos construir
+  gramáticas $G_a = (V \cup V_a, \Sigma, R_a, P_a)$ em que:
+  - $G_a$ representa a gramática obtida pela derivada com respeito ao símbolo $a \in \Sigma$.
+
+* Derivadas de gramáticas
+- Definimos a $1^a$ derivada de $G$ com respeito a $a \in \Sigma$ como:
+  - $\alpha,\beta \in (V\cup \Sigma)^*$.
+  - $nullable(\alpha,G)$ determina se $\alpha$ gera $\lambda$.
+- Regras originais estão presentes em $G_a$.
+
+\begin{array}{c}
+  \dfrac{A \to w \in R}{A \to w \in R_a} \\ \\
+\end{array}
+
+* Derivadas de gramáticas
+- Definimos a $1^a$ derivada de $G$ com respeito a $a \in \Sigma$ como:
+  - $\alpha,\beta \in (V\cup \Sigma)^*$.
+  - $nullable(\alpha,G)$ determina se $\alpha$ gera $\lambda$.
+- Caso 1: Processando uma variável.
+
+\begin{array}{c}
+  \dfrac{A \to \alpha B \beta \in R\:\:\:\:\text{nullable}(\alpha,G)}
+        {A_a \to B_a \beta \in R_a}\\ \\
+\end{array}
+
+* Derivadas de gramáticas
+- Definimos a $1^a$ derivada de $G$ com respeito a $a \in \Sigma$ como:
+  - $\alpha,\beta \in (V\cup \Sigma)^*$.
+  - $nullable(\alpha,G)$ determina se $\alpha$ gera $\lambda$.
+- Caso 2: Processando um símbolo do alfabeto.
+
+\begin{array}{c}
+  \dfrac{A \to \alpha a \beta \in R\:\:\:\:\text{nullable}(\alpha,G)}
+        {A_a \to \beta \in R_a}
+\end{array}
+
+* Exemplo
+
+- Vamos considerar a seguinte gramática:
+
+  \begin{array}{lcl}
+    P & \to & 0P0 | 1P1 | \lambda
+  \end{array}
+
+* Exemplo
+
+ - Calculando a derivada com respeito a $0$, obtemos as seguintes regras:
+
+ \begin{array}{lcl}
+   P_0 & \to & P0\\
+   P   & \to & 0P0 | 1P1 | \lambda\\
+ \end{array}
+
+ - A regra $P_0\to P0$ foi adicionada para representar a ação de consumir o
+   símbolo $0$ da regra $P \to 0P0$, usando ($\alpha = \lambda$):
+
+\begin{array}{c}
+  \dfrac{A \to \alpha a \beta \in R\:\:\:\:\text{nullable}(\alpha,G)}
+        {A_a \to \beta \in R_a}
+\end{array}
+
+* Exemplo
+
+- Podemos mostrar que a gramática anterior gera $00$, calculando a derivada
+  com respeito a $0$ sobre a gramática obtida anteriormente.
+
+* Exemplo
+
+- Derivada com respeito a $00$.
+
+- Usando a regra ($\alpha = \lambda$):
+
+\begin{array}{c}
+  \dfrac{A \to \alpha B \beta \in R\:\:\:\:\text{nullable}(\alpha,G)}
+        {A_a \to B_a \beta \in R_a}\\ \\
+\end{array}
+
+
+obtemos:
+
+  \begin{array}{lcl}
+    P_{00} & \to & P_0 0\,|\,\lambda\\
+    P_0 & \to & P0\\
+    P   & \to & 0P0 | 1P1 | \lambda\\
+  \end{array}
+
+* Exemplo
+
+- Como a variável $P_{00}\Rightarrow^* \lambda$, temos que
+  $00 \in L(G)$.
+
+* Derivadas de gramáticas
+
+- As três regras anteriores, podem ser combinadas em uma única
+  como se segue.
+  - Se $X = B \in V$ então $X_a = B_a \in V_a$.
+  - Se $X = a \in \Sigma$ então $X_a = \lambda$.
+
+  \begin{array}{c}
+    \dfrac{A \to \alpha X \beta \in R\:\:\:\:\text{nullable}(\alpha,G)}
+          {A_a \to X_a\beta \in R}
+  \end{array}
+
+* Derivadas de gramáticas
+
+- Derivadas para palavras:
+
+
+\delta_{a_1a_2 ... a_n}(G) = \delta_{a_n}(\delta_{a_{1}a_{2}...a_{n-1}}(G))
+
+* Derivadas de gramáticas
+
+- Problema: Derivadas consecutivas aumentam por um fator constante o número
+  de produções em uma gramática.
+  - Isso pode degradar a eficiência do algoritmo.
+  - A cada passo, esse acréscimo pode acarretar em um custo exponencial.
+
+* Derivadas de gramáticas
+
+- Existe uma forma de "otimizar" o número de produções?
+
+* Derivadas de gramáticas
+
+- Sim! Podemos descartar as produções geradas no passo anterior de uma derivada.
+
+* Derivadas de gramáticas
+
+- Para isso, vamos considerar as gramáticas
+  - $G_a = (V_a, \Sigma, R_a, P_a)$
+  - $G_{ab} = (V_{ab},\Sigma, R_{ab},P_{ab})$
+
+- Se $a = b$ então $R_a \subseteq R_{ab}$, logo desnecessário.
+
+* Derivadas de gramáticas
+
+- Se $a \neq b$ então as regras $R_a$ são inalcançáveis a partir de $P_{ab}$.
+  - Regras em $R_a$ tem a forma: $A_a \to B_a\beta$ ou $A_a\to \beta$.
+  - Regras em $R_{ab}$ tem a forma: $A_{ab} \to B_{ab}\beta$, $A_{ab} \to B_b\beta$ ou
+    $A_{ab} \to \beta$.
+
+* Derivadas de gramáticas
+
+- Logo, nenhuma derivação iniciando em $P_{ab}$ vai incluir $B_a$.
+  - Dessa forma, podemos remover todas as produções de $G_a$.
+- Assim, a derivada $\delta_{ab}(G)$ é dada pela gramática:
+
+  \delta_{ab}(G) = (V \cup V_{ab}, \Sigma, R \cup R_{ab}, P_{ab})
+
+* Derivadas de gramáticas
+
+- Seja $G = (V,\Sigma,R,P)$ e $w = a_{1}a_{2}...a_{n}$.
+- Para cada prefixo $z \in \{\lambda, a_{1}, a_{1}a_{2},...,a_{1}...a_{n}\}$.
+
+* Derivadas de gramáticas
+- Defina a gramática $G_{z} = (V \cup V_{z},\Sigma,R \cup R_{z}, P_z)$, em que:
+  - $V_{z} = \{A_{v}\,|\,v \in \{a_{i},a_{i-1}a_{i},...,a_{1}...a_{i}\}\}$, para
+    cada $z$.
+  - Seja $z = z'a_{i}$. As regras $R_z$ são obtidas a partir
+    de $R \cup R_{z'}$ usando a regra:
+
+ \begin{array}{c}
+    \dfrac{A_{v} \to (\alpha X \beta) \in R \cup R_{z'}\:\:\:\:\text{nullable}(\alpha,G_{z'})}
+          {A_{va_{i}} \to X_{a_{i}}\beta \in R_z}
+ \end{array}
+
+* Derivadas de gramáticas
+
+- Usando a regra anterior, evita-se o aumento exponencial do número de produções, tornando
+  o algoritmo mais eficiente.
+
+- Evidentemente, o algoritmo apresentado é correto, isto é, se $w \in L(G)$ então
+  $\lambda \in L(\delta_{w}(G))$.
+
+* Derivadas de gramáticas
+
+- Além da correção, os proponentes do uso de derivadas de gramáticas relacionam esse formalismos
+  a conhecidos algoritmos clássicos de parsing (Earley e baseados em gramáticas LL(k)).
+
+- Um algoritmo para construção de árvores de parsing são descritos no artigo que propõe a
+  abordagem.
+
+* Exercício
+
+- Implemente o algoritmo para cálculo da derivada de gramáticas em sua linguagem
+  favorita.
+
+* Referências
+
+- Henriksen, Ian; Bilardi, Gianfranco; Pingali, Keshav. Derivative Grammars:
+  A Symbolic Approach to Parsing with Derivatives. OPSLA 2019.

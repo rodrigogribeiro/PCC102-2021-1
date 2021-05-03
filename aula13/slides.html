@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Derivadas de Gramáticas</title>
+<meta name="author" content="Rodrigo Ribeiro"/>
+<style type="text/css">
+.underline { text-decoration: underline; }
+</style>
+<link rel="stylesheet" href="/Users/rodrigo/.emacs.d/.local/straight/build-27.2/revealjs/dist/reveal.css"/>
+
+<link rel="stylesheet" href="/Users/rodrigo/.emacs.d/.local/straight/build-27.2/revealjs/dist/theme/white.css" id="theme"/>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+<section id="sec-title-slide">
+<h1>Derivadas de Gramáticas</h1><h2>PCC102 - Teoria da computação</h2><h3> Rodrigo Ribeiro</h3>
+</section>
+
+<section>
+<section id="slide-org60e28c4">
+<h2 id="org60e28c4">Objetivos</h2>
+<ul>
+<li>Apresentar o conceito de derivadas de gramáticas livres de contexto.</li>
+<li>Utilizar esse conceito para o parsing usando derivadas de  gramáticas</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org2cb4c76">
+<h2 id="org2cb4c76">Derivadas</h2>
+<ul>
+<li>Até o presente momento, vimos que o conceito de derivada pode ser usado para lidar tanto com
+expressões regulares quanto com expressões &mu;-regulares.</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-orge266497">
+<h2 id="orge266497">Derivadas</h2>
+<ul>
+<li>Nesta aula, veremos como estender esse conceito para gramáticas livres de contexto.</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-orgc960b4f">
+<h2 id="orgc960b4f">Derivadas</h2>
+<ul>
+<li>Intuitivamente, vamos definir um algoritmo que irá construir uma nova gramática que
+representa o processamento de um símbolo.</li>
+
+<li>Diremos que uma string \(w\) será gerada por uma gramática só se a gramática produzida
+após processar todos os símbolos de \(w\) gerar a string \(\lambda\).</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org3f77bff">
+<h2 id="org3f77bff">Derivadas de gramáticas</h2>
+<ul>
+<li>Dada uma gramática \(G = (V,\Sigma,R,P)\), vamos construir
+gramáticas \(G_a = (V \cup V_a, \Sigma, R_a, P_a)\) em que:
+<ul>
+<li>\(G_a\) representa a gramática obtida pela derivada com respeito ao símbolo \(a \in \Sigma\).</li>
+
+</ul></li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org873b09d">
+<h2 id="org873b09d">Derivadas de gramáticas</h2>
+<ul>
+<li>Definimos a \(1^a\) derivada de \(G\) com respeito a \(a \in \Sigma\) como:
+<ul>
+<li>\(\alpha,\beta \in (V\cup \Sigma)^*\).</li>
+<li>\(nullable(\alpha,G)\) determina se \(\alpha\) gera \(\lambda\).</li>
+
+</ul></li>
+<li>Regras originais estão presentes em \(G_a\).</li>
+
+</ul>
+
+<div>
+\begin{array}{c}
+  \dfrac{A \to w \in R}{A \to w \in R_a} \\ \\
+\end{array}
+
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org73435f8">
+<h2 id="org73435f8">Derivadas de gramáticas</h2>
+<ul>
+<li>Definimos a \(1^a\) derivada de \(G\) com respeito a \(a \in \Sigma\) como:
+<ul>
+<li>\(\alpha,\beta \in (V\cup \Sigma)^*\).</li>
+<li>\(nullable(\alpha,G)\) determina se \(\alpha\) gera \(\lambda\).</li>
+
+</ul></li>
+<li>Caso 1: Processando uma variável.</li>
+
+</ul>
+
+<div>
+\begin{array}{c}
+  \dfrac{A \to \alpha B \beta \in R\:\:\:\:\text{nullable}(\alpha,G)}
+        {A_a \to B_a \beta \in R_a}\\ \\
+\end{array}
+
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-orgeb75c22">
+<h2 id="orgeb75c22">Derivadas de gramáticas</h2>
+<ul>
+<li>Definimos a \(1^a\) derivada de \(G\) com respeito a \(a \in \Sigma\) como:
+<ul>
+<li>\(\alpha,\beta \in (V\cup \Sigma)^*\).</li>
+<li>\(nullable(\alpha,G)\) determina se \(\alpha\) gera \(\lambda\).</li>
+
+</ul></li>
+<li>Caso 2: Processando um símbolo do alfabeto.</li>
+
+</ul>
+
+<div>
+\begin{array}{c}
+  \dfrac{A \to \alpha a \beta \in R\:\:\:\:\text{nullable}(\alpha,G)}
+        {A_a \to \beta \in R_a}
+\end{array}
+
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org417745f">
+<h2 id="org417745f">Exemplo</h2>
+<ul>
+<li><p>
+Vamos considerar a seguinte gramática:
+</p>
+
+<div>
+\begin{array}{lcl}
+  P & \to & 0P0 | 1P1 | \lambda
+\end{array}
+
+</div></li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org4042d1f">
+<h2 id="org4042d1f">Exemplo</h2>
+<ul>
+<li>Calculando a derivada com respeito a \(0\), obtemos as seguintes regras:</li>
+
+</ul>
+
+<div>
+\begin{array}{lcl}
+  P_0 & \to & P0\\
+  P   & \to & 0P0 | 1P1 | \lambda\\
+\end{array}
+
+</div>
+
+<ul>
+<li>A regra \(P_0\to P0\) foi adicionada para representar a ação de consumir o
+símbolo \(0\) da regra \(P \to 0P0\), usando (\(\alpha = \lambda\)):</li>
+
+</ul>
+
+<div>
+\begin{array}{c}
+  \dfrac{A \to \alpha a \beta \in R\:\:\:\:\text{nullable}(\alpha,G)}
+        {A_a \to \beta \in R_a}
+\end{array}
+
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-orgb2f719e">
+<h2 id="orgb2f719e">Exemplo</h2>
+<ul>
+<li>Podemos mostrar que a gramática anterior gera \(00\), calculando a derivada
+com respeito a \(0\) sobre a gramática obtida anteriormente.</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-orgc538e62">
+<h2 id="orgc538e62">Exemplo</h2>
+<ul>
+<li>Derivada com respeito a \(00\).</li>
+
+<li>Usando a regra (\(\alpha = \lambda\)):</li>
+
+</ul>
+
+<div>
+\begin{array}{c}
+  \dfrac{A \to \alpha B \beta \in R\:\:\:\:\text{nullable}(\alpha,G)}
+        {A_a \to B_a \beta \in R_a}\\ \\
+\end{array}
+
+</div>
+
+
+<p>
+obtemos:
+</p>
+
+<div>
+\begin{array}{lcl}
+  P_{00} & \to & P_0 0\,|\,\lambda\\
+  P_0 & \to & P0\\
+  P   & \to & 0P0 | 1P1 | \lambda\\
+\end{array}
+
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-orgfee3e7f">
+<h2 id="orgfee3e7f">Exemplo</h2>
+<ul>
+<li>Como a variável \(P_{00}\Rightarrow^* \lambda\), temos que
+\(00 \in L(G)\).</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-orgc677c1d">
+<h2 id="orgc677c1d">Derivadas de gramáticas</h2>
+<ul>
+<li><p>
+As três regras anteriores, podem ser combinadas em uma única
+como se segue.
+</p>
+<ul>
+<li>Se \(X = B \in V\) então \(X_a = B_a \in V_a\).</li>
+<li>Se \(X = a \in \Sigma\) então \(X_a = \lambda\).</li>
+
+</ul>
+
+<div>
+\begin{array}{c}
+  \dfrac{A \to \alpha X \beta \in R\:\:\:\:\text{nullable}(\alpha,G)}
+        {A_a \to X_a\beta \in R}
+\end{array}
+
+</div></li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org9c6f197">
+<h2 id="org9c6f197">Derivadas de gramáticas</h2>
+<ul>
+<li>Derivadas para palavras:</li>
+
+</ul>
+
+
+<p>
+&delta;<sub>a<sub>1a</sub><sub>2</sub> &#x2026; a<sub>n</sub></sub>(G) = &delta;<sub>a<sub>n</sub></sub>(&delta;<sub>a<sub>1</sub>a<sub>2</sub>&#x2026;a<sub>n-1</sub></sub>(G))
+</p>
+
+</section>
+</section>
+<section>
+<section id="slide-org135930f">
+<h2 id="org135930f">Derivadas de gramáticas</h2>
+<ul>
+<li>Problema: Derivadas consecutivas aumentam por um fator constante o número
+de produções em uma gramática.
+<ul>
+<li>Isso pode degradar a eficiência do algoritmo.</li>
+<li>A cada passo, esse acréscimo pode acarretar em um custo exponencial.</li>
+
+</ul></li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-orgfa7c897">
+<h2 id="orgfa7c897">Derivadas de gramáticas</h2>
+<ul>
+<li>Existe uma forma de &ldquo;otimizar&rdquo; o número de produções?</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-orgbd67adb">
+<h2 id="orgbd67adb">Derivadas de gramáticas</h2>
+<ul>
+<li>Sim! Podemos descartar as produções geradas no passo anterior de uma derivada.</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org465378f">
+<h2 id="org465378f">Derivadas de gramáticas</h2>
+<ul>
+<li>Para isso, vamos considerar as gramáticas
+<ul>
+<li>\(G_a = (V_a, \Sigma, R_a, P_a)\)</li>
+<li>\(G_{ab} = (V_{ab},\Sigma, R_{ab},P_{ab})\)</li>
+
+</ul></li>
+
+<li>Se \(a = b\) então \(R_a \subseteq R_{ab}\), logo desnecessário.</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org26cd99c">
+<h2 id="org26cd99c">Derivadas de gramáticas</h2>
+<ul>
+<li>Se \(a \neq b\) então as regras \(R_a\) são inalcançáveis a partir de \(P_{ab}\).
+<ul>
+<li>Regras em \(R_a\) tem a forma: \(A_a \to B_a\beta\) ou \(A_a\to \beta\).</li>
+<li>Regras em \(R_{ab}\) tem a forma: \(A_{ab} \to B_{ab}\beta\), \(A_{ab} \to B_b\beta\) ou
+\(A_{ab} \to \beta\).</li>
+
+</ul></li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org9d8a8e8">
+<h2 id="org9d8a8e8">Derivadas de gramáticas</h2>
+<ul>
+<li>Logo, nenhuma derivação iniciando em \(P_{ab}\) vai incluir \(B_a\).
+<ul>
+<li>Dessa forma, podemos remover todas as produções de \(G_a\).</li>
+
+</ul></li>
+<li><p>
+Assim, a derivada \(\delta_{ab}(G)\) é dada pela gramática:
+</p>
+
+<p>
+&delta;<sub>ab</sub>(G) = (V &cup; V<sub>ab</sub>, &Sigma;, R &cup; R<sub>ab</sub>, P<sub>ab</sub>)
+</p></li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-orgec93cb7">
+<h2 id="orgec93cb7">Derivadas de gramáticas</h2>
+<ul>
+<li>Seja \(G = (V,\Sigma,R,P)\) e \(w = a_{1}a_{2}...a_{n}\).</li>
+<li>Para cada prefixo \(z \in \{\lambda, a_{1}, a_{1}a_{2},...,a_{1}...a_{n}\}\).</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org4d1b5a4">
+<h2 id="org4d1b5a4">Derivadas de gramáticas</h2>
+<ul>
+<li><p>
+Defina a gramática \(G_{z} = (V \cup V_{z},\Sigma,R \cup R_{z}, P_z)\), em que:
+</p>
+<ul>
+<li>\(V_{z} = \{A_{v}\,|\,v \in \{a_{i},a_{i-1}a_{i},...,a_{1}...a_{i}\}\}\), para
+cada \(z\).</li>
+<li>Seja \(z = z'a_{i}\). As regras \(R_z\) são obtidas a partir
+de \(R \cup R_{z'}\) usando a regra:</li>
+
+</ul>
+
+<div>
+\begin{array}{c}
+   \dfrac{A_{v} \to (\alpha X \beta) \in R \cup R_{z'}\:\:\:\:\text{nullable}(\alpha,G_{z'})}
+         {A_{va_{i}} \to X_{a_{i}}\beta \in R_z}
+\end{array}
+
+</div></li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-orgd3aed6c">
+<h2 id="orgd3aed6c">Derivadas de gramáticas</h2>
+<ul>
+<li>Usando a regra anterior, evita-se o aumento exponencial do número de produções, tornando
+o algoritmo mais eficiente.</li>
+
+<li>Evidentemente, o algoritmo apresentado é correto, isto é, se \(w \in L(G)\) então
+\(\lambda \in L(\delta_{w}(G))\).</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org872e86b">
+<h2 id="org872e86b">Derivadas de gramáticas</h2>
+<ul>
+<li>Além da correção, os proponentes do uso de derivadas de gramáticas relacionam esse formalismos
+a conhecidos algoritmos clássicos de parsing (Earley e baseados em gramáticas LL(k)).</li>
+
+<li>Um algoritmo para construção de árvores de parsing são descritos no artigo que propõe a
+abordagem.</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org23cec24">
+<h2 id="org23cec24">Exercício</h2>
+<ul>
+<li>Implemente o algoritmo para cálculo da derivada de gramáticas em sua linguagem
+favorita.</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org9699dd2">
+<h2 id="org9699dd2">Referências</h2>
+<ul>
+<li>Henriksen, Ian; Bilardi, Gianfranco; Pingali, Keshav. Derivative Grammars:
+A Symbolic Approach to Parsing with Derivatives. OPSLA 2019.</li>
+
+</ul>
+</section>
+</section>
+</div>
+</div>
+<script src="/Users/rodrigo/.emacs.d/.local/straight/build-27.2/revealjs/dist/reveal.js"></script>
+<script src="/Users/rodrigo/.emacs.d/.local/straight/build-27.2/revealjs/plugin/markdown/markdown.js"></script>
+<script src="/Users/rodrigo/.emacs.d/.local/straight/build-27.2/revealjs/plugin/notes/notes.js"></script>
+<script src="/Users/rodrigo/.emacs.d/.local/straight/build-27.2/revealjs/plugin/search/search.js"></script>
+<script src="/Users/rodrigo/.emacs.d/.local/straight/build-27.2/revealjs/plugin/zoom/zoom.js"></script>
+<script>
+// Full list of configuration options available here:
+// https://github.com/hakimel/reveal.js#configuration
+Reveal.initialize({
+
+controls: true,
+progress: true,
+history: true,
+center: true,
+slideNumber: 'c',
+rollingLinks: true,
+keyboard: true,
+mouseWheel: false,
+fragmentInURL: false,
+hashOneBasedIndex: false,
+pdfSeparateFragments: true,
+
+overview: true,
+width: 1200,
+height: 800,
+margin: 0.20,
+minScale: 0.50,
+maxScale: 2.50,
+
+transition: 'none',
+transitionSpeed: 'default',
+
+// Plugins with reveal.js 4.x
+plugins: [ RevealMarkdown, RevealNotes, RevealSearch, RevealZoom ],
+
+// Optional libraries used to extend reveal.js
+dependencies: [
+]
+
+});
+</script>
+</body>
+</html>
