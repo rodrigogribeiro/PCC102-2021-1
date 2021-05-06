@@ -1,0 +1,1413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Parsing Expressions Grammars</title>
+<meta name="author" content="Rodrigo Ribeiro"/>
+<style type="text/css">
+.underline { text-decoration: underline; }
+</style>
+<link rel="stylesheet" href="/Users/rodrigo/.emacs.d/.local/straight/build-27.2/revealjs/dist/reveal.css"/>
+
+<link rel="stylesheet" href="/Users/rodrigo/.emacs.d/.local/straight/build-27.2/revealjs/dist/theme/white.css" id="theme"/>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+<section id="sec-title-slide">
+<h1>Parsing Expressions Grammars</h1><h2>PCC102 - Teoria da computação</h2><h3> Rodrigo Ribeiro</h3>
+</section>
+
+<section>
+<section id="slide-org0eac678">
+<h2 id="org0eac678">Objetivos</h2>
+<ul>
+<li>Apresentar o formalismo de parsing expression grammars.</li>
+<li>Apresentar exemplos de especificações usando esse formalismo.</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-orgcbd8d51">
+<h2 id="orgcbd8d51">Um pouco de história&#x2026;</h2>
+<ul>
+<li>Gramáticas foram formuladas por Chomsky com o intuito de especificar
+a estrutura de linguagens naturais.</li>
+<li>Devido a expressividade e elegância desse formalismo, cientistas da
+computação o adotaram como um padrão para descrever a sintaxe de
+linguagens de programação.</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org1ec6acd">
+<h2 id="org1ec6acd">Um pouco de história&#x2026;</h2>
+<ul>
+<li>GLCs e REs são formalismos que permitem a ambiguidade, o que é importante
+no contexto de linguagens naturais.</li>
+
+<li>Mas, formalismos que permitem a ambiguidade fazem sentido em aplicações
+de computação?</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-orge1cc66c">
+<h2 id="orge1cc66c">Um pouco de história&#x2026;</h2>
+<ul>
+<li>Infelizmente, essa expressividade dificulta a principal tarefa a que esses formalismos
+se destinam: reconhecimento.</li>
+<li>Isso se deve, principalmente, ao &ldquo;gap&rdquo; semântico existente entre reconhecedores e
+geradores como gramáticas.</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org6043fe0">
+<h2 id="org6043fe0">Uma solução</h2>
+<ul>
+<li>Parsing expression grammars (PEGs) foram propostas por Ford como uma alternativa
+para definir reconhecedores de linguagens.</li>
+
+<li>Ou seja, PEGs são um formalismo para especificar o reconhecimento de palavras e
+não como estas são geradas.</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org67c9047">
+<h2 id="org67c9047">Parsing expression grammars</h2>
+<ul>
+<li>PEGs evitam ambiguidades utilizando um operador de choice com uma semântica que
+utiliza prioridades.</li>
+
+<li>Denota-se o operador de choice como \(e_1 / e_2\).</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-orgd7c6ffc">
+<h2 id="orgd7c6ffc">Parsing expressions grammars</h2>
+<ul>
+<li>Exemplo de gramáticas equivalentes:</li>
+
+</ul>
+
+<div>
+\begin{array}{lcl|lcl}
+   A & \to  & A a     & A & \to  & a A\\
+     & \mid & \lambda &   & \mid & \lambda\\
+\end{array}
+
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-orge241230">
+<h2 id="orge241230">Parsing expression grammars</h2>
+<ul>
+<li>Porém, o mesmo não acontece com PEGs.</li>
+
+<li>A seguinte PEG é válida para a linguagem anterior.</li>
+
+</ul>
+
+<div>
+\begin{array}{lcl}
+   A & \leftarrow  & aA\,/\, \lambda
+\end{array}
+
+</div>
+
+<ul>
+<li>Mas a seguinte PEG não é válida:</li>
+
+</ul>
+
+<div>
+\begin{array}{lcl}
+   A & \leftarrow  & Aa\,/\, \lambda
+\end{array}
+
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org9efcb1c">
+<h2 id="org9efcb1c">Parsing expression grammars</h2>
+<ul>
+<li>Porque a primeira PEG não é equivalente a segunda?</li>
+
+<li>Porque a segunda não é válida?</li>
+
+</ul>
+
+
+</section>
+</section>
+<section>
+<section id="slide-org0c76d81">
+<h2 id="org0c76d81">Parsing expression grammars</h2>
+<ul>
+<li>De maneira intuitiva, parsing expression grammars denotam um analisador sintático
+top-down para uma linguagem.</li>
+
+<li>Dessa forma, possuem algumas limitações análogas a estes analisadores.
+<ul>
+<li>A definição original de PEGs não permite o uso de recursão à esquerda</li>
+
+</ul></li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-orgfe2698b">
+<h2 id="orgfe2698b">Parsing expression grammars</h2>
+<ul>
+<li>Para uma melhor compreensão de PEGs precisamos de sua definição formal.</li>
+
+<li>Primeiramente, vamos considerar a sintaxe desse formalismo e, na sequência,
+sua semântica.</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org8892aa7">
+<h2 id="org8892aa7">Sintaxe</h2>
+<ul>
+<li>Uma PEG \(G = (V, \Sigma, R, e_{S})\) é tal que:
+<ul>
+<li>\(V\): conjunto finito de variáveis.</li>
+<li>\(\Sigma\): alfabeto de entrada</li>
+<li>\(R\): conjunto de regras. Regras são pares formados por
+uma variável e uma parsing expression.</li>
+<li>\(e_{S}\): expressão inicial.</li>
+
+</ul></li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org9d13416">
+<h2 id="org9d13416">Sintaxe</h2>
+<ul>
+<li>A sintaxe de parsing expressions é definida indutivamente como:
+
+<ul>
+<li>\(\lambda\), denota a string vazia.</li>
+<li>\(a\), \(a \in \Sigma\), denota um símbolo do alfabeto.</li>
+<li>\(A\), \(A \in V\), denota uma variável.</li>
+
+</ul></li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org64a4898">
+<h2 id="org64a4898">Sintaxe</h2>
+<ul>
+<li>A sintaxe de parsing expressions é definida indutivamente como:
+<ul>
+<li>\(e_{1}\,e_{2}\), denota a concatenação de \(e_{1}\) e \(e_{2}\).</li>
+<li>\(e_{1}\,/\,e_{2}\), denota a escolha entre \(e_{1}\) e \(e_{2}\).</li>
+<li>\(e_{1}^*\), denota o fecho de Kleene de \(e_{1}\).</li>
+<li>\(!\,e_{1}\), denota a negação de \(e_{1}\).</li>
+
+</ul></li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org8fd11cb">
+<h2 id="org8fd11cb">Sintaxe</h2>
+<ul>
+<li>Uma restrição importante sobre a definição de PEGs é que \(R\)
+seja uma função de variáveis em parsing expressions.</li>
+
+<li>Além disso, denotamos por \(E(G)\) o conjunto de todas as parsing
+expressions de uma PEG.</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org2a8915f">
+<h2 id="org2a8915f">Semântica</h2>
+<ul>
+<li>Como PEGs denotam um reconhecedor para uma linguagem, sua semântica
+é especificada de forma operacional.</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org4f9a2c4">
+<h2 id="org4f9a2c4">Semântica</h2>
+<ul>
+<li>Regras para \(\lambda\):</li>
+
+</ul>
+
+<div>
+\begin{array}{c}
+  \dfrac{}{(\lambda, s) \Rightarrow (1,(\lambda,s))}
+\end{array}
+
+</div>
+
+
+</section>
+</section>
+<section>
+<section id="slide-org20a7dbb">
+<h2 id="org20a7dbb">Semântica</h2>
+<ul>
+<li>Regras para \(a \in \Sigma\):</li>
+
+</ul>
+
+<div>
+\begin{array}{c}
+  \dfrac{}{(a,as)\Rightarrow (1,(a,s))}
+\end{array}
+
+</div>
+
+
+</section>
+</section>
+<section>
+<section id="slide-org0626e46">
+<h2 id="org0626e46">Semântica</h2>
+<ul>
+<li>Regras para \(a \in \Sigma\):</li>
+
+</ul>
+
+<div>
+\begin{array}{c}
+  \dfrac{}{(a,bs)\Rightarrow (1,\bot)} \\ \\
+\end{array}
+
+</div>
+
+
+</section>
+</section>
+<section>
+<section id="slide-org3122347">
+<h2 id="org3122347">Semântica</h2>
+<ul>
+<li><p>
+Regra para variável
+</p>
+
+<div>
+\begin{array}{c}
+  \dfrac{A \leftarrow e \in R\:\:\:\:(e,w)\Rightarrow (n,o)}
+        {(A,w) \Rightarrow (n + 1, o)}
+\end{array}
+
+</div></li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org8372782">
+<h2 id="org8372782">Semântica</h2>
+<ul>
+<li><p>
+Regra para concatenação (sucesso)
+</p>
+
+<div>
+\begin{array}{cc}
+  \dfrac{(e_{1},w)\Rightarrow(n_{1},(s_1,r_{1}))\:\:\:\:(e_{2},r_{1})\Rightarrow(n_{2},(s_2,r_{2}))}
+        {(e_{1}\,e_{2},wv)\Rightarrow(1 + n_{1} + n_{2},(s_{1}s_{2},r_{2}))} \\ \\
+\end{array}
+
+</div></li>
+
+</ul>
+
+
+</section>
+</section>
+<section>
+<section id="slide-orgecae91b">
+<h2 id="orgecae91b">Semântica</h2>
+<ul>
+<li><p>
+Regras para concatenação (falha)
+</p>
+
+<div>
+\begin{array}{cc}
+  \dfrac{(e_{1},w)\Rightarrow(n_{1},(s_1,r_{1}))\:\:\:\:(e_{2},r_{1})\Rightarrow(n_{2},\bot)}
+        {(e_{1}\,e_{2})\Rightarrow(1 + n_{1} + n_{2}, \bot)} \\ \\
+  \dfrac{(e_{1},w)\Rightarrow(n_{1}, \bot)}
+        {(e_{1}\,e_{2},w)\Rightarrow(1 + n_{1}, \bot)} \\ \\
+\end{array}
+
+</div></li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org82be9e8">
+<h2 id="org82be9e8">Semântica</h2>
+<ul>
+<li><p>
+Regras para alternativas (caso 1)
+</p>
+
+<div>
+\begin{array}{c}
+  \dfrac{(e_{1},w)\Rightarrow (n_{1},r_{1})}
+        {(e_{1}\,/\,e_{2},w)\Rightarrow (1 + n_{1}, r_{1})}
+\end{array}
+
+</div></li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org021ebbb">
+<h2 id="org021ebbb">Semântica</h2>
+<ul>
+<li><p>
+Regras para alternativas (caso 2)
+</p>
+
+<div>
+\begin{array}{c}
+  \dfrac{(e_{1},w)\Rightarrow (n_{1},\bot)\:\:\:\:(e_{1},w)\Rightarrow (n_{2},o)}
+        {(e_{1}\,/\,e_{2},w)\Rightarrow (1 + n_{1} + n_{2}, o)}
+\end{array}
+
+</div></li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-orgaa1d3e3">
+<h2 id="orgaa1d3e3">Semântica</h2>
+<ul>
+<li><p>
+Regra para fecho de Kleene (repetição)
+</p>
+
+<div>
+\begin{array}{c}
+  \dfrac{(e_{1},w)\Rightarrow (n_{1},(s_{1},r_{1}))\:\:\:\:
+         (e_{1}^*,r_{1})\Rightarrow (n_{2},(s_{2},r_{2}))}
+        {(e_{1}^*,w)\Rightarrow (1 + n_{1} + n_{2},(s_{1}s_{2},r_{2}))}
+\end{array}
+
+</div></li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-orgab15674">
+<h2 id="orgab15674">Semântica</h2>
+<ul>
+<li><p>
+Regra para fecho de Kleene (caso base)
+</p>
+
+<div>
+\begin{array}{c}
+  \dfrac{(e_{1},w)\Rightarrow (n_{1},\bot)}
+        {(e_{1}^*,w)\Rightarrow (1 + n_{1},(\lambda,w))}
+\end{array}
+
+</div></li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org71fc665">
+<h2 id="org71fc665">Semântica</h2>
+<ul>
+<li><p>
+Regra para negação (sucesso)
+</p>
+
+<div>
+\begin{array}{c}
+  \dfrac{(e_{1},w)\Rightarrow(n_{1},\bot)}
+        {(!\,e_{1},w)\Rightarrow (1 + n_{1}, (\lambda, w))}
+\end{array}
+
+</div></li>
+
+</ul>
+
+
+</section>
+</section>
+<section>
+<section id="slide-org60c7a37">
+<h2 id="org60c7a37">Semântica</h2>
+<ul>
+<li><p>
+Regra para negação (falha)
+</p>
+
+<div>
+\begin{array}{c}
+  \dfrac{(e_{1},w)\Rightarrow(n_{1},(s_{1},r_{1}))}
+        {(!\,e_{1},w)\Rightarrow (1 + n_{1}, \bot)}
+\end{array}
+
+</div></li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-orge5933fc">
+<h2 id="orge5933fc">Semântica</h2>
+<ul>
+<li>Vamos considerar um exemplo simples: processar aab usando a expressão
+\(a\,/\,ab\).</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org8b02b7f">
+<h2 id="org8b02b7f">Semântica</h2>
+<ul>
+<li>Vamos considerar um exemplo simples: processar aab usando a expressão
+\(a\,/\,ab\).</li>
+
+</ul>
+
+<div>
+\begin{array}{c}
+   \dfrac{}
+         {(a\,/\,ab, aab) \Rightarrow }
+\end{array}
+
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org0ac6bc4">
+<h2 id="org0ac6bc4">Semântica</h2>
+<ul>
+<li>Vamos considerar um exemplo simples: processar aab usando a expressão
+\(a\,/\,ab\).
+<ul>
+<li>Usando a primeira regra do operador de escolha</li>
+
+</ul></li>
+
+</ul>
+
+<div>
+\begin{array}{c}
+   \dfrac{\dfrac{}
+                {(a,aab) \Rightarrow }}
+         {(a\,/\,ab, aab) \Rightarrow }
+\end{array}
+
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-orgab4569d">
+<h2 id="orgab4569d">Semântica</h2>
+<ul>
+<li>Vamos considerar um exemplo simples: processar aab usando a expressão
+\(a\,/\,ab\).
+<ul>
+<li>Usando a regra para caracteres</li>
+
+</ul></li>
+
+</ul>
+
+<div>
+\begin{array}{c}
+   \dfrac{\dfrac{}
+                {(a,aab) \Rightarrow (1, (a,ab))}}
+         {(a\,/\,ab, aab) \Rightarrow }
+\end{array}
+
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-orgb3fd4c3">
+<h2 id="orgb3fd4c3">Semântica</h2>
+<ul>
+<li>Vamos considerar um exemplo simples: processar aab usando a expressão
+\(a\,/\,ab\).
+<ul>
+<li>Finalizando a regra de escolha.</li>
+
+</ul></li>
+
+</ul>
+
+<div>
+\begin{array}{c}
+   \dfrac{\dfrac{}
+                {(a,aab) \Rightarrow (1, (a,ab))}}
+         {(a\,/\,ab, aab) \Rightarrow (2, (a,ab))}
+\end{array}
+
+</div>
+
+
+</section>
+</section>
+<section>
+<section id="slide-orgac13a1e">
+<h2 id="orgac13a1e">Semântica</h2>
+<ul>
+<li>Note que a expressão \(ab\) é inalcançável em \(a\,/\,ab\).
+<ul>
+<li>Se a string começar com a, a expressão \(a\) é executada.</li>
+<li>Se não começar com a, ambas as regras falham.</li>
+
+</ul></li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-orgc8c3b32">
+<h2 id="orgc8c3b32">Semântica</h2>
+<ul>
+<li>Exemplo: Considere  processar aab usando \(ab\,/\,a\).</li>
+
+</ul>
+
+
+<div>
+\begin{array}{c}
+  \dfrac{\dfrac{\dfrac{}
+                      {(a,aab)\Rightarrow(1, (a,ab))}
+                \:\:\:
+                \dfrac{}
+                      {(b,ab)\Rightarrow (1, \bot)}
+               }
+               {(ab,aab)\Rightarrow (2,\bot)}
+                              \:\:\:
+               \dfrac{}
+                     {(a,aab)\Rightarrow (1,(a, ab))}}
+        {(ab\,/\,a,aab)\Rightarrow (4,(a,ab))}
+\end{array}
+
+</div>
+
+
+</section>
+</section>
+<section>
+<section id="slide-org9468977">
+<h2 id="org9468977">Semântica</h2>
+<ul>
+<li>Apesar de serem determinísticas, expressar reconhecedores usando
+PEGs é uma tarefa longe de ser trivial.</li>
+
+<li>Considere a tarefa de projetar um reconhecedor para a linguagem \((00)^*\).</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-orgb79ecc7">
+<h2 id="orgb79ecc7">Semântica</h2>
+<ul>
+<li><p>
+Expressar a linguagem \((00)^*\) usando gramáticas é imediato.
+</p>
+
+<div>
+\begin{array}{lcl}
+  A & \to  & 0 A 0 \\
+    & \mid & \lambda
+\end{array}
+
+</div></li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org95ffcb7">
+<h2 id="org95ffcb7">Semântica</h2>
+<ul>
+<li>É tentador pensar que representar um reconhecedor usando PEGs consiste apenas
+em traduzir uma gramática para a linguagem em questão para a notação de PEGs.</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org6f62ddd">
+<h2 id="org6f62ddd">Semântica</h2>
+<ul>
+<li><p>
+Logo, a gramática anterior seria expressa pela PEG:
+</p>
+
+<p>
+\(A \leftarrow 0 A 0\, /\, \lambda\)
+</p></li>
+
+<li>Mas, essa PEG reconhece a mesma linguagem expressa pela gramática anterior?</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-orgeb9c8ae">
+<h2 id="orgeb9c8ae">A resposta é não.</h2>
+
+</section>
+</section>
+<section>
+<section id="slide-org94341c0">
+<h2 id="org94341c0">Semântica</h2>
+<ul>
+<li>PEGs denotam reconhecedores de uma linguagem.</li>
+
+<li><p>
+Logo, para processar a string 00 a PEG:
+</p>
+
+<p>
+\(A \leftarrow 0 A 0\, /\, \lambda\)
+</p>
+
+<p>
+irá inicialmente consumir um &ldquo;0&rdquo; da entrada e executar a expressão
+para o não terminal &ldquo;A&rdquo;.
+</p></li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org210f089">
+<h2 id="org210f089">Semântica</h2>
+<ul>
+<li>Porém, o não terminal &ldquo;A&rdquo; irá consumir outro zero da entrada e será
+novamente executado recursivamente, o que irá causar uma falha para a
+expressão \(0A0\), forçando a execução de \(\lambda\).</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-orgf614eee">
+<h2 id="orgf614eee">Semântica</h2>
+<ul>
+<li>Ao executar \(\lambda\) a expressão associada ao não terminal \(A\) retornará
+com sucesso.
+<ul>
+<li>Porém, o não terminal \(A\) é seguido por um zero, que irá falhar sobre a string vazia,
+visto que ambos os zeros foram consumidos pelo primeiro \(0\) da regra!</li>
+
+</ul></li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org80b270a">
+<h2 id="org80b270a">Semântica</h2>
+<ul>
+<li><p>
+Uma PEG que possui o comportamento desejado para a linguagem \(\{00\}^*\) é:
+</p>
+
+<p>
+\(A \leftarrow 00A\,/\,\lambda\)
+</p></li>
+
+<li><p>
+Ou então usando o operador de fecho de Kleene:
+</p>
+
+<p>
+\(A \leftarrow (00)^*\)
+</p></li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org8424d0f">
+<h2 id="org8424d0f">Terminação</h2>
+<ul>
+<li>Dizemos que uma PEG é completa se ela é capaz de manipular qualquer string de entrada.</li>
+
+<li>Uma PEG manipula uma string \(w\) se \((e_{s},w) \Rightarrow^n o\), para algum \(n \in\mathbb{N}\).</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org2bfd2de">
+<h2 id="org2bfd2de">Terminação</h2>
+<ul>
+<li>Intuitivamente, uma PEG completa é garantida de terminar sua execução independente da
+string de entrada.</li>
+
+<li>Porém, no caso geral, determinar se uma PEG é ou não completa é um problema indecidível.</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org655ec96">
+<h2 id="org655ec96">Terminação</h2>
+<ul>
+<li>No artigo original de PEG, o autor propôs um critério sintático que implica a completude
+de uma PEG.
+<ul>
+<li>O critério é correto, mas não completo.</li>
+
+</ul></li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-orgbde7858">
+<h2 id="orgbde7858">Terminação</h2>
+<ul>
+<li>O critério especifica quando uma expressão é bem formada.</li>
+
+<li>Uma PEG é bem formada se de todas as suas sub-expressões, \(E(G)\), são bem formadas.</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org08bef16">
+<h2 id="org08bef16">Terminação</h2>
+<ul>
+<li>Expressões bem formadas são tais que:
+<ul>
+<li>Não possuem regras com recursão à esquerda direta ou indireta.</li>
+<li>Não possuem expressões \(e^*\) em que \(e\) aceita a palavra vazia.</li>
+
+</ul></li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org837ae48">
+<h2 id="org837ae48">Terminação</h2>
+<ul>
+<li>Para definir a noção de expressão bem formada, temos que definir uma relação que
+simula a execução de uma parsing expression.</li>
+
+<li>A relação é formada por pares \((e,o)\) em que
+<ul>
+<li>\(e\): parsing expression</li>
+<li>\(o \in\{0, 1, f\}\)</li>
+
+</ul></li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org6c2b311">
+<h2 id="org6c2b311">Terminação</h2>
+<ul>
+<li>A notação \(e \rightharpoonup 0\) representa o fato de que \(e\) pode executar com sucesso
+sem consumir nenhum símbolo da entrada.</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org1fa3ed8">
+<h2 id="org1fa3ed8">Terminação</h2>
+<ul>
+<li>A notação \(e \rightharpoonup 1\) representa o fato de que \(e\) pode executar com sucesso
+consumindo pelo menos um símbolo da entrada.</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org18fa9bc">
+<h2 id="org18fa9bc">Terminação</h2>
+<ul>
+<li>A notação \(e \rightharpoonup f\) representa o fato de que \(e\) pode falhar em alguma entrada.</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org19542c7">
+<h2 id="org19542c7">Terminação</h2>
+<ul>
+<li>A relação \(e \rightharpoonup o\) é definida indutivamente como:
+
+<ul>
+<li>\(\lambda \rightharpoonup 0\)</li>
+<li>\(a \rightharpoonup 1\)</li>
+<li>\(a \rightharpoonup f\)</li>
+
+</ul></li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org196ac33">
+<h2 id="org196ac33">Terminação</h2>
+<ul>
+<li><p>
+Regra para variável.
+</p>
+
+<div>
+\begin{array}{c}
+\dfrac{R(A) \rightharpoonup o}
+       {A \rightharpoonup o}
+\end{array}
+
+</div></li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-orgec82e0c">
+<h2 id="orgec82e0c">Terminação</h2>
+<ul>
+<li><p>
+Regras para concatenação (\(s \in \{0,1\}\))
+</p>
+
+<div>
+\begin{array}{c}
+  \dfrac{e_{1}\rightharpoonup 0\:\:\:e_{2}\rightharpoonup 0}
+        {e_{1}\,e_{2}\rightharpoonup 0} \\ \\
+\end{array}
+
+</div></li>
+
+</ul>
+
+
+</section>
+</section>
+<section>
+<section id="slide-org23d285d">
+<h2 id="org23d285d">Terminação</h2>
+<ul>
+<li><p>
+Regras para concatenação (\(s \in \{0,1\}\))
+</p>
+
+<div>
+\begin{array}{c}
+  \dfrac{e_{1}\rightharpoonup 1\:\:\:e_{2}\rightharpoonup 1}
+        {e_{1}\,e_{2}\rightharpoonup s} \\ \\
+\end{array}
+
+</div></li>
+
+</ul>
+
+
+</section>
+</section>
+<section>
+<section id="slide-orgf3d511a">
+<h2 id="orgf3d511a">Terminação</h2>
+<ul>
+<li><p>
+Regras para concatenação (\(s \in \{0,1\}\))
+</p>
+
+<div>
+\begin{array}{c}
+  \dfrac{e_{1}\rightharpoonup 1\:\:\:e_{2}\rightharpoonup s}
+        {e_{1}\,e_{2}\rightharpoonup 1} \\ \\
+\end{array}
+
+</div></li>
+
+</ul>
+
+
+</section>
+</section>
+<section>
+<section id="slide-orgdcccb12">
+<h2 id="orgdcccb12">Terminação</h2>
+<ul>
+<li><p>
+Regras para concatenação (\(s \in \{0,1\}\))
+</p>
+
+<div>
+\begin{array}{c}
+  \dfrac{e_{1}\rightharpoonup f}
+        {e_{1}\,e_{2}\rightharpoonup f} \\ \\
+\end{array}
+
+</div></li>
+
+</ul>
+
+
+</section>
+</section>
+<section>
+<section id="slide-org295b57c">
+<h2 id="org295b57c">Terminação</h2>
+<ul>
+<li><p>
+Regras para concatenação (\(s \in \{0,1\}\))
+</p>
+
+<div>
+\begin{array}{c}
+  \dfrac{e_{1}\rightharpoonup s\:\:\:e_{2}\rightharpoonup f}
+        {e_{1}\,e_{2}\rightharpoonup f} \\ \\
+\end{array}
+
+</div></li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-orgd770fe5">
+<h2 id="orgd770fe5">Terminação</h2>
+<ul>
+<li><p>
+Regras para escolha priorizada
+</p>
+
+<div>
+\begin{array}{c}
+  \dfrac{e_{1}\rightharpoonup s}
+        {e_{1}\,/\,e_{2}\rightharpoonup s}
+\end{array}
+
+</div></li>
+
+</ul>
+
+
+</section>
+</section>
+<section>
+<section id="slide-orgdfe9c30">
+<h2 id="orgdfe9c30">Terminação</h2>
+<ul>
+<li><p>
+Regras para escolha priorizada
+</p>
+
+<div>
+\begin{array}{c}
+  \dfrac{e_{1}\rightharpoonup f\:\:\:e_{2}\rightharpoonup o}
+        {e_{1}\,/\,e_{2}\rightharpoonup o}
+\end{array}
+
+</div></li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org85d9d5c">
+<h2 id="org85d9d5c">Terminação</h2>
+<ul>
+<li><p>
+Regras para o fecho de Kleene
+</p>
+
+<div>
+\begin{array}{c}
+  \dfrac{e_{1}\rightharpoonup 1}
+        {e_{1}^*\rightharpoonup 1}
+\end{array}
+
+</div></li>
+
+</ul>
+
+
+</section>
+</section>
+<section>
+<section id="slide-org9cb0708">
+<h2 id="org9cb0708">Terminação</h2>
+<ul>
+<li><p>
+Regras para o fecho de Kleene
+</p>
+
+<div>
+\begin{array}{c}
+  \dfrac{e_{1}\rightharpoonup f}
+        {e_{1}^*\rightharpoonup 0}
+\end{array}
+
+</div></li>
+
+</ul>
+
+
+</section>
+</section>
+<section>
+<section id="slide-orgaf306ca">
+<h2 id="orgaf306ca">Terminação</h2>
+<ul>
+<li><p>
+Regras para a negação
+</p>
+
+<div>
+\begin{array}{c}
+  \dfrac{e_{1}\rightharpoonup f}
+        {!\,e_{1}\rightharpoonup 0}
+\end{array}
+
+</div></li>
+
+</ul>
+
+
+</section>
+</section>
+<section>
+<section id="slide-orgbf1bc6e">
+<h2 id="orgbf1bc6e">Terminação</h2>
+<ul>
+<li><p>
+Regras para a negação
+</p>
+
+<div>
+\begin{array}{c}
+  \dfrac{e_{1}\rightharpoonup s}
+        {!\,e_{1}\rightharpoonup f}
+\end{array}
+
+</div></li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org022d3af">
+<h2 id="org022d3af">Terminação</h2>
+<ul>
+<li>Usando a relação \(e \rightharpoonup o\) podemos definir a relação
+\(WF(e)\) que especifica que uma expressão é bem formada.</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-orgef6cc39">
+<h2 id="orgef6cc39">Terminação</h2>
+<ul>
+<li><p>
+Regra para \(\lambda\)
+</p>
+
+<div>
+\begin{array}{c}
+  \dfrac{}
+        {WF(\lambda)}
+\end{array}
+
+</div></li>
+
+</ul>
+
+
+</section>
+</section>
+<section>
+<section id="slide-org15b3674">
+<h2 id="org15b3674">Terminação</h2>
+<ul>
+<li><p>
+Regra para \(a\in\Sigma\)
+</p>
+
+<div>
+\begin{array}{c}
+  \dfrac{}
+        {WF(a)}
+\end{array}
+
+</div></li>
+
+</ul>
+
+
+</section>
+</section>
+<section>
+<section id="slide-org3189211">
+<h2 id="org3189211">Terminação</h2>
+<ul>
+<li><p>
+Regra para variáveis
+</p>
+
+<div>
+\begin{array}{c}
+  \dfrac{WF(R(A))}
+        {WF(A)}
+\end{array}
+
+</div></li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org31d09fc">
+<h2 id="org31d09fc">Terminação</h2>
+<ul>
+<li><p>
+Regra para concatenação
+</p>
+
+<div>
+\begin{array}{c}
+  \dfrac{WF(e_{1})\:\:\:e_{1}\rightharpoonup 0 \supset WF(e_{2})}
+        {WF(e_{1}\:e_{2})}
+\end{array}
+
+</div></li>
+
+</ul>
+
+
+</section>
+</section>
+<section>
+<section id="slide-orgb9b59b2">
+<h2 id="orgb9b59b2">Terminação</h2>
+<ul>
+<li><p>
+Regra para escolha priorizada
+</p>
+
+<div>
+\begin{array}{c}
+  \dfrac{WF(e_{1})\:\:\: WF(e_{2})}
+        {WF(e_{1}\,/\,e_{2})}
+\end{array}
+
+</div></li>
+
+</ul>
+
+
+</section>
+</section>
+<section>
+<section id="slide-org9982a81">
+<h2 id="org9982a81">Terminação</h2>
+<ul>
+<li><p>
+Regra para fecho de Kleene
+</p>
+
+<div>
+\begin{array}{c}
+  \dfrac{WF(e_{1})\:\:\:e_{1}\not\rightharpoonup 0}
+        {WF(e_{1}^*)}
+\end{array}
+
+</div></li>
+
+</ul>
+
+
+</section>
+</section>
+<section>
+<section id="slide-org851f5d5">
+<h2 id="org851f5d5">Terminação</h2>
+<ul>
+<li><p>
+Regra para negação
+</p>
+
+<div>
+\begin{array}{c}
+  \dfrac{WF(e_{1})}
+        {WF(!\,e_{1})}
+\end{array}
+
+</div></li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-orgcabf65f">
+<h2 id="orgcabf65f">Terminação</h2>
+<ul>
+<li>No artigo original de PEG, é apresentado um argumento de que
+toda PEG bem formada é completa.</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org8a4bea0">
+<h2 id="org8a4bea0">Exercícios</h2>
+<ul>
+<li>Implemente um interpretador de PEGs em sua linguagem de programação favorita.
+Seu intepretador deve produzir um &ldquo;trace&rdquo; da execução da PEG sobre a string
+fornecida como entrada.</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-orgac47b08">
+<h2 id="orgac47b08">Referências</h2>
+<ul>
+<li>Ford, Brian. Parsing Expression Grammars: A Recognition-Based Syntactic Foundation. POPL 2004.</li>
+
+</ul>
+</section>
+</section>
+</div>
+</div>
+<script src="/Users/rodrigo/.emacs.d/.local/straight/build-27.2/revealjs/dist/reveal.js"></script>
+<script src="/Users/rodrigo/.emacs.d/.local/straight/build-27.2/revealjs/plugin/markdown/markdown.js"></script>
+<script src="/Users/rodrigo/.emacs.d/.local/straight/build-27.2/revealjs/plugin/notes/notes.js"></script>
+<script src="/Users/rodrigo/.emacs.d/.local/straight/build-27.2/revealjs/plugin/search/search.js"></script>
+<script src="/Users/rodrigo/.emacs.d/.local/straight/build-27.2/revealjs/plugin/zoom/zoom.js"></script>
+<script>
+// Full list of configuration options available here:
+// https://github.com/hakimel/reveal.js#configuration
+Reveal.initialize({
+
+controls: true,
+progress: true,
+history: true,
+center: true,
+slideNumber: 'c',
+rollingLinks: true,
+keyboard: true,
+mouseWheel: false,
+fragmentInURL: false,
+hashOneBasedIndex: false,
+pdfSeparateFragments: true,
+
+overview: true,
+width: 1200,
+height: 800,
+margin: 0.20,
+minScale: 0.50,
+maxScale: 2.50,
+
+transition: 'none',
+transitionSpeed: 'default',
+
+// Plugins with reveal.js 4.x
+plugins: [ RevealMarkdown, RevealNotes, RevealSearch, RevealZoom ],
+
+// Optional libraries used to extend reveal.js
+dependencies: [
+]
+
+});
+</script>
+</body>
+</html>

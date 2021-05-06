@@ -1,0 +1,668 @@
+#    -*- mode: org -*-
+#+OPTIONS: reveal_center:t reveal_progress:t reveal_history:t reveal_control:t
+#+OPTIONS: reveal_mathjax:t reveal_rolling_links:t reveal_keyboard:t num:nil
+#+OPTIONS: reveal_width:1200 reveal_height:800
+#+OPTIONS: toc:nil
+#+REVEAL_MARGIN: 0.2
+#+REVEAL_MIN_SCALE: 0.5
+#+REVEAL_MAX_SCALE: 2.5
+#+REVEAL_TRANS: none
+#+REVEAL_THEME: white
+#+REVEAL_HLEVEL: 999
+#+REVEAL_TITLE_SLIDE: <h1>%t</h1><h2>%s</h2><h3>%A %a</h3>
+#+LATEX_HEADER: \usepackage{proof}
+
+#+TITLE: Parsing Expressions Grammars
+#+SUBTITLE: PCC102 - Teoria da computação
+#+AUTHOR: Rodrigo Ribeiro
+#+EMAIL: rodrigo.ribeiro@ufop.edu.br
+
+* Objetivos
+
+- Apresentar o formalismo de parsing expression grammars.
+- Apresentar exemplos de especificações usando esse formalismo.
+
+* Um pouco de história...
+
+- Gramáticas foram formuladas por Chomsky com o intuito de especificar
+  a estrutura de linguagens naturais.
+- Devido a expressividade e elegância desse formalismo, cientistas da
+  computação o adotaram como um padrão para descrever a sintaxe de
+  linguagens de programação.
+
+* Um pouco de história...
+
+- GLCs e REs são formalismos que permitem a ambiguidade, o que é importante
+  no contexto de linguagens naturais.
+
+- Mas, formalismos que permitem a ambiguidade fazem sentido em aplicações
+  de computação?
+
+* Um pouco de história...
+
+- Infelizmente, essa expressividade dificulta a principal tarefa a que esses formalismos
+  se destinam: reconhecimento.
+- Isso se deve, principalmente, ao "gap" semântico existente entre reconhecedores e
+  geradores como gramáticas.
+
+* Uma solução
+
+- Parsing expression grammars (PEGs) foram propostas por Ford como uma alternativa
+  para definir reconhecedores de linguagens.
+
+- Ou seja, PEGs são um formalismo para especificar o reconhecimento de palavras e
+  não como estas são geradas.
+
+* Parsing expression grammars
+
+- PEGs evitam ambiguidades utilizando um operador de choice com uma semântica que
+  utiliza prioridades.
+
+- Denota-se o operador de choice como $e_1 / e_2$.
+
+* Parsing expressions grammars
+
+- Exemplo de gramáticas equivalentes:
+
+\begin{array}{lcl|lcl}
+   A & \to  & A a     & A & \to  & a A\\
+     & \mid & \lambda &   & \mid & \lambda\\
+\end{array}
+
+* Parsing expression grammars
+
+- Porém, o mesmo não acontece com PEGs.
+
+- A seguinte PEG é válida para a linguagem anterior.
+
+\begin{array}{lcl}
+   A & \leftarrow  & aA\,/\, \lambda
+\end{array}
+
+- Mas a seguinte PEG não é válida:
+
+\begin{array}{lcl}
+   A & \leftarrow  & Aa\,/\, \lambda
+\end{array}
+
+* Parsing expression grammars
+
+- Porque a primeira PEG não é equivalente a segunda?
+
+- Porque a segunda não é válida?
+
+
+* Parsing expression grammars
+
+- De maneira intuitiva, parsing expression grammars denotam um analisador sintático
+  top-down para uma linguagem.
+
+- Dessa forma, possuem algumas limitações análogas a estes analisadores.
+  - A definição original de PEGs não permite o uso de recursão à esquerda
+
+* Parsing expression grammars
+
+- Para uma melhor compreensão de PEGs precisamos de sua definição formal.
+
+- Primeiramente, vamos considerar a sintaxe desse formalismo e, na sequência,
+  sua semântica.
+
+* Sintaxe
+
+- Uma PEG $G = (V, \Sigma, R, e_{S})$ é tal que:
+  - $V$: conjunto finito de variáveis.
+  - $\Sigma$: alfabeto de entrada
+  - $R$: conjunto de regras. Regras são pares formados por
+    uma variável e uma parsing expression.
+  - $e_{S}$: expressão inicial.
+
+* Sintaxe
+
+- A sintaxe de parsing expressions é definida indutivamente como:
+
+  - $\lambda$, denota a string vazia.
+  - $a$, $a \in \Sigma$, denota um símbolo do alfabeto.
+  - $A$, $A \in V$, denota uma variável.
+
+* Sintaxe
+
+- A sintaxe de parsing expressions é definida indutivamente como:
+  - $e_{1}\,e_{2}$, denota a concatenação de $e_{1}$ e $e_{2}$.
+  - $e_{1}\,/\,e_{2}$, denota a escolha entre $e_{1}$ e $e_{2}$.
+  - $e_{1}^*$, denota o fecho de Kleene de $e_{1}$.
+  - $!\,e_{1}$, denota a negação de $e_{1}$.
+
+* Sintaxe
+
+- Uma restrição importante sobre a definição de PEGs é que $R$
+  seja uma função de variáveis em parsing expressions.
+
+- Além disso, denotamos por $E(G)$ o conjunto de todas as parsing
+  expressions de uma PEG.
+
+* Semântica
+
+- Como PEGs denotam um reconhecedor para uma linguagem, sua semântica
+  é especificada de forma operacional.
+
+* Semântica
+
+ - Regras para $\lambda$:
+
+ \begin{array}{c}
+   \dfrac{}{(\lambda, s) \Rightarrow (1,(\lambda,s))}
+ \end{array}
+
+
+* Semântica
+
+ - Regras para $a \in \Sigma$:
+
+ \begin{array}{c}
+   \dfrac{}{(a,as)\Rightarrow (1,(a,s))}
+ \end{array}
+
+
+* Semântica
+
+ - Regras para $a \in \Sigma$:
+
+ \begin{array}{c}
+   \dfrac{}{(a,bs)\Rightarrow (1,\bot)} \\ \\
+ \end{array}
+
+
+* Semântica
+
+- Regra para variável
+
+ \begin{array}{c}
+   \dfrac{A \leftarrow e \in R\:\:\:\:(e,w)\Rightarrow (n,o)}
+         {(A,w) \Rightarrow (n + 1, o)}
+ \end{array}
+
+* Semântica
+
+- Regra para concatenação (sucesso)
+
+  \begin{array}{cc}
+    \dfrac{(e_{1},w)\Rightarrow(n_{1},(s_1,r_{1}))\:\:\:\:(e_{2},r_{1})\Rightarrow(n_{2},(s_2,r_{2}))}
+          {(e_{1}\,e_{2},wv)\Rightarrow(1 + n_{1} + n_{2},(s_{1}s_{2},r_{2}))} \\ \\
+  \end{array}
+
+
+* Semântica
+
+- Regras para concatenação (falha)
+
+  \begin{array}{cc}
+    \dfrac{(e_{1},w)\Rightarrow(n_{1},(s_1,r_{1}))\:\:\:\:(e_{2},r_{1})\Rightarrow(n_{2},\bot)}
+          {(e_{1}\,e_{2})\Rightarrow(1 + n_{1} + n_{2}, \bot)} \\ \\
+    \dfrac{(e_{1},w)\Rightarrow(n_{1}, \bot)}
+          {(e_{1}\,e_{2},w)\Rightarrow(1 + n_{1}, \bot)} \\ \\
+  \end{array}
+
+* Semântica
+
+- Regras para alternativas (caso 1)
+
+  \begin{array}{c}
+    \dfrac{(e_{1},w)\Rightarrow (n_{1},r_{1})}
+          {(e_{1}\,/\,e_{2},w)\Rightarrow (1 + n_{1}, r_{1})}
+  \end{array}
+
+* Semântica
+
+- Regras para alternativas (caso 2)
+
+  \begin{array}{c}
+    \dfrac{(e_{1},w)\Rightarrow (n_{1},\bot)\:\:\:\:(e_{1},w)\Rightarrow (n_{2},o)}
+          {(e_{1}\,/\,e_{2},w)\Rightarrow (1 + n_{1} + n_{2}, o)}
+  \end{array}
+
+* Semântica
+
+- Regra para fecho de Kleene (repetição)
+
+  \begin{array}{c}
+    \dfrac{(e_{1},w)\Rightarrow (n_{1},(s_{1},r_{1}))\:\:\:\:
+           (e_{1}^*,r_{1})\Rightarrow (n_{2},(s_{2},r_{2}))}
+          {(e_{1}^*,w)\Rightarrow (1 + n_{1} + n_{2},(s_{1}s_{2},r_{2}))}
+  \end{array}
+
+* Semântica
+
+- Regra para fecho de Kleene (caso base)
+
+  \begin{array}{c}
+    \dfrac{(e_{1},w)\Rightarrow (n_{1},\bot)}
+          {(e_{1}^*,w)\Rightarrow (1 + n_{1},(\lambda,w))}
+  \end{array}
+
+* Semântica
+
+- Regra para negação (sucesso)
+
+  \begin{array}{c}
+    \dfrac{(e_{1},w)\Rightarrow(n_{1},\bot)}
+          {(!\,e_{1},w)\Rightarrow (1 + n_{1}, (\lambda, w))}
+  \end{array}
+
+
+* Semântica
+
+- Regra para negação (falha)
+
+  \begin{array}{c}
+    \dfrac{(e_{1},w)\Rightarrow(n_{1},(s_{1},r_{1}))}
+          {(!\,e_{1},w)\Rightarrow (1 + n_{1}, \bot)}
+  \end{array}
+
+* Semântica
+
+- Vamos considerar um exemplo simples: processar aab usando a expressão
+  $a\,/\,ab$.
+
+* Semântica
+
+- Vamos considerar um exemplo simples: processar aab usando a expressão
+  $a\,/\,ab$.
+
+\begin{array}{c}
+   \dfrac{}
+         {(a\,/\,ab, aab) \Rightarrow }
+\end{array}
+
+* Semântica
+
+- Vamos considerar um exemplo simples: processar aab usando a expressão
+  $a\,/\,ab$.
+  - Usando a primeira regra do operador de escolha
+
+\begin{array}{c}
+   \dfrac{\dfrac{}
+                {(a,aab) \Rightarrow }}
+         {(a\,/\,ab, aab) \Rightarrow }
+\end{array}
+
+* Semântica
+
+- Vamos considerar um exemplo simples: processar aab usando a expressão
+  $a\,/\,ab$.
+  - Usando a regra para caracteres
+
+\begin{array}{c}
+   \dfrac{\dfrac{}
+                {(a,aab) \Rightarrow (1, (a,ab))}}
+         {(a\,/\,ab, aab) \Rightarrow }
+\end{array}
+
+* Semântica
+
+- Vamos considerar um exemplo simples: processar aab usando a expressão
+  $a\,/\,ab$.
+  - Finalizando a regra de escolha.
+
+\begin{array}{c}
+   \dfrac{\dfrac{}
+                {(a,aab) \Rightarrow (1, (a,ab))}}
+         {(a\,/\,ab, aab) \Rightarrow (2, (a,ab))}
+\end{array}
+
+
+* Semântica
+
+- Note que a expressão $ab$ é inalcançável em $a\,/\,ab$.
+  - Se a string começar com a, a expressão $a$ é executada.
+  - Se não começar com a, ambas as regras falham.
+
+* Semântica
+
+- Exemplo: Considere  processar aab usando $ab\,/\,a$.
+
+
+\begin{array}{c}
+  \dfrac{\dfrac{\dfrac{}
+                      {(a,aab)\Rightarrow(1, (a,ab))}
+                \:\:\:
+                \dfrac{}
+                      {(b,ab)\Rightarrow (1, \bot)}
+               }
+               {(ab,aab)\Rightarrow (2,\bot)}
+                              \:\:\:
+               \dfrac{}
+                     {(a,aab)\Rightarrow (1,(a, ab))}}
+        {(ab\,/\,a,aab)\Rightarrow (4,(a,ab))}
+\end{array}
+
+
+* Semântica
+
+- Apesar de serem determinísticas, expressar reconhecedores usando
+  PEGs é uma tarefa longe de ser trivial.
+
+- Considere a tarefa de projetar um reconhecedor para a linguagem $(00)^*$.
+
+* Semântica
+
+- Expressar a linguagem $(00)^*$ usando gramáticas é imediato.
+
+  \begin{array}{lcl}
+    A & \to  & 0 A 0 \\
+      & \mid & \lambda
+  \end{array}
+
+* Semântica
+
+- É tentador pensar que representar um reconhecedor usando PEGs consiste apenas
+  em traduzir uma gramática para a linguagem em questão para a notação de PEGs.
+
+* Semântica
+
+- Logo, a gramática anterior seria expressa pela PEG:
+
+ $A \leftarrow 0 A 0\, /\, \lambda$
+
+- Mas, essa PEG reconhece a mesma linguagem expressa pela gramática anterior?
+
+* A resposta é não.
+
+* Semântica
+
+- PEGs denotam reconhecedores de uma linguagem.
+
+- Logo, para processar a string 00 a PEG:
+
+  $A \leftarrow 0 A 0\, /\, \lambda$
+
+  irá inicialmente consumir um "0" da entrada e executar a expressão
+  para o não terminal "A".
+
+* Semântica
+
+- Porém, o não terminal "A" irá consumir outro zero da entrada e será
+  novamente executado recursivamente, o que irá causar uma falha para a
+  expressão $0A0$, forçando a execução de $\lambda$.
+
+* Semântica
+
+- Ao executar $\lambda$ a expressão associada ao não terminal $A$ retornará
+  com sucesso.
+  - Porém, o não terminal $A$ é seguido por um zero, que irá falhar sobre a string vazia,
+    visto que ambos os zeros foram consumidos pelo primeiro $0$ da regra!
+
+* Semântica
+
+- Uma PEG que possui o comportamento desejado para a linguagem $\{00\}^*$ é:
+
+  $A \leftarrow 00A\,/\,\lambda$
+
+- Ou então usando o operador de fecho de Kleene:
+
+  $A \leftarrow (00)^*$
+
+* Terminação
+
+- Dizemos que uma PEG é completa se ela é capaz de manipular qualquer string de entrada.
+
+- Uma PEG manipula uma string $w$ se $(e_{s},w) \Rightarrow^n o$, para algum $n \in\mathbb{N}$.
+
+* Terminação
+
+- Intuitivamente, uma PEG completa é garantida de terminar sua execução independente da
+  string de entrada.
+
+- Porém, no caso geral, determinar se uma PEG é ou não completa é um problema indecidível.
+
+* Terminação
+
+- No artigo original de PEG, o autor propôs um critério sintático que implica a completude
+  de uma PEG.
+  - O critério é correto, mas não completo.
+
+* Terminação
+
+- O critério especifica quando uma expressão é bem formada.
+
+- Uma PEG é bem formada se de todas as suas sub-expressões, $E(G)$, são bem formadas.
+
+* Terminação
+
+- Expressões bem formadas são tais que:
+  - Não possuem regras com recursão à esquerda direta ou indireta.
+  - Não possuem expressões $e^*$ em que $e$ aceita a palavra vazia.
+
+* Terminação
+
+- Para definir a noção de expressão bem formada, temos que definir uma relação que
+  simula a execução de uma parsing expression.
+
+- A relação é formada por pares $(e,o)$ em que
+  - $e$: parsing expression
+  - $o \in\{0, 1, f\}$
+
+* Terminação
+
+- A notação $e \rightharpoonup 0$ representa o fato de que $e$ pode executar com sucesso
+  sem consumir nenhum símbolo da entrada.
+
+* Terminação
+
+- A notação $e \rightharpoonup 1$ representa o fato de que $e$ pode executar com sucesso
+  consumindo pelo menos um símbolo da entrada.
+
+* Terminação
+
+- A notação $e \rightharpoonup f$ representa o fato de que $e$ pode falhar em alguma entrada.
+
+* Terminação
+
+- A relação $e \rightharpoonup o$ é definida indutivamente como:
+
+  - $\lambda \rightharpoonup 0$
+  - $a \rightharpoonup 1$
+  - $a \rightharpoonup f$
+
+* Terminação
+
+- Regra para variável.
+
+  \begin{array}{c}
+  \dfrac{R(A) \rightharpoonup o}
+         {A \rightharpoonup o}
+  \end{array}
+
+* Terminação
+
+- Regras para concatenação ($s \in \{0,1\}$)
+
+  \begin{array}{c}
+    \dfrac{e_{1}\rightharpoonup 0\:\:\:e_{2}\rightharpoonup 0}
+          {e_{1}\,e_{2}\rightharpoonup 0} \\ \\
+  \end{array}
+
+
+* Terminação
+
+- Regras para concatenação ($s \in \{0,1\}$)
+
+  \begin{array}{c}
+    \dfrac{e_{1}\rightharpoonup 1\:\:\:e_{2}\rightharpoonup 1}
+          {e_{1}\,e_{2}\rightharpoonup s} \\ \\
+  \end{array}
+
+
+* Terminação
+
+- Regras para concatenação ($s \in \{0,1\}$)
+
+  \begin{array}{c}
+    \dfrac{e_{1}\rightharpoonup 1\:\:\:e_{2}\rightharpoonup s}
+          {e_{1}\,e_{2}\rightharpoonup 1} \\ \\
+  \end{array}
+
+
+* Terminação
+
+- Regras para concatenação ($s \in \{0,1\}$)
+
+  \begin{array}{c}
+    \dfrac{e_{1}\rightharpoonup f}
+          {e_{1}\,e_{2}\rightharpoonup f} \\ \\
+  \end{array}
+
+
+* Terminação
+
+- Regras para concatenação ($s \in \{0,1\}$)
+
+  \begin{array}{c}
+    \dfrac{e_{1}\rightharpoonup s\:\:\:e_{2}\rightharpoonup f}
+          {e_{1}\,e_{2}\rightharpoonup f} \\ \\
+  \end{array}
+
+* Terminação
+
+- Regras para escolha priorizada
+
+  \begin{array}{c}
+    \dfrac{e_{1}\rightharpoonup s}
+          {e_{1}\,/\,e_{2}\rightharpoonup s}
+  \end{array}
+
+
+* Terminação
+
+- Regras para escolha priorizada
+
+  \begin{array}{c}
+    \dfrac{e_{1}\rightharpoonup f\:\:\:e_{2}\rightharpoonup o}
+          {e_{1}\,/\,e_{2}\rightharpoonup o}
+  \end{array}
+
+* Terminação
+
+- Regras para o fecho de Kleene
+
+  \begin{array}{c}
+    \dfrac{e_{1}\rightharpoonup 1}
+          {e_{1}^*\rightharpoonup 1}
+  \end{array}
+
+
+* Terminação
+
+- Regras para o fecho de Kleene
+
+  \begin{array}{c}
+    \dfrac{e_{1}\rightharpoonup f}
+          {e_{1}^*\rightharpoonup 0}
+  \end{array}
+
+
+* Terminação
+
+- Regras para a negação
+
+  \begin{array}{c}
+    \dfrac{e_{1}\rightharpoonup f}
+          {!\,e_{1}\rightharpoonup 0}
+  \end{array}
+
+
+* Terminação
+
+- Regras para a negação
+
+  \begin{array}{c}
+    \dfrac{e_{1}\rightharpoonup s}
+          {!\,e_{1}\rightharpoonup f}
+  \end{array}
+
+* Terminação
+
+- Usando a relação $e \rightvharpoonup o$ podemos definir a relação
+  $WF(e)$ que especifica que uma expressão é bem formada.
+
+* Terminação
+
+- Regra para $\lambda$
+
+  \begin{array}{c}
+    \dfrac{}
+          {WF(\lambda)}
+  \end{array}
+
+
+* Terminação
+
+- Regra para $a\in\Sigma$
+
+  \begin{array}{c}
+    \dfrac{}
+          {WF(a)}
+  \end{array}
+
+
+* Terminação
+
+- Regra para variáveis
+
+  \begin{array}{c}
+    \dfrac{WF(R(A))}
+          {WF(A)}
+  \end{array}
+
+* Terminação
+
+- Regra para concatenação
+
+  \begin{array}{c}
+    \dfrac{WF(e_{1})\:\:\:e_{1}\rightharpoonup 0 \supset WF(e_{2})}
+          {WF(e_{1}\:e_{2})}
+  \end{array}
+
+
+* Terminação
+
+- Regra para escolha priorizada
+
+  \begin{array}{c}
+    \dfrac{WF(e_{1})\:\:\: WF(e_{2})}
+          {WF(e_{1}\,/\,e_{2})}
+  \end{array}
+
+
+* Terminação
+
+- Regra para fecho de Kleene
+
+  \begin{array}{c}
+    \dfrac{WF(e_{1})\:\:\:e_{1}\not\rightharpoonup 0}
+          {WF(e_{1}^*)}
+  \end{array}
+
+
+* Terminação
+
+- Regra para negação
+
+  \begin{array}{c}
+    \dfrac{WF(e_{1})}
+          {WF(!\,e_{1})}
+  \end{array}
+
+* Terminação
+
+- No artigo original de PEG, é apresentado um argumento de que
+  toda PEG bem formada é completa.
+
+* Exercícios
+
+- Implemente um interpretador de PEGs em sua linguagem de programação favorita.
+  Seu intepretador deve produzir um "trace" da execução da PEG sobre a string
+  fornecida como entrada.
+
+* Referências
+
+- Ford, Brian. Parsing Expression Grammars: A Recognition-Based Syntactic Foundation. POPL 2004.
