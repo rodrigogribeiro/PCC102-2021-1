@@ -20,19 +20,19 @@
 </section>
 
 <section>
-<section id="slide-org0eac678">
-<h2 id="org0eac678">Objetivos</h2>
+<section id="slide-org2beb0d5">
+<h2 id="org2beb0d5">Objetivos</h2>
 <ul>
-<li>Apresentar o formalismo de parsing expression grammars.</li>
-<li>Apresentar exemplos de especificações usando esse formalismo.</li>
+<li>Apresentar a sintaxe e semântica de parsing expression grammars.</li>
+<li>Apresentar o conceito de boa formação e sua relação com a terminação de PEGs.</li>
 
 </ul>
 
 </section>
 </section>
 <section>
-<section id="slide-orgcbd8d51">
-<h2 id="orgcbd8d51">Um pouco de história&#x2026;</h2>
+<section id="slide-org4a2f100">
+<h2 id="org4a2f100">Um pouco de história&#x2026;</h2>
 <ul>
 <li>Gramáticas foram formuladas por Chomsky com o intuito de especificar
 a estrutura de linguagens naturais.</li>
@@ -45,8 +45,8 @@ linguagens de programação.</li>
 </section>
 </section>
 <section>
-<section id="slide-org1ec6acd">
-<h2 id="org1ec6acd">Um pouco de história&#x2026;</h2>
+<section id="slide-orgce239bd">
+<h2 id="orgce239bd">Um pouco de história&#x2026;</h2>
 <ul>
 <li>GLCs e REs são formalismos que permitem a ambiguidade, o que é importante
 no contexto de linguagens naturais.</li>
@@ -59,8 +59,8 @@ de computação?</li>
 </section>
 </section>
 <section>
-<section id="slide-orge1cc66c">
-<h2 id="orge1cc66c">Um pouco de história&#x2026;</h2>
+<section id="slide-org9743b42">
+<h2 id="org9743b42">Um pouco de história&#x2026;</h2>
 <ul>
 <li>Infelizmente, essa expressividade dificulta a principal tarefa a que esses formalismos
 se destinam: reconhecimento.</li>
@@ -72,8 +72,8 @@ geradores como gramáticas.</li>
 </section>
 </section>
 <section>
-<section id="slide-org6043fe0">
-<h2 id="org6043fe0">Uma solução</h2>
+<section id="slide-orgfeca0bf">
+<h2 id="orgfeca0bf">Uma solução</h2>
 <ul>
 <li>Parsing expression grammars (PEGs) foram propostas por Ford como uma alternativa
 para definir reconhecedores de linguagens.</li>
@@ -86,8 +86,8 @@ não como estas são geradas.</li>
 </section>
 </section>
 <section>
-<section id="slide-org67c9047">
-<h2 id="org67c9047">Parsing expression grammars</h2>
+<section id="slide-org73c2b2b">
+<h2 id="org73c2b2b">Parsing expression grammars</h2>
 <ul>
 <li>PEGs evitam ambiguidades utilizando um operador de choice com uma semântica que
 utiliza prioridades.</li>
@@ -99,8 +99,8 @@ utiliza prioridades.</li>
 </section>
 </section>
 <section>
-<section id="slide-orgd7c6ffc">
-<h2 id="orgd7c6ffc">Parsing expressions grammars</h2>
+<section id="slide-org18ca9e4">
+<h2 id="org18ca9e4">Parsing expressions grammars</h2>
 <ul>
 <li>Exemplo de gramáticas equivalentes:</li>
 
@@ -117,8 +117,8 @@ utiliza prioridades.</li>
 </section>
 </section>
 <section>
-<section id="slide-orge241230">
-<h2 id="orge241230">Parsing expression grammars</h2>
+<section id="slide-org77d0d85">
+<h2 id="org77d0d85">Parsing expression grammars</h2>
 <ul>
 <li>Porém, o mesmo não acontece com PEGs.</li>
 
@@ -148,8 +148,8 @@ utiliza prioridades.</li>
 </section>
 </section>
 <section>
-<section id="slide-org9efcb1c">
-<h2 id="org9efcb1c">Parsing expression grammars</h2>
+<section id="slide-org9b9355f">
+<h2 id="org9b9355f">Parsing expression grammars</h2>
 <ul>
 <li>Porque a primeira PEG não é equivalente a segunda?</li>
 
@@ -161,8 +161,8 @@ utiliza prioridades.</li>
 </section>
 </section>
 <section>
-<section id="slide-org0c76d81">
-<h2 id="org0c76d81">Parsing expression grammars</h2>
+<section id="slide-org83bcc84">
+<h2 id="org83bcc84">Parsing expression grammars</h2>
 <ul>
 <li>De maneira intuitiva, parsing expression grammars denotam um analisador sintático
 top-down para uma linguagem.</li>
@@ -178,8 +178,8 @@ top-down para uma linguagem.</li>
 </section>
 </section>
 <section>
-<section id="slide-orgfe2698b">
-<h2 id="orgfe2698b">Parsing expression grammars</h2>
+<section id="slide-orgde7f320">
+<h2 id="orgde7f320">Parsing expression grammars</h2>
 <ul>
 <li>Para uma melhor compreensão de PEGs precisamos de sua definição formal.</li>
 
@@ -191,8 +191,8 @@ sua semântica.</li>
 </section>
 </section>
 <section>
-<section id="slide-org8892aa7">
-<h2 id="org8892aa7">Sintaxe</h2>
+<section id="slide-org90bf4ef">
+<h2 id="org90bf4ef">Sintaxe</h2>
 <ul>
 <li>Uma PEG \(G = (V, \Sigma, R, e_{S})\) é tal que:
 <ul>
@@ -209,8 +209,8 @@ uma variável e uma parsing expression.</li>
 </section>
 </section>
 <section>
-<section id="slide-org9d13416">
-<h2 id="org9d13416">Sintaxe</h2>
+<section id="slide-orged9722b">
+<h2 id="orged9722b">Sintaxe</h2>
 <ul>
 <li>A sintaxe de parsing expressions é definida indutivamente como:
 
@@ -226,8 +226,8 @@ uma variável e uma parsing expression.</li>
 </section>
 </section>
 <section>
-<section id="slide-org64a4898">
-<h2 id="org64a4898">Sintaxe</h2>
+<section id="slide-org9405928">
+<h2 id="org9405928">Sintaxe</h2>
 <ul>
 <li>A sintaxe de parsing expressions é definida indutivamente como:
 <ul>
@@ -243,8 +243,8 @@ uma variável e uma parsing expression.</li>
 </section>
 </section>
 <section>
-<section id="slide-org8fd11cb">
-<h2 id="org8fd11cb">Sintaxe</h2>
+<section id="slide-orgfa2ffc5">
+<h2 id="orgfa2ffc5">Sintaxe</h2>
 <ul>
 <li>Uma restrição importante sobre a definição de PEGs é que \(R\)
 seja uma função de variáveis em parsing expressions.</li>
@@ -257,8 +257,8 @@ expressions de uma PEG.</li>
 </section>
 </section>
 <section>
-<section id="slide-org2a8915f">
-<h2 id="org2a8915f">Semântica</h2>
+<section id="slide-orge086e50">
+<h2 id="orge086e50">Semântica</h2>
 <ul>
 <li>Como PEGs denotam um reconhecedor para uma linguagem, sua semântica
 é especificada de forma operacional.</li>
@@ -268,8 +268,8 @@ expressions de uma PEG.</li>
 </section>
 </section>
 <section>
-<section id="slide-org4f9a2c4">
-<h2 id="org4f9a2c4">Semântica</h2>
+<section id="slide-orgedfebe8">
+<h2 id="orgedfebe8">Semântica</h2>
 <ul>
 <li>Regras para \(\lambda\):</li>
 
@@ -286,8 +286,8 @@ expressions de uma PEG.</li>
 </section>
 </section>
 <section>
-<section id="slide-org20a7dbb">
-<h2 id="org20a7dbb">Semântica</h2>
+<section id="slide-org45f381d">
+<h2 id="org45f381d">Semântica</h2>
 <ul>
 <li>Regras para \(a \in \Sigma\):</li>
 
@@ -304,8 +304,8 @@ expressions de uma PEG.</li>
 </section>
 </section>
 <section>
-<section id="slide-org0626e46">
-<h2 id="org0626e46">Semântica</h2>
+<section id="slide-orgd47925c">
+<h2 id="orgd47925c">Semântica</h2>
 <ul>
 <li>Regras para \(a \in \Sigma\):</li>
 
@@ -313,7 +313,7 @@ expressions de uma PEG.</li>
 
 <div>
 \begin{array}{c}
-  \dfrac{}{(a,bs)\Rightarrow (1,\bot)} \\ \\
+  \dfrac{}{(a,\lambda)\Rightarrow (1,\bot)} \\ \\
 \end{array}
 
 </div>
@@ -322,8 +322,26 @@ expressions de uma PEG.</li>
 </section>
 </section>
 <section>
-<section id="slide-org3122347">
-<h2 id="org3122347">Semântica</h2>
+<section id="slide-org79efe9f">
+<h2 id="org79efe9f">Semântica</h2>
+<ul>
+<li>Regras para \(a \in \Sigma\):</li>
+
+</ul>
+
+<div>
+\begin{array}{c}
+  \dfrac{a \neq b}{(a,bs)\Rightarrow (1,\bot)} \\ \\
+\end{array}
+
+</div>
+
+
+</section>
+</section>
+<section>
+<section id="slide-org02a87ab">
+<h2 id="org02a87ab">Semântica</h2>
 <ul>
 <li><p>
 Regra para variável
@@ -342,8 +360,8 @@ Regra para variável
 </section>
 </section>
 <section>
-<section id="slide-org8372782">
-<h2 id="org8372782">Semântica</h2>
+<section id="slide-org21125a8">
+<h2 id="org21125a8">Semântica</h2>
 <ul>
 <li><p>
 Regra para concatenação (sucesso)
@@ -363,8 +381,8 @@ Regra para concatenação (sucesso)
 </section>
 </section>
 <section>
-<section id="slide-orgecae91b">
-<h2 id="orgecae91b">Semântica</h2>
+<section id="slide-orgdfb6153">
+<h2 id="orgdfb6153">Semântica</h2>
 <ul>
 <li><p>
 Regras para concatenação (falha)
@@ -385,8 +403,8 @@ Regras para concatenação (falha)
 </section>
 </section>
 <section>
-<section id="slide-org82be9e8">
-<h2 id="org82be9e8">Semântica</h2>
+<section id="slide-orgb84fd1a">
+<h2 id="orgb84fd1a">Semântica</h2>
 <ul>
 <li><p>
 Regras para alternativas (caso 1)
@@ -405,8 +423,8 @@ Regras para alternativas (caso 1)
 </section>
 </section>
 <section>
-<section id="slide-org021ebbb">
-<h2 id="org021ebbb">Semântica</h2>
+<section id="slide-orgda58435">
+<h2 id="orgda58435">Semântica</h2>
 <ul>
 <li><p>
 Regras para alternativas (caso 2)
@@ -414,7 +432,7 @@ Regras para alternativas (caso 2)
 
 <div>
 \begin{array}{c}
-  \dfrac{(e_{1},w)\Rightarrow (n_{1},\bot)\:\:\:\:(e_{1},w)\Rightarrow (n_{2},o)}
+  \dfrac{(e_{1},w)\Rightarrow (n_{1},\bot)\:\:\:\:(e_{2},w)\Rightarrow (n_{2},o)}
         {(e_{1}\,/\,e_{2},w)\Rightarrow (1 + n_{1} + n_{2}, o)}
 \end{array}
 
@@ -425,8 +443,8 @@ Regras para alternativas (caso 2)
 </section>
 </section>
 <section>
-<section id="slide-orgaa1d3e3">
-<h2 id="orgaa1d3e3">Semântica</h2>
+<section id="slide-org464c01c">
+<h2 id="org464c01c">Semântica</h2>
 <ul>
 <li><p>
 Regra para fecho de Kleene (repetição)
@@ -446,8 +464,8 @@ Regra para fecho de Kleene (repetição)
 </section>
 </section>
 <section>
-<section id="slide-orgab15674">
-<h2 id="orgab15674">Semântica</h2>
+<section id="slide-org7c7550e">
+<h2 id="org7c7550e">Semântica</h2>
 <ul>
 <li><p>
 Regra para fecho de Kleene (caso base)
@@ -466,8 +484,8 @@ Regra para fecho de Kleene (caso base)
 </section>
 </section>
 <section>
-<section id="slide-org71fc665">
-<h2 id="org71fc665">Semântica</h2>
+<section id="slide-orgfa442d8">
+<h2 id="orgfa442d8">Semântica</h2>
 <ul>
 <li><p>
 Regra para negação (sucesso)
@@ -487,8 +505,8 @@ Regra para negação (sucesso)
 </section>
 </section>
 <section>
-<section id="slide-org60c7a37">
-<h2 id="org60c7a37">Semântica</h2>
+<section id="slide-org3a5a9c7">
+<h2 id="org3a5a9c7">Semântica</h2>
 <ul>
 <li><p>
 Regra para negação (falha)
@@ -507,8 +525,8 @@ Regra para negação (falha)
 </section>
 </section>
 <section>
-<section id="slide-orge5933fc">
-<h2 id="orge5933fc">Semântica</h2>
+<section id="slide-orgb70d0f8">
+<h2 id="orgb70d0f8">Semântica</h2>
 <ul>
 <li>Vamos considerar um exemplo simples: processar aab usando a expressão
 \(a\,/\,ab\).</li>
@@ -518,8 +536,8 @@ Regra para negação (falha)
 </section>
 </section>
 <section>
-<section id="slide-org8b02b7f">
-<h2 id="org8b02b7f">Semântica</h2>
+<section id="slide-org6a7cfaa">
+<h2 id="org6a7cfaa">Semântica</h2>
 <ul>
 <li>Vamos considerar um exemplo simples: processar aab usando a expressão
 \(a\,/\,ab\).</li>
@@ -537,8 +555,8 @@ Regra para negação (falha)
 </section>
 </section>
 <section>
-<section id="slide-org0ac6bc4">
-<h2 id="org0ac6bc4">Semântica</h2>
+<section id="slide-org85e23b5">
+<h2 id="org85e23b5">Semântica</h2>
 <ul>
 <li>Vamos considerar um exemplo simples: processar aab usando a expressão
 \(a\,/\,ab\).
@@ -561,8 +579,8 @@ Regra para negação (falha)
 </section>
 </section>
 <section>
-<section id="slide-orgab4569d">
-<h2 id="orgab4569d">Semântica</h2>
+<section id="slide-orgba2fe98">
+<h2 id="orgba2fe98">Semântica</h2>
 <ul>
 <li>Vamos considerar um exemplo simples: processar aab usando a expressão
 \(a\,/\,ab\).
@@ -585,8 +603,8 @@ Regra para negação (falha)
 </section>
 </section>
 <section>
-<section id="slide-orgb3fd4c3">
-<h2 id="orgb3fd4c3">Semântica</h2>
+<section id="slide-org5150cc4">
+<h2 id="org5150cc4">Semântica</h2>
 <ul>
 <li>Vamos considerar um exemplo simples: processar aab usando a expressão
 \(a\,/\,ab\).
@@ -610,8 +628,8 @@ Regra para negação (falha)
 </section>
 </section>
 <section>
-<section id="slide-orgac13a1e">
-<h2 id="orgac13a1e">Semântica</h2>
+<section id="slide-org9e4e8fb">
+<h2 id="org9e4e8fb">Semântica</h2>
 <ul>
 <li>Note que a expressão \(ab\) é inalcançável em \(a\,/\,ab\).
 <ul>
@@ -625,8 +643,8 @@ Regra para negação (falha)
 </section>
 </section>
 <section>
-<section id="slide-orgc8c3b32">
-<h2 id="orgc8c3b32">Semântica</h2>
+<section id="slide-org94322a9">
+<h2 id="org94322a9">Semântica</h2>
 <ul>
 <li>Exemplo: Considere  processar aab usando \(ab\,/\,a\).</li>
 
@@ -654,8 +672,8 @@ Regra para negação (falha)
 </section>
 </section>
 <section>
-<section id="slide-org9468977">
-<h2 id="org9468977">Semântica</h2>
+<section id="slide-org36f4124">
+<h2 id="org36f4124">Semântica</h2>
 <ul>
 <li>Apesar de serem determinísticas, expressar reconhecedores usando
 PEGs é uma tarefa longe de ser trivial.</li>
@@ -667,8 +685,8 @@ PEGs é uma tarefa longe de ser trivial.</li>
 </section>
 </section>
 <section>
-<section id="slide-orgb79ecc7">
-<h2 id="orgb79ecc7">Semântica</h2>
+<section id="slide-org6a6b50f">
+<h2 id="org6a6b50f">Semântica</h2>
 <ul>
 <li><p>
 Expressar a linguagem \((00)^*\) usando gramáticas é imediato.
@@ -687,8 +705,8 @@ Expressar a linguagem \((00)^*\) usando gramáticas é imediato.
 </section>
 </section>
 <section>
-<section id="slide-org95ffcb7">
-<h2 id="org95ffcb7">Semântica</h2>
+<section id="slide-org99ee3d5">
+<h2 id="org99ee3d5">Semântica</h2>
 <ul>
 <li>É tentador pensar que representar um reconhecedor usando PEGs consiste apenas
 em traduzir uma gramática para a linguagem em questão para a notação de PEGs.</li>
@@ -698,8 +716,8 @@ em traduzir uma gramática para a linguagem em questão para a notação de PEGs
 </section>
 </section>
 <section>
-<section id="slide-org6f62ddd">
-<h2 id="org6f62ddd">Semântica</h2>
+<section id="slide-orgd2ab37f">
+<h2 id="orgd2ab37f">Semântica</h2>
 <ul>
 <li><p>
 Logo, a gramática anterior seria expressa pela PEG:
@@ -716,14 +734,14 @@ Logo, a gramática anterior seria expressa pela PEG:
 </section>
 </section>
 <section>
-<section id="slide-orgeb9c8ae">
-<h2 id="orgeb9c8ae">A resposta é não.</h2>
+<section id="slide-orgbb483f4">
+<h2 id="orgbb483f4">A resposta é não.</h2>
 
 </section>
 </section>
 <section>
-<section id="slide-org94341c0">
-<h2 id="org94341c0">Semântica</h2>
+<section id="slide-orgbabed75">
+<h2 id="orgbabed75">Semântica</h2>
 <ul>
 <li>PEGs denotam reconhecedores de uma linguagem.</li>
 
@@ -745,8 +763,8 @@ para o não terminal &ldquo;A&rdquo;.
 </section>
 </section>
 <section>
-<section id="slide-org210f089">
-<h2 id="org210f089">Semântica</h2>
+<section id="slide-orgafaea0a">
+<h2 id="orgafaea0a">Semântica</h2>
 <ul>
 <li>Porém, o não terminal &ldquo;A&rdquo; irá consumir outro zero da entrada e será
 novamente executado recursivamente, o que irá causar uma falha para a
@@ -757,8 +775,8 @@ expressão \(0A0\), forçando a execução de \(\lambda\).</li>
 </section>
 </section>
 <section>
-<section id="slide-orgf614eee">
-<h2 id="orgf614eee">Semântica</h2>
+<section id="slide-orga98ad8e">
+<h2 id="orga98ad8e">Semântica</h2>
 <ul>
 <li>Ao executar \(\lambda\) a expressão associada ao não terminal \(A\) retornará
 com sucesso.
@@ -773,8 +791,8 @@ visto que ambos os zeros foram consumidos pelo primeiro \(0\) da regra!</li>
 </section>
 </section>
 <section>
-<section id="slide-org80b270a">
-<h2 id="org80b270a">Semântica</h2>
+<section id="slide-org535b1fd">
+<h2 id="org535b1fd">Semântica</h2>
 <ul>
 <li><p>
 Uma PEG que possui o comportamento desejado para a linguagem \(\{00\}^*\) é:
@@ -797,8 +815,8 @@ Ou então usando o operador de fecho de Kleene:
 </section>
 </section>
 <section>
-<section id="slide-org8424d0f">
-<h2 id="org8424d0f">Terminação</h2>
+<section id="slide-orgd9e96dd">
+<h2 id="orgd9e96dd">Terminação</h2>
 <ul>
 <li>Dizemos que uma PEG é completa se ela é capaz de manipular qualquer string de entrada.</li>
 
@@ -809,8 +827,8 @@ Ou então usando o operador de fecho de Kleene:
 </section>
 </section>
 <section>
-<section id="slide-org2bfd2de">
-<h2 id="org2bfd2de">Terminação</h2>
+<section id="slide-orgf82682d">
+<h2 id="orgf82682d">Terminação</h2>
 <ul>
 <li>Intuitivamente, uma PEG completa é garantida de terminar sua execução independente da
 string de entrada.</li>
@@ -822,8 +840,8 @@ string de entrada.</li>
 </section>
 </section>
 <section>
-<section id="slide-org655ec96">
-<h2 id="org655ec96">Terminação</h2>
+<section id="slide-org476a430">
+<h2 id="org476a430">Terminação</h2>
 <ul>
 <li>No artigo original de PEG, o autor propôs um critério sintático que implica a completude
 de uma PEG.
@@ -837,8 +855,8 @@ de uma PEG.
 </section>
 </section>
 <section>
-<section id="slide-orgbde7858">
-<h2 id="orgbde7858">Terminação</h2>
+<section id="slide-org97b9de4">
+<h2 id="org97b9de4">Terminação</h2>
 <ul>
 <li>O critério especifica quando uma expressão é bem formada.</li>
 
@@ -849,8 +867,8 @@ de uma PEG.
 </section>
 </section>
 <section>
-<section id="slide-org08bef16">
-<h2 id="org08bef16">Terminação</h2>
+<section id="slide-org303737f">
+<h2 id="org303737f">Terminação</h2>
 <ul>
 <li>Expressões bem formadas são tais que:
 <ul>
@@ -864,8 +882,8 @@ de uma PEG.
 </section>
 </section>
 <section>
-<section id="slide-org837ae48">
-<h2 id="org837ae48">Terminação</h2>
+<section id="slide-org16fc870">
+<h2 id="org16fc870">Terminação</h2>
 <ul>
 <li>Para definir a noção de expressão bem formada, temos que definir uma relação que
 simula a execução de uma parsing expression.</li>
@@ -882,8 +900,8 @@ simula a execução de uma parsing expression.</li>
 </section>
 </section>
 <section>
-<section id="slide-org6c2b311">
-<h2 id="org6c2b311">Terminação</h2>
+<section id="slide-org98acc39">
+<h2 id="org98acc39">Terminação</h2>
 <ul>
 <li>A notação \(e \rightharpoonup 0\) representa o fato de que \(e\) pode executar com sucesso
 sem consumir nenhum símbolo da entrada.</li>
@@ -893,8 +911,8 @@ sem consumir nenhum símbolo da entrada.</li>
 </section>
 </section>
 <section>
-<section id="slide-org1fa3ed8">
-<h2 id="org1fa3ed8">Terminação</h2>
+<section id="slide-orgff5fb7c">
+<h2 id="orgff5fb7c">Terminação</h2>
 <ul>
 <li>A notação \(e \rightharpoonup 1\) representa o fato de que \(e\) pode executar com sucesso
 consumindo pelo menos um símbolo da entrada.</li>
@@ -904,8 +922,8 @@ consumindo pelo menos um símbolo da entrada.</li>
 </section>
 </section>
 <section>
-<section id="slide-org18fa9bc">
-<h2 id="org18fa9bc">Terminação</h2>
+<section id="slide-orgf31efb9">
+<h2 id="orgf31efb9">Terminação</h2>
 <ul>
 <li>A notação \(e \rightharpoonup f\) representa o fato de que \(e\) pode falhar em alguma entrada.</li>
 
@@ -914,8 +932,8 @@ consumindo pelo menos um símbolo da entrada.</li>
 </section>
 </section>
 <section>
-<section id="slide-org19542c7">
-<h2 id="org19542c7">Terminação</h2>
+<section id="slide-orgbc31524">
+<h2 id="orgbc31524">Terminação</h2>
 <ul>
 <li>A relação \(e \rightharpoonup o\) é definida indutivamente como:
 
@@ -931,8 +949,8 @@ consumindo pelo menos um símbolo da entrada.</li>
 </section>
 </section>
 <section>
-<section id="slide-org196ac33">
-<h2 id="org196ac33">Terminação</h2>
+<section id="slide-orgdeea1f2">
+<h2 id="orgdeea1f2">Terminação</h2>
 <ul>
 <li><p>
 Regra para variável.
@@ -951,8 +969,8 @@ Regra para variável.
 </section>
 </section>
 <section>
-<section id="slide-orgec82e0c">
-<h2 id="orgec82e0c">Terminação</h2>
+<section id="slide-org50ab358">
+<h2 id="org50ab358">Terminação</h2>
 <ul>
 <li><p>
 Regras para concatenação (\(s \in \{0,1\}\))
@@ -972,8 +990,8 @@ Regras para concatenação (\(s \in \{0,1\}\))
 </section>
 </section>
 <section>
-<section id="slide-org23d285d">
-<h2 id="org23d285d">Terminação</h2>
+<section id="slide-orgbd3cd03">
+<h2 id="orgbd3cd03">Terminação</h2>
 <ul>
 <li><p>
 Regras para concatenação (\(s \in \{0,1\}\))
@@ -993,8 +1011,8 @@ Regras para concatenação (\(s \in \{0,1\}\))
 </section>
 </section>
 <section>
-<section id="slide-orgf3d511a">
-<h2 id="orgf3d511a">Terminação</h2>
+<section id="slide-org51cdd80">
+<h2 id="org51cdd80">Terminação</h2>
 <ul>
 <li><p>
 Regras para concatenação (\(s \in \{0,1\}\))
@@ -1014,8 +1032,8 @@ Regras para concatenação (\(s \in \{0,1\}\))
 </section>
 </section>
 <section>
-<section id="slide-orgdcccb12">
-<h2 id="orgdcccb12">Terminação</h2>
+<section id="slide-orgb5a94e4">
+<h2 id="orgb5a94e4">Terminação</h2>
 <ul>
 <li><p>
 Regras para concatenação (\(s \in \{0,1\}\))
@@ -1035,8 +1053,8 @@ Regras para concatenação (\(s \in \{0,1\}\))
 </section>
 </section>
 <section>
-<section id="slide-org295b57c">
-<h2 id="org295b57c">Terminação</h2>
+<section id="slide-org0fe7ae6">
+<h2 id="org0fe7ae6">Terminação</h2>
 <ul>
 <li><p>
 Regras para concatenação (\(s \in \{0,1\}\))
@@ -1055,8 +1073,8 @@ Regras para concatenação (\(s \in \{0,1\}\))
 </section>
 </section>
 <section>
-<section id="slide-orgd770fe5">
-<h2 id="orgd770fe5">Terminação</h2>
+<section id="slide-org9810d8e">
+<h2 id="org9810d8e">Terminação</h2>
 <ul>
 <li><p>
 Regras para escolha priorizada
@@ -1076,8 +1094,8 @@ Regras para escolha priorizada
 </section>
 </section>
 <section>
-<section id="slide-orgdfe9c30">
-<h2 id="orgdfe9c30">Terminação</h2>
+<section id="slide-org408ba24">
+<h2 id="org408ba24">Terminação</h2>
 <ul>
 <li><p>
 Regras para escolha priorizada
@@ -1096,8 +1114,8 @@ Regras para escolha priorizada
 </section>
 </section>
 <section>
-<section id="slide-org85d9d5c">
-<h2 id="org85d9d5c">Terminação</h2>
+<section id="slide-orgeec5429">
+<h2 id="orgeec5429">Terminação</h2>
 <ul>
 <li><p>
 Regras para o fecho de Kleene
@@ -1117,8 +1135,8 @@ Regras para o fecho de Kleene
 </section>
 </section>
 <section>
-<section id="slide-org9cb0708">
-<h2 id="org9cb0708">Terminação</h2>
+<section id="slide-org7dbe87d">
+<h2 id="org7dbe87d">Terminação</h2>
 <ul>
 <li><p>
 Regras para o fecho de Kleene
@@ -1138,8 +1156,8 @@ Regras para o fecho de Kleene
 </section>
 </section>
 <section>
-<section id="slide-orgaf306ca">
-<h2 id="orgaf306ca">Terminação</h2>
+<section id="slide-orgc416ba9">
+<h2 id="orgc416ba9">Terminação</h2>
 <ul>
 <li><p>
 Regras para a negação
@@ -1159,8 +1177,8 @@ Regras para a negação
 </section>
 </section>
 <section>
-<section id="slide-orgbf1bc6e">
-<h2 id="orgbf1bc6e">Terminação</h2>
+<section id="slide-org79630d7">
+<h2 id="org79630d7">Terminação</h2>
 <ul>
 <li><p>
 Regras para a negação
@@ -1179,10 +1197,10 @@ Regras para a negação
 </section>
 </section>
 <section>
-<section id="slide-org022d3af">
-<h2 id="org022d3af">Terminação</h2>
+<section id="slide-org728ef27">
+<h2 id="org728ef27">Terminação</h2>
 <ul>
-<li>Usando a relação \(e \rightharpoonup o\) podemos definir a relação
+<li>Usando a relação \(e \rightvharpoonup o\) podemos definir a relação
 \(WF(e)\) que especifica que uma expressão é bem formada.</li>
 
 </ul>
@@ -1190,8 +1208,8 @@ Regras para a negação
 </section>
 </section>
 <section>
-<section id="slide-orgef6cc39">
-<h2 id="orgef6cc39">Terminação</h2>
+<section id="slide-orgf295e1a">
+<h2 id="orgf295e1a">Terminação</h2>
 <ul>
 <li><p>
 Regra para \(\lambda\)
@@ -1211,8 +1229,8 @@ Regra para \(\lambda\)
 </section>
 </section>
 <section>
-<section id="slide-org15b3674">
-<h2 id="org15b3674">Terminação</h2>
+<section id="slide-org9756054">
+<h2 id="org9756054">Terminação</h2>
 <ul>
 <li><p>
 Regra para \(a\in\Sigma\)
@@ -1232,8 +1250,8 @@ Regra para \(a\in\Sigma\)
 </section>
 </section>
 <section>
-<section id="slide-org3189211">
-<h2 id="org3189211">Terminação</h2>
+<section id="slide-org3e3f341">
+<h2 id="org3e3f341">Terminação</h2>
 <ul>
 <li><p>
 Regra para variáveis
@@ -1252,8 +1270,8 @@ Regra para variáveis
 </section>
 </section>
 <section>
-<section id="slide-org31d09fc">
-<h2 id="org31d09fc">Terminação</h2>
+<section id="slide-org231afa3">
+<h2 id="org231afa3">Terminação</h2>
 <ul>
 <li><p>
 Regra para concatenação
@@ -1273,8 +1291,8 @@ Regra para concatenação
 </section>
 </section>
 <section>
-<section id="slide-orgb9b59b2">
-<h2 id="orgb9b59b2">Terminação</h2>
+<section id="slide-org6039ec5">
+<h2 id="org6039ec5">Terminação</h2>
 <ul>
 <li><p>
 Regra para escolha priorizada
@@ -1294,8 +1312,8 @@ Regra para escolha priorizada
 </section>
 </section>
 <section>
-<section id="slide-org9982a81">
-<h2 id="org9982a81">Terminação</h2>
+<section id="slide-org2ed9ebb">
+<h2 id="org2ed9ebb">Terminação</h2>
 <ul>
 <li><p>
 Regra para fecho de Kleene
@@ -1315,8 +1333,8 @@ Regra para fecho de Kleene
 </section>
 </section>
 <section>
-<section id="slide-org851f5d5">
-<h2 id="org851f5d5">Terminação</h2>
+<section id="slide-org92697e2">
+<h2 id="org92697e2">Terminação</h2>
 <ul>
 <li><p>
 Regra para negação
@@ -1335,8 +1353,8 @@ Regra para negação
 </section>
 </section>
 <section>
-<section id="slide-orgcabf65f">
-<h2 id="orgcabf65f">Terminação</h2>
+<section id="slide-org70c3211">
+<h2 id="org70c3211">Terminação</h2>
 <ul>
 <li>No artigo original de PEG, é apresentado um argumento de que
 toda PEG bem formada é completa.</li>
@@ -1346,8 +1364,8 @@ toda PEG bem formada é completa.</li>
 </section>
 </section>
 <section>
-<section id="slide-org8a4bea0">
-<h2 id="org8a4bea0">Exercícios</h2>
+<section id="slide-org858350f">
+<h2 id="org858350f">Exercícios</h2>
 <ul>
 <li>Implemente um interpretador de PEGs em sua linguagem de programação favorita.
 Seu intepretador deve produzir um &ldquo;trace&rdquo; da execução da PEG sobre a string
@@ -1358,8 +1376,8 @@ fornecida como entrada.</li>
 </section>
 </section>
 <section>
-<section id="slide-orgac47b08">
-<h2 id="orgac47b08">Referências</h2>
+<section id="slide-org0014b40">
+<h2 id="org0014b40">Referências</h2>
 <ul>
 <li>Ford, Brian. Parsing Expression Grammars: A Recognition-Based Syntactic Foundation. POPL 2004.</li>
 

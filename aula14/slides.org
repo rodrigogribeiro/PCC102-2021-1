@@ -19,8 +19,8 @@
 
 * Objetivos
 
-- Apresentar o formalismo de parsing expression grammars.
-- Apresentar exemplos de especificações usando esse formalismo.
+- Apresentar a sintaxe e semântica de parsing expression grammars.
+- Apresentar o conceito de boa formação e sua relação com a terminação de PEGs.
 
 * Um pouco de história...
 
@@ -168,7 +168,16 @@
  - Regras para $a \in \Sigma$:
 
  \begin{array}{c}
-   \dfrac{}{(a,bs)\Rightarrow (1,\bot)} \\ \\
+   \dfrac{}{(a,\lambda)\Rightarrow (1,\bot)} \\ \\
+ \end{array}
+
+
+* Semântica
+
+ - Regras para $a \in \Sigma$:
+
+ \begin{array}{c}
+   \dfrac{a \neq b}{(a,bs)\Rightarrow (1,\bot)} \\ \\
  \end{array}
 
 
@@ -216,7 +225,7 @@
 - Regras para alternativas (caso 2)
 
   \begin{array}{c}
-    \dfrac{(e_{1},w)\Rightarrow (n_{1},\bot)\:\:\:\:(e_{1},w)\Rightarrow (n_{2},o)}
+    \dfrac{(e_{1},w)\Rightarrow (n_{1},\bot)\:\:\:\:(e_{2},w)\Rightarrow (n_{2},o)}
           {(e_{1}\,/\,e_{2},w)\Rightarrow (1 + n_{1} + n_{2}, o)}
   \end{array}
 
