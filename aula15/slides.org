@@ -1,0 +1,527 @@
+#    -*- mode: org -*-
+#+OPTIONS: reveal_center:t reveal_progress:t reveal_history:t reveal_control:t
+#+OPTIONS: reveal_mathjax:t reveal_rolling_links:t reveal_keyboard:t num:nil
+#+OPTIONS: reveal_width:1200 reveal_height:800
+#+OPTIONS: toc:nil
+#+REVEAL_MARGIN: 0.2
+#+REVEAL_MIN_SCALE: 0.5
+#+REVEAL_MAX_SCALE: 2.5
+#+REVEAL_TRANS: none
+#+REVEAL_THEME: white
+#+REVEAL_HLEVEL: 999
+#+REVEAL_TITLE_SLIDE: <h1>%t</h1><h2>%s</h2><h3>%A %a</h3>
+#+LATEX_HEADER: \usepackage{proof}
+
+#+TITLE: Convertendo expressões regulares em PEGs
+#+SUBTITLE: PCC102 - Teoria da computação
+#+AUTHOR: Rodrigo Ribeiro
+#+EMAIL: rodrigo.ribeiro@ufop.edu.br
+
+* Objetivos
+
+- Apresentar como RE podem ser representados usando PEGs,
+  resolvendo assim os problemas de ambiguidade.
+
+* Expressões regulares
+
+- RE são amplamente utilizadas em bibliotecas de casamento de padrão em linguagens.
+- Porém, REs possuem o problema de ambiguidade...
+
+* Expressões regulares
+
+- Como resolver o problema da ambiguidade?
+
+- Uma solução seria converter uma RE em uma equivalente determinística (sem ambiguidade).
+
+* Expressões regulares
+
+- Porém, tornar uma RE arbitrária determínistica envolve gerar um AFD equivalente e
+  obter uma RE a partir deste AFD.
+
+- Essa alternativa tem custo computacional exponencial, no pior caso.
+
+* Expressões regulares
+
+- Existe alguma alternativa melhor?
+
+* Expressões regulares
+
+- Seria possível converter uma RE em uma parsing expression de forma que a
+  expressão reconheça a mesma linguagem denotada pela RE?
+
+* Expressões regulares
+
+- Sim! Veremos como construir uma parsing expression que reconhece a mesma
+  linguagem de uma RE.
+
+* Expressões regulares
+
+- Semântica alternativa para RE
+
+\begin{array}{c}
+   \dfrac{}{(\lambda,s) \leadsto s} \\ \\
+   \dfrac{}{(a,as)\leadsto s} \\ \\
+\end{array}
+
+* Expressões regulares
+
+- Semântica alternativa para RE
+
+\begin{array}{c}
+   \dfrac{(e_1,ss')\leadsto s'}{(e_1 + e_2,ss') \leadsto s'}
+\end{array}
+
+
+* Expressões regulares
+
+- Semântica alternativa para RE
+
+\begin{array}{c}
+   \dfrac{(e_2,ss')\leadsto s'}{(e_1 + e_2,ss') \leadsto s'}
+\end{array}
+
+* Expressões regulares
+
+- Semântica alternativa para RE
+
+\begin{array}{c}
+   \dfrac{(e_1,ss's'')\leadsto s's''\:\:\:(e_2,s's'')\leadsto s''}{(e_1\:e_2,ss's'') \leadsto s''}
+\end{array}
+
+* Expressões regulares
+
+- Semântica alternativa para RE
+
+\begin{array}{c}
+   \dfrac{}{(e_1^*,s)\leadsto s}
+\end{array}
+
+
+* Expressões regulares
+
+- Semântica alternativa para RE
+
+\begin{array}{c}
+   \dfrac{(e_1,ss's'')\leadsto s's''\:\:\:(e_1^*,s's'')\leadsto s''}{(e_1^*,ss's'')\leadsto s''}
+\end{array}
+
+* Expressões regulares
+
+- Teorema: Para toda string $s'$, $s \in [\![e]\!]$ se e somente se $(e,ss')\leadsto s'$.
+
+- Prova: Indução sobre o par $(e,s)$.
+
+* Parsing expressions
+
+- Semântica de parsing expressions
+
+\begin{array}{c}
+   \dfrac{}{(lambda, s) \leadsto_{G} s}
+\end{array}
+
+
+* Parsing expressions
+
+- Semântica de parsing expressions
+
+\begin{array}{c}
+   \dfrac{(G(A),s) \leadsto X}{(A, s) \leadsto_{G} X}
+\end{array}
+
+
+* Parsing expressions
+
+- Semântica de parsing expressions
+
+\begin{array}{c}
+   \dfrac{}{(a, as) \leadsto_{G} s}
+\end{array}
+
+
+* Parsing expressions
+
+- Semântica de parsing expressions
+
+\begin{array}{c}
+   \dfrac{a \neq b}{(a, bs) \leadsto_{G} \bot}
+\end{array}
+
+
+* Parsing expressions
+
+- Semântica de parsing expressions
+
+\begin{array}{c}
+   \dfrac{a \neq b}{(a, \lambda) \leadsto_{G} \bot}
+\end{array}
+
+* Parsing expressions
+
+- Semântica de parsing expressions
+
+\begin{array}{c}
+   \dfrac{(e_1, ss') \leadsto_{G} s'}{(e_1\,/\,e_2,ss')\leadsto_{G} s'}
+\end{array}
+
+
+* Parsing expressions
+
+- Semântica de parsing expressions
+
+\begin{array}{c}
+   \dfrac{(e_1, ss') \leadsto_{G}\bot\:\:\:(e_2, ss') \leadsto_{G} X}{(e_1\,/\,e_2,ss')\leadsto_{G} X}
+\end{array}
+
+* Parsing expressions
+
+- Semântica de parsing expressions
+
+\begin{array}{c}
+   \dfrac{(e_1,s) \leadsto_{G} \bot}{(e_1^*,s)\leadsto_{G} s}
+\end{array}
+
+
+* Parsing expressions
+
+- Semântica de parsing expressions
+
+\begin{array}{c}
+   \dfrac{(e_1,ss's'') \leadsto_{G} s's''\:\:\:(e_1^*,s's'')\leadsto_{G} s''}{(e_1^*,s)\leadsto_{G} s}
+\end{array}
+
+* Parsing expressions
+
+- Semântica de parsing expressions
+
+\begin{array}{c}
+   \dfrac{(e_1,s) \leadsto_{G} \bot}{(!\,e_1,s)\leadsto_{G} s}
+\end{array}
+
+
+* Parsing expressions
+
+- Semântica de parsing expressions
+
+\begin{array}{c}
+   \dfrac{(e_1,ss') \leadsto_{G} s'}{(!\,e_1,s)\leadsto_{G} \bot}
+\end{array}
+
+* Equivalência
+
+- Dizemos que uma parsing expression $p$ e uma expressão regular $e$ são
+  equivalentes se:
+
+  1. Se $(p,ss')\leadsto_{G} s'$ então $(e,ss')\leadsto s'$.
+  2. Se $(e,ss')\leadsto s'$ então $\neg ((p,ss') \leadsto \bot)$.
+
+* Prefixos
+
+- Dizemos que uma expressão regular $e$ possui a propriedade de prefixo se não
+  existem $s,s',s''$ tais que $s,s'\in [\![e]\!]$ e $s' = ss''$.
+
+* Prefixos
+
+- Se uma expressão regular $e$ possui a propriedade de prefixo. Se $e$ é equivalente
+  a parsing expression $p$ então $L(p) = [\![e]\!]$.
+
+* Equivalência
+
+- Vamos apresentar uma função, $\Pi$, que a partir de uma expressão regular e uma PEG $G_k$
+  equivalente a uma expressão regular $e_k$, produz uma PEG $G$ equivalente a $e\,e_k$.
+
+* Equivalência
+
+- Logo, para obter a PEG equivalente a uma expressão regular $e$ basta considerar como $G_k$
+  uma PEG para $\{\lambda\}$.
+
+* Equivalência
+
+- Definição da função $\Pi$:
+
+\begin{array}{lcl}
+   \Pi(\lambda,G_{k}) & = & G_{k}\\
+   \Pi(a,G_{k})       & = & (V_{k},\Sigma,R_{k},a p_{k}), \text{ em que:}\\
+                      &   & G_{k} = (V_{k},\Sigma,R_{k},p_{k}) \\
+   \Pi(e_{1}\,e_{2},G_{k}) & = & \Pi(e_{1},\Pi(e_2,G_{k}))\\
+\end{array}
+
+* Equivalência
+
+- Definição da função $\Pi$:
+
+\begin{array}{lcl}
+   \Pi(e_{1}+e_{2},G_{k}) & = & (V_{2},\Sigma,R_{2}, p_{1}\,/\,p_{2}),\text{ em que:}\\
+                          &   & \Pi(e_{1},G_{k}) = (V_{1},\Sigma,R_{1},p_{1}) \\
+                          &   & \Pi(e_{2},(V_{1},\Sigma,R_{1},p_{1})) = (V_{2},\Sigma,R_{2},p_{2})\\
+\end{array}
+
+* Equivalência
+
+- Definição da função $\Pi$:
+
+  \begin{array}{lcl}
+    \Pi(e^*,G_{k}) & = & (V_{1},\Sigma,R_{1} \cup \{A \leftarrow p_{1}\,/\,p_{k}\},A)\text{ em que:}\\
+                   &   & G_{k} = (V_{k},\Sigma,R_{k},p_{k})\\
+                   &   & \Pi(e,(V_{k}\cup\{A\},\Sigma,R_{k},A)) = (V_{1},\Sigma,R_{1},p_{1})\\
+                   &   & A \not\in V_{k}
+  \end{array}
+
+* Exemplo
+
+- Considere $G_{k} = (\emptyset,\{0,1\},\emptyset,\lambda)$.
+
+- Considere $e = (0 + 1)^{*}0$.
+
+* Exemplo
+
+\begin{array}{lc}
+   \Pi((0 + 1)^{*}0, G_k) & = \\ \Pi((0+1)^{*},\Pi(0,G_{k}))
+\end{array}
+
+
+* Exemplo
+
+\begin{array}{lc}
+   \Pi((0 + 1)^{*}0, G_k) & = \\
+   \Pi((0+1)^{*},\Pi(0,G_{k})) & = \\
+\end{array}
+
+
+
+* Exemplo
+
+- Calculando $\Pi(0,G_{k})$:
+
+\begin{array}{lc}
+  \Pi(0,G_{k}) & = \\
+  G_{0} = (\emptyset,\{0,1\},\emptyset,0)\\
+\end{array}
+
+
+* Exemplo
+
+\begin{array}{lc}
+   \Pi((0 + 1)^{*}0, G_k) & = \\
+   \Pi((0+1)^{*},\Pi(0,G_{k})) & = \\
+   \Pi((0+1)^{*},(\emptyset,\{0,1\},\emptyset,0)) & = \\
+\end{array}
+
+* Exemplo
+
+\begin{array}{lc}
+   \Pi((0 + 1)^{*}0, G_k) & = \\
+   \Pi((0+1)^{*},\Pi(0,G_{k})) & = \\
+   \Pi((0+1)^{*},(\emptyset,\{0,1\},\emptyset,0)) & = \\
+\end{array}
+
+* Exemplo
+
+- Calculando $\Pi(0+1,(\{A\},\{0,1\},\emptyset,A))$
+   - Primeiro devemos calcular $\Pi(0,(\{A\},\{0,1\},\emptyset,A))$
+
+
+* Exemplo
+
+- Calculando $\Pi(0+1,(\{A\},\{0,1\},\emptyset,A))$
+   - Primeiro devemos calcular $\Pi(0,(\{A\},\{0,1\},\emptyset,A))$
+   - Resultando em $G_{1} = (\{A\},\{0,1\},\emptyset,0A)$
+
+
+* Exemplo
+
+- Calculando $\Pi(0+1,(\{A\},\{0,1\},\emptyset,A))$
+   - Devemos calcular $\Pi(1,G_{1})$
+
+
+* Exemplo
+
+- Calculando $\Pi(0+1,(\{A\},\{0,1\},\emptyset,A))$
+   - Devemos calcular $\Pi(1,(\{A\},\{0,1\},\emptyset,A))$
+   - Resultando em $G_{2} = (\{A\},\{0,1\},\emptyset,1A)$
+
+* Exemplo
+
+- Calculando $\Pi(0+1,(\{A\},\{0,1\},\emptyset,A))$
+  - $G_{1} = (\{A\},\{0,1\},\emptyset,0A)$
+  - $G_{2} = (\{A\},\{0,1\},\emptyset,1A)$
+- Obtemos
+  $(\{A\},\{0,1\},\emptyset,0A\,/\,1A)$
+
+* Exemplo
+
+- Obtemos a PEG para $(0 + 1)^{*}0$:
+
+  \begin{array}{l}
+    (\{A\},\{0,1\},A \leftarrow 0A\,/\,1A\,/\,0, A)
+  \end{array}
+
+- Lembre-se: $\Pi(e_{1}\,e_{2},G_{k})=\Pi(e_{1},\Pi(e_2,G_{k}))$.
+
+* Correção
+
+- A função $\Pi$ produz PEGs equivalentes a expressões regulares não problemáticas.
+  - Dizemos que uma expressão é problemática se ela possui alguma subexpressão da
+    forma $e^*$, em que $\lambda\in[\![e]\!]$.
+
+* Correção
+
+- Porém, é possível obter expressões não problemáticas equivalentes a uma dada
+  expressão problemática.
+
+* Correção
+
+- Vamos apresentar uma transformação que rescreve expressões da forma
+  $e^*$, em que $\lambda \in[\![e]\!]$, produzindo $e'^*$ tal que
+  $\lambda\not\in[\![e']\!]$ e $[\![e^*]\!] = [\![e'^*]\!]$.
+
+* Correção
+
+- Para isso, vamos precisar de algumas definições auxiliares.
+
+* Correção
+
+- Função $empty(e)$: decide se $[\![e]\!] = \{\lambda\}$.
+
+#+BEGIN_SRC haskell
+empty :: RE -> Bool
+empty Lambda = True
+empty (Chr _) = False
+empty (e1 :@: e2) = empty e1 && empty e2
+empty (e1 :+: e2) = empty e1 && empty e2
+empty (Star e) = empty e
+#+END_SRC
+
+* Correção
+
+- Função $null(e)$: decide se $\lambda\in [\![e]\!]$.
+
+#+BEGIN_SRC haskell
+null :: RE -> Bool
+null Lambda = True
+null (Chr _) = False
+null (e1 :@: e2) = null e1 && null e2
+null (e1 :+: e2) = null e1 || null e2
+null (Star _) = True
+#+END_SRC
+
+* Correção
+
+- Para reescrever uma expressão regular problemática serão utilizadas
+  duas funções: $fout$ e $fin$.
+
+- A função $fout$ percorre a estrutura de uma RE até encontrar $e^*$ em que
+  $\lambda\in [\![e]\!]$.
+    - Encontrando essa repetição problemática, usa-se a função $fin$ para reescrevê-la.
+
+* Correção
+
+- Definição de $fout$:
+
+#+BEGIN_SRC haskell
+fout :: RE -> RE
+fout (e1 :@: e2) = (fout e1) :@: (fout e2)
+fout (e1 :+: e2) = (fout e1) :@: (fout e1)
+fout (Star e)
+  | not (null e) = Star (fout e)
+  | empty e = Lambda
+  | otherwise = Star (fin e)
+fout e = e
+#+END_SRC
+
+* Correção
+
+- Definição de $fin$:
+
+#+BEGIN_SRC haskell
+fin :: RE -> RE
+fin (e1 :@: e2) = fin (e1 :+: e2)
+fin (Star e)
+  | null e    = fin e
+  | otherwise = fout e
+fin (e1 :+: e2)
+  | empty e1 && null e2             = fin e2
+  | empty e1 && not (null e2)       = fout e2
+  | null e1 && empty e2             = fin e1
+  | not (null e1) && empty e2       = fout e1
+  | not (null e1) && not (empty e2) = fout e1 :+: fin e2
+  | not (empty e1) && not (null e2) = fin e1 :+: fout e2
+  | otherwise                       = fin e1 :+: fin e2
+#+END_SRC
+
+* Exemplo
+
+#+BEGIN_SRC haskell
+fout (Star (((Chr 'a' :+: Lambda) :@: (Star (Chr 'b'))))) =
+#+END_SRC
+
+
+* Exemplo
+
+#+BEGIN_SRC haskell
+fout (Star (((Chr 'a' :+: Lambda) :@: (Star (Chr 'b'))))) =
+Star (fin (((Chr 'a' :+: Lambda) :@: (Star (Chr 'b'))))) =
+#+END_SRC
+
+
+* Exemplo
+
+#+BEGIN_SRC haskell
+fout (Star (((Chr 'a' :+: Lambda) :@: (Star (Chr 'b'))))) =
+Star (fin (((Chr 'a' :+: Lambda) :@: (Star (Chr 'b'))))) =
+Star (fin (((Chr 'a' :+: Lambda) :+: (Star (Chr 'b'))))) =
+#+END_SRC
+
+
+* Exemplo
+
+#+BEGIN_SRC haskell
+fout (Star (((Chr 'a' :+: Lambda) :@: (Star (Chr 'b'))))) =
+Star (fin (((Chr 'a' :+: Lambda) :@: (Star (Chr 'b'))))) =
+Star (fin (((Chr 'a' :+: Lambda) :+: (Star (Chr 'b'))))) =
+Star (fin (Chr 'a' :+: Lambda) :+: fin (Star (Chr 'b'))) =
+#+END_SRC
+
+
+* Exemplo
+
+#+BEGIN_SRC haskell
+fout (Star (((Chr 'a' :+: Lambda) :@: (Star (Chr 'b'))))) =
+Star (fin (((Chr 'a' :+: Lambda) :@: (Star (Chr 'b'))))) =
+Star (fin (((Chr 'a' :+: Lambda) :+: (Star (Chr 'b'))))) =
+Star (fin (Chr 'a' :+: Lambda) :+: fin (Star (Chr 'b'))) =
+Star (fout (Chr 'a') :+: fout (Char 'b')) =
+#+END_SRC
+
+
+* Exemplo
+
+#+BEGIN_SRC haskell
+fout (Star (((Chr 'a' :+: Lambda) :@: (Star (Chr 'b'))))) =
+Star (fin (((Chr 'a' :+: Lambda) :@: (Star (Chr 'b'))))) =
+Star (fin (((Chr 'a' :+: Lambda) :+: (Star (Chr 'b'))))) =
+Star (fin (Chr 'a' :+: Lambda) :+: fin (Star (Chr 'b'))) =
+Star (fout (Chr 'a') :+: fout (Char 'b')) =
+Star (Chr 'a' :+: Chr 'b')
+#+END_SRC
+
+* Concluindo
+
+- A função $\Pi$ permite a conversão de expressões regulares em PEGs.
+  - Como PEGs são determinísticas, o casamento de padrão torna-se previsível,
+    ao contrário de RE que depende da implementação.
+
+* Concluindo
+
+- Expressões problemáticas podem ser convertidas em expressões equivalentes
+  eliminando dificuldades para correção da conversão em PEGs.
+
+* Exercícios
+
+- Implemente a conversão de expressões regulares em PEGs equivalentes e
+  obtenha um interpretador para expressões regulares utilizando o intepretador de PEG
+  construído por você na atividade da Aula 14.
+
+* Referências
+
+- Medeiros, Sérgio; Mascarenhas, Fábio; Ierusalimschy, Roberto.
+  From Regular Expressions to Parsing Expression Grammars.

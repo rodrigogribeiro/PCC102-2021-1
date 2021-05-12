@@ -414,7 +414,7 @@
 
 - Dizemos que uma PEG é completa se ela é capaz de manipular qualquer string de entrada.
 
-- Uma PEG manipula uma string $w$ se $(e_{s},w) \Rightarrow^n o$, para algum $n \in\mathbb{N}$.
+- Uma PEG manipula uma string $w$ se $(e_{s},w) \Rightarrow^* (n,o)$, para algum $n \in\mathbb{N}$.
 
 * Terminação
 
@@ -590,7 +590,7 @@
 
 * Terminação
 
-- Usando a relação $e \rightvharpoonup o$ podemos definir a relação
+- Usando a relação $e \rightharpoonup o$ podemos definir a relação
   $WF(e)$ que especifica que uma expressão é bem formada.
 
 * Terminação

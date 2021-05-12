@@ -1,0 +1,149 @@
+#    -*- mode: org -*-
+#+OPTIONS: reveal_center:t reveal_progress:t reveal_history:t reveal_control:t
+#+OPTIONS: reveal_mathjax:t reveal_rolling_links:t reveal_keyboard:t num:nil
+#+OPTIONS: reveal_width:1200 reveal_height:800
+#+OPTIONS: toc:nil
+#+REVEAL_MARGIN: 0.2
+#+REVEAL_MIN_SCALE: 0.5
+#+REVEAL_MAX_SCALE: 2.5
+#+REVEAL_TRANS: none
+#+REVEAL_THEME: white
+#+REVEAL_HLEVEL: 999
+#+REVEAL_TITLE_SLIDE: <h1>%t</h1><h2>%s</h2><h3>%A %a</h3>
+#+LATEX_HEADER: \usepackage{proof}
+
+#+TITLE: Relação entre gramáticas livres de contexto e PEGs
+#+SUBTITLE: PCC102 - Teoria da computação
+#+AUTHOR: Rodrigo Ribeiro
+#+EMAIL: rodrigo.ribeiro@ufop.edu.br
+
+* Objetivos
+
+- Apresentar uma semântica operacional para gramáticas livres de contexto.
+
+- Apresentar a relação entre gramáticas LL(1), strong-LL(k) e LL-regular e PEGs.
+
+* Gramáticas e PEGs
+
+- Qual a relação entre gramáticas livres de contexto e PEGs?
+
+* Gramáticas e PEGs
+
+- No artigo original de PEGs, Ford mostra que PEGs podem reconhecer todas das gramáticas
+  livres de contexto determinísticas.
+
+- Porém, a equivalência se restringe a isso?
+
+* Gramáticas e PEGs
+
+- Não! Mascarenhas et.al. mostra a relação de certas classes de linguagens livres de contexto
+  e PEGs.
+
+- Para evidenciar essas similaridades, os autores usaram uma semântica operacional para gramáticas
+  livres de contexto.
+
+* Semântica de Gramáticas
+
+- Para definir essa semântica, os autores utilizam a sintaxe de parsing expressions para
+  a construção de produções em uma gramática livre de contexto.
+
+* Semântica de Gramáticas
+
+- Além disso, os autores consideram que uma gramática é uma tupla $(V,\Sigma,R,p_{s})$, em que:
+  - $R$ é uma função entre não terminais e expressões.
+  - $p_{s}$ é a expressão inicial da gramática.
+
+* Semântica de Gramáticas
+
+- A semântica de gramáticas é definida pela relação $G[p]\,s\leadsto s'$, em que $G$
+  é a gramática, $p$ uma expressão definindo uma produção, $s$ a string de entrada e
+  $s'$ o sufixo da entrada não consumido.
+
+* Semântica de Gramáticas
+
+- Semântica para $\lambda$
+
+  \begin{array}{c}
+    \dfrac{}{G[\lambda]\,s\leadsto s}
+  \end{array}
+
+
+* Semântica de Gramáticas
+
+- Semântica para $a\in\Sigma$
+
+  \begin{array}{c}
+    \dfrac{}{G[a]\,as\leadsto s}
+  \end{array}
+
+
+* Semântica de Gramáticas
+
+- Semântica para $A\in V$
+
+\begin{array}{c}
+   \dfrac{G[R(A)]ss'\leadsto s'}{G[A]\,ss'\leadsto s'}
+\end{array}
+
+
+* Semântica de Gramáticas
+
+- Semântica para $A\in V$
+
+\begin{array}{c}
+   \dfrac{G[R(A)]ss'\leadsto s'}{G[A]\,ss'\leadsto s'}
+\end{array}
+
+* Semântica de Gramáticas
+
+- Semântica para concatenação
+
+\begin{array}{c}
+   \dfrac{G[p]ss's''\leadsto s's''\:\:\:G[p']s's''\leadsto s''}{G[p\,p']\leadsto s''}
+\end{array}
+
+* Semântica de Gramáticas
+
+- Semântica para escolha
+
+\begin{array}{c}
+   \dfrac{G[p]ss'\leadsto s'}{G[p\,|\,p']\leadsto s'}
+\end{array}
+
+
+* Semântica de Gramáticas
+
+- Semântica para escolha
+
+\begin{array}{c}
+   \dfrac{G[p']ss'\leadsto s'}{G[p\,|\,p']\leadsto s'}
+\end{array}
+
+* Semântica de Gramáticas
+
+- Teorema: Se $G[p']ss'\leadsto s'$ então para todo $s''$ temos que $G[p']ss''\leadsto s''$.
+
+- Prova: Indução na derivação de $G[p']ss'\leadsto s'$.
+
+* Semântica de Gramáticas
+
+- A semântica apresentada é muito similar à semântica para PEGs.
+
+- Diferenças principais
+  - Escolha não determinística
+  - Ausência do operador de negação.
+
+* Semântica de Gramáticas
+
+
+* Exercícios
+
+- Implemente a conversão de expressões regulares em PEGs equivalentes e
+  obtenha um interpretador para expressões regulares utilizando o intepretador de PEG
+  construído por você na atividade da Aula 14.
+
+* Referências
+
+- Mascarenhas, Fábio; Medeiros, Sérgio; Ierusalimschy, Roberto.
+  On the relation between context-free grammars and parsing expression grammars.
+  Science of computer programming.

@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Relação entre gramáticas livres de contexto e PEGs</title>
+<meta name="author" content="Rodrigo Ribeiro"/>
+<style type="text/css">
+.underline { text-decoration: underline; }
+</style>
+<link rel="stylesheet" href="/Users/rodrigo/.emacs.d/.local/straight/build-27.2/revealjs/dist/reveal.css"/>
+
+<link rel="stylesheet" href="/Users/rodrigo/.emacs.d/.local/straight/build-27.2/revealjs/dist/theme/white.css" id="theme"/>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+<section id="sec-title-slide">
+<h1>Relação entre gramáticas livres de contexto e PEGs</h1><h2>PCC102 - Teoria da computação</h2><h3> Rodrigo Ribeiro</h3>
+</section>
+
+<section>
+<section id="slide-org3917d05">
+<h2 id="org3917d05">Objetivos</h2>
+<ul>
+<li>Apresentar uma semântica operacional para gramáticas livres de contexto.</li>
+
+<li>Apresentar a relação entre gramáticas LL(1), strong-LL(k) e LL-regular e PEGs.</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org6322a33">
+<h2 id="org6322a33">Gramáticas e PEGs</h2>
+<ul>
+<li>Qual a relação entre gramáticas livres de contexto e PEGs?</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org07f96d3">
+<h2 id="org07f96d3">Gramáticas e PEGs</h2>
+<ul>
+<li>No artigo original de PEGs, Ford mostra que PEGs podem reconhecer todas das gramáticas
+livres de contexto determinísticas.</li>
+
+<li>Porém, a equivalência se restringe a isso?</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org490116f">
+<h2 id="org490116f">Gramáticas e PEGs</h2>
+<ul>
+<li>Não! Mascarenhas et.al. mostra a relação de certas classes de linguagens livres de contexto
+e PEGs.</li>
+
+<li>Para evidenciar essas similaridades, os autores usaram uma semântica operacional para gramáticas
+livres de contexto.</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org3dbbecb">
+<h2 id="org3dbbecb">Semântica de Gramáticas</h2>
+<ul>
+<li>Para definir essa semântica, os autores utilizam a sintaxe de parsing expressions para
+a construção de produções em uma gramática livre de contexto.</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org7d27e4c">
+<h2 id="org7d27e4c">Semântica de Gramáticas</h2>
+<ul>
+<li>Além disso, os autores consideram que uma gramática é uma tupla \((V,\Sigma,R,p_{s})\), em que:
+<ul>
+<li>\(R\) é uma função entre não terminais e expressões.</li>
+<li>\(p_{s}\) é a expressão inicial da gramática.</li>
+
+</ul></li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-orgb6c59b2">
+<h2 id="orgb6c59b2">Semântica de Gramáticas</h2>
+<ul>
+<li>A semântica de gramáticas é definida pela relação \(G[p]\,s\leadsto s'\), em que \(G\)
+é a gramática, \(p\) uma expressão definindo uma produção, \(s\) a string de entrada e
+\(s'\) o sufixo da entrada não consumido.</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org1511ede">
+<h2 id="org1511ede">Semântica de Gramáticas</h2>
+<ul>
+<li><p>
+Semântica para \(\lambda\)
+</p>
+
+<div>
+\begin{array}{c}
+  \dfrac{}{G[\lambda]\,s\leadsto s}
+\end{array}
+
+</div></li>
+
+</ul>
+
+
+</section>
+</section>
+<section>
+<section id="slide-org72851f3">
+<h2 id="org72851f3">Semântica de Gramáticas</h2>
+<ul>
+<li><p>
+Semântica para \(a\in\Sigma\)
+</p>
+
+<div>
+\begin{array}{c}
+  \dfrac{}{G[a]\,as\leadsto s}
+\end{array}
+
+</div></li>
+
+</ul>
+
+
+</section>
+</section>
+<section>
+<section id="slide-orgd73d759">
+<h2 id="orgd73d759">Semântica de Gramáticas</h2>
+<ul>
+<li>Semântica para \(A\in V\)</li>
+
+</ul>
+
+<div>
+\begin{array}{c}
+   \dfrac{G[R(A)]ss'\leadsto s'}{G[A]\,ss'\leadsto s'}
+\end{array}
+
+</div>
+
+
+</section>
+</section>
+<section>
+<section id="slide-org4000f96">
+<h2 id="org4000f96">Semântica de Gramáticas</h2>
+<ul>
+<li>Semântica para \(A\in V\)</li>
+
+</ul>
+
+<div>
+\begin{array}{c}
+   \dfrac{G[R(A)]ss'\leadsto s'}{G[A]\,ss'\leadsto s'}
+\end{array}
+
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-orgf2f0e02">
+<h2 id="orgf2f0e02">Semântica de Gramáticas</h2>
+<ul>
+<li>Semântica para concatenação</li>
+
+</ul>
+
+<div>
+\begin{array}{c}
+   \dfrac{G[p]ss's''\leadsto s's''\:\:\:G[p']s's''\leadsto s''}{G[p\,p']\leadsto s''}
+\end{array}
+
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org108448d">
+<h2 id="org108448d">Semântica de Gramáticas</h2>
+<ul>
+<li>Semântica para escolha</li>
+
+</ul>
+
+<div>
+\begin{array}{c}
+   \dfrac{G[p]ss'\leadsto s'}{G[p\,|\,p']\leadsto s'}
+\end{array}
+
+</div>
+
+
+</section>
+</section>
+<section>
+<section id="slide-org402d7d6">
+<h2 id="org402d7d6">Semântica de Gramáticas</h2>
+<ul>
+<li>Semântica para escolha</li>
+
+</ul>
+
+<div>
+\begin{array}{c}
+   \dfrac{G[p']ss'\leadsto s'}{G[p\,|\,p']\leadsto s'}
+\end{array}
+
+</div>
+
+
+</section>
+</section>
+<section>
+<section id="slide-orgac15ff5">
+<h2 id="orgac15ff5">Exercícios</h2>
+<ul>
+<li>Implemente a conversão de expressões regulares em PEGs equivalentes e
+obtenha um interpretador para expressões regulares utilizando o intepretador de PEG
+construído por você na atividade da Aula 14.</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org65a7c5e">
+<h2 id="org65a7c5e">Referências</h2>
+<ul>
+<li>Mascarenhas, Fábio; Medeiros, Sérgio; Ierusalimschy, Roberto.
+On the relation between context-free grammars and parsing expression grammars.
+Science of computer programming.</li>
+
+</ul>
+</section>
+</section>
+</div>
+</div>
+<script src="/Users/rodrigo/.emacs.d/.local/straight/build-27.2/revealjs/dist/reveal.js"></script>
+<script src="/Users/rodrigo/.emacs.d/.local/straight/build-27.2/revealjs/plugin/markdown/markdown.js"></script>
+<script src="/Users/rodrigo/.emacs.d/.local/straight/build-27.2/revealjs/plugin/notes/notes.js"></script>
+<script src="/Users/rodrigo/.emacs.d/.local/straight/build-27.2/revealjs/plugin/search/search.js"></script>
+<script src="/Users/rodrigo/.emacs.d/.local/straight/build-27.2/revealjs/plugin/zoom/zoom.js"></script>
+<script>
+// Full list of configuration options available here:
+// https://github.com/hakimel/reveal.js#configuration
+Reveal.initialize({
+
+controls: true,
+progress: true,
+history: true,
+center: true,
+slideNumber: 'c',
+rollingLinks: true,
+keyboard: true,
+mouseWheel: false,
+fragmentInURL: false,
+hashOneBasedIndex: false,
+pdfSeparateFragments: true,
+
+overview: true,
+width: 1200,
+height: 800,
+margin: 0.20,
+minScale: 0.50,
+maxScale: 2.50,
+
+transition: 'none',
+transitionSpeed: 'default',
+
+// Plugins with reveal.js 4.x
+plugins: [ RevealMarkdown, RevealNotes, RevealSearch, RevealZoom ],
+
+// Optional libraries used to extend reveal.js
+dependencies: [
+]
+
+});
+</script>
+</body>
+</html>
