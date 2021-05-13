@@ -21,7 +21,7 @@
 
 - Apresentar uma semântica operacional para gramáticas livres de contexto.
 
-- Apresentar a relação entre gramáticas LL(1), strong-LL(k) e LL-regular e PEGs.
+- Apresentar a relação entre gramáticas LL(1) e PEGs.
 
 * Gramáticas e PEGs
 
@@ -85,15 +85,6 @@
    \dfrac{G[R(A)]ss'\leadsto s'}{G[A]\,ss'\leadsto s'}
 \end{array}
 
-
-* Semântica de Gramáticas
-
-- Semântica para $A\in V$
-
-\begin{array}{c}
-   \dfrac{G[R(A)]ss'\leadsto s'}{G[A]\,ss'\leadsto s'}
-\end{array}
-
 * Semântica de Gramáticas
 
 - Semântica para concatenação
@@ -129,18 +120,196 @@
 
 - A semântica apresentada é muito similar à semântica para PEGs.
 
-- Diferenças principais
-  - Escolha não determinística
+- Diferenças principais:
+  - Escolha não determinística explícita na sintaxe de expressões.
   - Ausência do operador de negação.
 
 * Semântica de Gramáticas
 
+- Seria possível adaptar a semântica de PEGs para gramáticas?
+
+- Quais mudanças seriam necessárias?
+
+* Semântica de Gramáticas
+
+- Quais mudanças seriam necessárias?
+  - Regras para escolha ordenada.
+  - Falhas explícitas
+
+
+* Semântica de PEG para Gramáticas
+
+- Semântica para $\lambda$
+
+  \begin{array}{c}
+    \dfrac{}{G[\lambda]\,s\leadsto_{PEG} s}
+  \end{array}
+
+
+* Semântica de PEG para Gramáticas
+
+- Semântica para $a\in\Sigma$
+
+  \begin{array}{c}
+    \dfrac{}{G[a]\,as\leadsto_{PEG} s}
+  \end{array}
+
+
+* Semântica de PEG para Gramáticas
+
+- Semântica para $a\in\Sigma$
+
+  \begin{array}{c}
+    \dfrac{a\neq b}{G[a]\,bs\leadsto_{PEG} \bot}
+  \end{array}
+
+
+* Semântica de PEG para Gramáticas
+
+- Semântica para $a\in\Sigma$
+
+  \begin{array}{c}
+    \dfrac{}{G[a]\,\lambda\leadsto_{PEG} \bot}
+  \end{array}
+
+
+* Semântica de PEG para Gramáticas
+
+- Semântica para $A\in V$
+
+\begin{array}{c}
+   \dfrac{G[R(A)]ss'\leadsto_{PEG} X}{G[A]\,ss'\leadsto_{PEG} X}
+\end{array}
+
+
+* Semântica de PEG para Gramáticas
+
+- Semântica para concatenação
+
+\begin{array}{c}
+ \dfrac{G[p]ss's''\leadsto_{PEG} s's''\:\:\:G[p']s's''\leadsto_{PEG} s''}{G[p\,p']\leadsto_{PEG} s''}
+\end{array}
+
+
+* Semântica de PEG para Gramáticas
+
+- Semântica para concatenação
+
+\begin{array}{c}
+   \dfrac{G[p]s\leadsto_{PEG} \bot}{G[p\,p']\leadsto_{PEG} \bot}
+\end{array}
+
+
+* Semântica de PEG para Gramáticas
+
+- Semântica para concatenação
+
+\begin{array}{c}
+   \dfrac{G[p]ss's''\leadsto_{PEG} s'\:\:\:G[p']s'\leadsto_{PEG} \bot}{G[p\,p']\leadsto_{PEG} \bot}
+\end{array}
+
+
+* Semântica de PEG para Gramáticas
+
+- Semântica para escolha
+
+\begin{array}{c}
+   \dfrac{G[p]ss'\leadsto_{PEG} s'}{G[p\,|\,p']\leadsto_{PEG} s'}
+\end{array}
+
+
+* Semântica de PEG para Gramáticas
+
+- Semântica para escolha
+
+\begin{array}{c}
+   \dfrac{G[p]ss'\leadsto_{PEG} \bot \:\:\: G[p']ss'\leadsto_{PEG} X}{G[p\,|\,p']\leadsto_{PEG} X}
+\end{array}
+
+* Semântica de PEG para Gramáticas
+
+- Teorema: Se $G[p]ss'\leadsto_{PEG} s'$ então $G[p]ss' \leadsto s'$.
+
+- Prova: Por indução sobre a derivação de $G[p]ss'\leadsto_{PEG} s'$.
+
+* Semântica de PEG para Gramáticas
+
+- Teorema: Se $G[p]s\leadsto_{PEG} X$ e $G[p]s \leadsto_{PEG} X'$ então $X = X'$.
+
+- Prova: Por indução sobre a derivação de $G[p]s\leadsto_{PEG} X$.
+
+* Gramáticas LL(1) e PEGs
+
+- Uma gramática sem expressões $\lambda$ é LL(1) se, e somente se, os
+  conjuntos $first$ de cada um de seus não terminais $A_i$ são disjuntos.
+
+\begin{array}{c}
+  first^{G}(p) = \{a \in \Sigma\,|\,G[p] axy \leadsto y\}
+\end{array}
+
+* Gramáticas LL(1) e PEGs
+
+- Uma gramática é LL(1) se todo operador de escolha $p_1\,|\,p_2$ é tal que
+  $first^G(p_1)\cap first^G(p_2) = \emptyset$.
+
+- Gramáticas com essa propriedade podem ser interpretadas como PEGs preservando
+  a linguagem reconhecida.
+
+* Gramáticas LL(1) e PEGs
+
+- Para gramáticas que possuem expressões $\lambda$, algumas propriedades adicionais
+  fazem-se necessárias.
+
+* Gramáticas LL(1) e PEGs
+
+- Estrutura BNF: Uma gramática $(V,\Sigma,R,p_{S})$ possui estrutura BNF se:
+  - Não ocorrem escolhas como sub-expressões de uma concatenação.
+  - $p_{S}$ é um não terminal da gramática.
+  - Para toda escolha $p_1\,|\,p_2$ se $p_1$ aceita a string vazia então $p_2$
+    também deve aceitar.
+
+* Gramáticas LL(1) e PEGs
+
+- Atualizando a definição de $first$:
+
+  \begin{array}{lcl}
+     first^{G}(p) & = & \{a \in \Sigma \,|\, G[p] axy \leadsto y\} \cup nullable(p)\\
+     nullable(p)  & = & \{\lambda\}\:\:\text{, se } G[p]s\leadsto s\\
+     nullable(p)  & = & \emptyset\:\:\text{, caso contrário}\\
+  \end{array}
+
+* Gramáticas LL(1) e PEGs
+
+- Como a gramática possui expressões que podem não consumir nenhum símbolo da entrada,
+  devemos considerar o conjunto $follow$:
+
+  \begin{array}{lcl}
+    follow^{G}(A) & = & \{a \in\Sigma\cup\{\$\}\,|\, G[A]yaz\leadsto az\text{ em uma prova de }
+          G[A]\,w\$\leadsto\$\}
+  \end{array}
+
+* Gramáticas LL(1) e PEGs
+
+- Gramáticas que possuem expressões que não consomem nenhum símbolo da entrada são LL(1) se
+  para toda produção $A \to p$ e toda escolha $p_1\,|\,p_2$ de $p$:
+  - $first^{G}(p_1)\cap first^{G}(p_2) = \emptyset$
+  - Se $\lambda \in first^{G}(p_2)$ então $first^{G}(p_1) \cap follow^{G}(p_2) = \emptyset$
+
+* Gramáticas LL(1) e PEGs
+
+- Logo, gramáticas que atendem as condições anteriores podem ser intepretadas como PEGs e,
+  portanto, executadas usando intepretadores para tal formalismo.
+
+* Gramáticas e PEGs
+
+- Outras classes de gramáticas possuem equivalências com PEGs: strong LL(k), right-linear e
+  LL-regular.
 
 * Exercícios
 
-- Implemente a conversão de expressões regulares em PEGs equivalentes e
-  obtenha um interpretador para expressões regulares utilizando o intepretador de PEG
-  construído por você na atividade da Aula 14.
+- Apresente uma prova detalhada do seguinte teorema.
+
+- Se $G[p]ss'\leadsto_{PEG} s'$ então $G[p]ss' \leadsto s'$.
 
 * Referências
 

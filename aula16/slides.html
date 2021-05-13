@@ -20,20 +20,20 @@
 </section>
 
 <section>
-<section id="slide-org3917d05">
-<h2 id="org3917d05">Objetivos</h2>
+<section id="slide-orgbbdc48d">
+<h2 id="orgbbdc48d">Objetivos</h2>
 <ul>
 <li>Apresentar uma semântica operacional para gramáticas livres de contexto.</li>
 
-<li>Apresentar a relação entre gramáticas LL(1), strong-LL(k) e LL-regular e PEGs.</li>
+<li>Apresentar a relação entre gramáticas LL(1) e PEGs.</li>
 
 </ul>
 
 </section>
 </section>
 <section>
-<section id="slide-org6322a33">
-<h2 id="org6322a33">Gramáticas e PEGs</h2>
+<section id="slide-org56c80a0">
+<h2 id="org56c80a0">Gramáticas e PEGs</h2>
 <ul>
 <li>Qual a relação entre gramáticas livres de contexto e PEGs?</li>
 
@@ -42,8 +42,8 @@
 </section>
 </section>
 <section>
-<section id="slide-org07f96d3">
-<h2 id="org07f96d3">Gramáticas e PEGs</h2>
+<section id="slide-orgf527d44">
+<h2 id="orgf527d44">Gramáticas e PEGs</h2>
 <ul>
 <li>No artigo original de PEGs, Ford mostra que PEGs podem reconhecer todas das gramáticas
 livres de contexto determinísticas.</li>
@@ -55,8 +55,8 @@ livres de contexto determinísticas.</li>
 </section>
 </section>
 <section>
-<section id="slide-org490116f">
-<h2 id="org490116f">Gramáticas e PEGs</h2>
+<section id="slide-orgf977966">
+<h2 id="orgf977966">Gramáticas e PEGs</h2>
 <ul>
 <li>Não! Mascarenhas et.al. mostra a relação de certas classes de linguagens livres de contexto
 e PEGs.</li>
@@ -69,8 +69,8 @@ livres de contexto.</li>
 </section>
 </section>
 <section>
-<section id="slide-org3dbbecb">
-<h2 id="org3dbbecb">Semântica de Gramáticas</h2>
+<section id="slide-org9596c52">
+<h2 id="org9596c52">Semântica de Gramáticas</h2>
 <ul>
 <li>Para definir essa semântica, os autores utilizam a sintaxe de parsing expressions para
 a construção de produções em uma gramática livre de contexto.</li>
@@ -80,8 +80,8 @@ a construção de produções em uma gramática livre de contexto.</li>
 </section>
 </section>
 <section>
-<section id="slide-org7d27e4c">
-<h2 id="org7d27e4c">Semântica de Gramáticas</h2>
+<section id="slide-orgf56bc11">
+<h2 id="orgf56bc11">Semântica de Gramáticas</h2>
 <ul>
 <li>Além disso, os autores consideram que uma gramática é uma tupla \((V,\Sigma,R,p_{s})\), em que:
 <ul>
@@ -95,8 +95,8 @@ a construção de produções em uma gramática livre de contexto.</li>
 </section>
 </section>
 <section>
-<section id="slide-orgb6c59b2">
-<h2 id="orgb6c59b2">Semântica de Gramáticas</h2>
+<section id="slide-orgfb1af6a">
+<h2 id="orgfb1af6a">Semântica de Gramáticas</h2>
 <ul>
 <li>A semântica de gramáticas é definida pela relação \(G[p]\,s\leadsto s'\), em que \(G\)
 é a gramática, \(p\) uma expressão definindo uma produção, \(s\) a string de entrada e
@@ -107,8 +107,8 @@ a construção de produções em uma gramática livre de contexto.</li>
 </section>
 </section>
 <section>
-<section id="slide-org1511ede">
-<h2 id="org1511ede">Semântica de Gramáticas</h2>
+<section id="slide-org08acfc4">
+<h2 id="org08acfc4">Semântica de Gramáticas</h2>
 <ul>
 <li><p>
 Semântica para \(\lambda\)
@@ -127,8 +127,8 @@ Semântica para \(\lambda\)
 </section>
 </section>
 <section>
-<section id="slide-org72851f3">
-<h2 id="org72851f3">Semântica de Gramáticas</h2>
+<section id="slide-orgdbdbd77">
+<h2 id="orgdbdbd77">Semântica de Gramáticas</h2>
 <ul>
 <li><p>
 Semântica para \(a\in\Sigma\)
@@ -147,26 +147,8 @@ Semântica para \(a\in\Sigma\)
 </section>
 </section>
 <section>
-<section id="slide-orgd73d759">
-<h2 id="orgd73d759">Semântica de Gramáticas</h2>
-<ul>
-<li>Semântica para \(A\in V\)</li>
-
-</ul>
-
-<div>
-\begin{array}{c}
-   \dfrac{G[R(A)]ss'\leadsto s'}{G[A]\,ss'\leadsto s'}
-\end{array}
-
-</div>
-
-
-</section>
-</section>
-<section>
-<section id="slide-org4000f96">
-<h2 id="org4000f96">Semântica de Gramáticas</h2>
+<section id="slide-org63cb1e0">
+<h2 id="org63cb1e0">Semântica de Gramáticas</h2>
 <ul>
 <li>Semântica para \(A\in V\)</li>
 
@@ -182,8 +164,8 @@ Semântica para \(a\in\Sigma\)
 </section>
 </section>
 <section>
-<section id="slide-orgf2f0e02">
-<h2 id="orgf2f0e02">Semântica de Gramáticas</h2>
+<section id="slide-orgf44d2b0">
+<h2 id="orgf44d2b0">Semântica de Gramáticas</h2>
 <ul>
 <li>Semântica para concatenação</li>
 
@@ -199,8 +181,8 @@ Semântica para \(a\in\Sigma\)
 </section>
 </section>
 <section>
-<section id="slide-org108448d">
-<h2 id="org108448d">Semântica de Gramáticas</h2>
+<section id="slide-orgbeff3b2">
+<h2 id="orgbeff3b2">Semântica de Gramáticas</h2>
 <ul>
 <li>Semântica para escolha</li>
 
@@ -217,8 +199,8 @@ Semântica para \(a\in\Sigma\)
 </section>
 </section>
 <section>
-<section id="slide-org402d7d6">
-<h2 id="org402d7d6">Semântica de Gramáticas</h2>
+<section id="slide-org254c2e7">
+<h2 id="org254c2e7">Semântica de Gramáticas</h2>
 <ul>
 <li>Semântica para escolha</li>
 
@@ -231,24 +213,431 @@ Semântica para \(a\in\Sigma\)
 
 </div>
 
-
 </section>
 </section>
 <section>
-<section id="slide-orgac15ff5">
-<h2 id="orgac15ff5">Exercícios</h2>
+<section id="slide-org5c1e741">
+<h2 id="org5c1e741">Semântica de Gramáticas</h2>
 <ul>
-<li>Implemente a conversão de expressões regulares em PEGs equivalentes e
-obtenha um interpretador para expressões regulares utilizando o intepretador de PEG
-construído por você na atividade da Aula 14.</li>
+<li>Teorema: Se \(G[p']ss'\leadsto s'\) então para todo \(s''\) temos que \(G[p']ss''\leadsto s''\).</li>
+
+<li>Prova: Indução na derivação de \(G[p']ss'\leadsto s'\).</li>
 
 </ul>
 
 </section>
 </section>
 <section>
-<section id="slide-org65a7c5e">
-<h2 id="org65a7c5e">Referências</h2>
+<section id="slide-org8f7b359">
+<h2 id="org8f7b359">Semântica de Gramáticas</h2>
+<ul>
+<li>A semântica apresentada é muito similar à semântica para PEGs.</li>
+
+<li>Diferenças principais:
+<ul>
+<li>Escolha não determinística explícita na sintaxe de expressões.</li>
+<li>Ausência do operador de negação.</li>
+
+</ul></li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org9bee943">
+<h2 id="org9bee943">Semântica de Gramáticas</h2>
+<ul>
+<li>Seria possível adaptar a semântica de PEGs para gramáticas?</li>
+
+<li>Quais mudanças seriam necessárias?</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org4dc6a87">
+<h2 id="org4dc6a87">Semântica de Gramáticas</h2>
+<ul>
+<li>Quais mudanças seriam necessárias?
+<ul>
+<li>Regras para escolha ordenada.</li>
+<li>Falhas explícitas</li>
+
+</ul></li>
+
+</ul>
+
+
+</section>
+</section>
+<section>
+<section id="slide-org96cc1f0">
+<h2 id="org96cc1f0">Semântica de PEG para Gramáticas</h2>
+<ul>
+<li><p>
+Semântica para \(\lambda\)
+</p>
+
+<div>
+\begin{array}{c}
+  \dfrac{}{G[\lambda]\,s\leadsto_{PEG} s}
+\end{array}
+
+</div></li>
+
+</ul>
+
+
+</section>
+</section>
+<section>
+<section id="slide-orgbd7a10f">
+<h2 id="orgbd7a10f">Semântica de PEG para Gramáticas</h2>
+<ul>
+<li><p>
+Semântica para \(a\in\Sigma\)
+</p>
+
+<div>
+\begin{array}{c}
+  \dfrac{}{G[a]\,as\leadsto_{PEG} s}
+\end{array}
+
+</div></li>
+
+</ul>
+
+
+</section>
+</section>
+<section>
+<section id="slide-org4cad971">
+<h2 id="org4cad971">Semântica de PEG para Gramáticas</h2>
+<ul>
+<li><p>
+Semântica para \(a\in\Sigma\)
+</p>
+
+<div>
+\begin{array}{c}
+  \dfrac{a\neq b}{G[a]\,bs\leadsto_{PEG} \bot}
+\end{array}
+
+</div></li>
+
+</ul>
+
+
+</section>
+</section>
+<section>
+<section id="slide-orgc671f7d">
+<h2 id="orgc671f7d">Semântica de PEG para Gramáticas</h2>
+<ul>
+<li><p>
+Semântica para \(a\in\Sigma\)
+</p>
+
+<div>
+\begin{array}{c}
+  \dfrac{}{G[a]\,\lambda\leadsto_{PEG} \bot}
+\end{array}
+
+</div></li>
+
+</ul>
+
+
+</section>
+</section>
+<section>
+<section id="slide-orgae59f95">
+<h2 id="orgae59f95">Semântica de PEG para Gramáticas</h2>
+<ul>
+<li>Semântica para \(A\in V\)</li>
+
+</ul>
+
+<div>
+\begin{array}{c}
+   \dfrac{G[R(A)]ss'\leadsto_{PEG} X}{G[A]\,ss'\leadsto_{PEG} X}
+\end{array}
+
+</div>
+
+
+</section>
+</section>
+<section>
+<section id="slide-orgc8ab547">
+<h2 id="orgc8ab547">Semântica de PEG para Gramáticas</h2>
+<ul>
+<li>Semântica para concatenação</li>
+
+</ul>
+
+<div>
+\begin{array}{c}
+ \dfrac{G[p]ss's''\leadsto_{PEG} s's''\:\:\:G[p']s's''\leadsto_{PEG} s''}{G[p\,p']\leadsto_{PEG} s''}
+\end{array}
+
+</div>
+
+
+</section>
+</section>
+<section>
+<section id="slide-org081e575">
+<h2 id="org081e575">Semântica de PEG para Gramáticas</h2>
+<ul>
+<li>Semântica para concatenação</li>
+
+</ul>
+
+<div>
+\begin{array}{c}
+   \dfrac{G[p]s\leadsto_{PEG} \bot}{G[p\,p']\leadsto_{PEG} \bot}
+\end{array}
+
+</div>
+
+
+</section>
+</section>
+<section>
+<section id="slide-org5396c7a">
+<h2 id="org5396c7a">Semântica de PEG para Gramáticas</h2>
+<ul>
+<li>Semântica para concatenação</li>
+
+</ul>
+
+<div>
+\begin{array}{c}
+   \dfrac{G[p]ss's''\leadsto_{PEG} s'\:\:\:G[p']s'\leadsto_{PEG} \bot}{G[p\,p']\leadsto_{PEG} \bot}
+\end{array}
+
+</div>
+
+
+</section>
+</section>
+<section>
+<section id="slide-org44dc455">
+<h2 id="org44dc455">Semântica de PEG para Gramáticas</h2>
+<ul>
+<li>Semântica para escolha</li>
+
+</ul>
+
+<div>
+\begin{array}{c}
+   \dfrac{G[p]ss'\leadsto_{PEG} s'}{G[p\,|\,p']\leadsto_{PEG} s'}
+\end{array}
+
+</div>
+
+
+</section>
+</section>
+<section>
+<section id="slide-org1047116">
+<h2 id="org1047116">Semântica de PEG para Gramáticas</h2>
+<ul>
+<li>Semântica para escolha</li>
+
+</ul>
+
+<div>
+\begin{array}{c}
+   \dfrac{G[p]ss'\leadsto_{PEG} \bot \:\:\: G[p']ss'\leadsto_{PEG} X}{G[p\,|\,p']\leadsto_{PEG} X}
+\end{array}
+
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org49655f7">
+<h2 id="org49655f7">Semântica de PEG para Gramáticas</h2>
+<ul>
+<li>Teorema: Se \(G[p]ss'\leadsto_{PEG} s'\) então \(G[p]ss' \leadsto s'\).</li>
+
+<li>Prova: Por indução sobre a derivação de \(G[p]ss'\leadsto_{PEG} s'\).</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org95b113b">
+<h2 id="org95b113b">Semântica de PEG para Gramáticas</h2>
+<ul>
+<li>Teorema: Se \(G[p]s\leadsto_{PEG} X\) e \(G[p]s \leadsto_{PEG} X'\) então \(X = X'\).</li>
+
+<li>Prova: Por indução sobre a derivação de \(G[p]s\leadsto_{PEG} X\).</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-orgd963b31">
+<h2 id="orgd963b31">Gramáticas LL(1) e PEGs</h2>
+<ul>
+<li>Uma gramática sem expressões \(\lambda\) é LL(1) se, e somente se, os
+conjuntos \(first\) de cada um de seus não terminais \(A_i\) são disjuntos.</li>
+
+</ul>
+
+<div>
+\begin{array}{c}
+  first^{G}(p) = \{a \in \Sigma\,|\,G[p] axy \leadsto y\}
+\end{array}
+
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-orgc59c4ea">
+<h2 id="orgc59c4ea">Gramáticas LL(1) e PEGs</h2>
+<ul>
+<li>Uma gramática é LL(1) se todo operador de escolha \(p_1\,|\,p_2\) é tal que
+\(first^G(p_1)\cap first^G(p_2) = \emptyset\).</li>
+
+<li>Gramáticas com essa propriedade podem ser interpretadas como PEGs preservando
+a linguagem reconhecida.</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org32009f6">
+<h2 id="org32009f6">Gramáticas LL(1) e PEGs</h2>
+<ul>
+<li>Para gramáticas que possuem expressões \(\lambda\), algumas propriedades adicionais
+fazem-se necessárias.</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-orgb2718fb">
+<h2 id="orgb2718fb">Gramáticas LL(1) e PEGs</h2>
+<ul>
+<li>Estrutura BNF: Uma gramática \((V,\Sigma,R,p_{S})\) possui estrutura BNF se:
+<ul>
+<li>Não ocorrem escolhas como sub-expressões de uma concatenação.</li>
+<li>\(p_{S}\) é um não terminal da gramática.</li>
+<li>Para toda escolha \(p_1\,|\,p_2\) se \(p_1\) aceita a string vazia então \(p_2\)
+também deve aceitar.</li>
+
+</ul></li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org926e5fc">
+<h2 id="org926e5fc">Gramáticas LL(1) e PEGs</h2>
+<ul>
+<li><p>
+Atualizando a definição de \(first\):
+</p>
+
+<div>
+\begin{array}{lcl}
+   first^{G}(p) & = & \{a \in \Sigma \,|\, G[p] axy \leadsto y\} \cup nullable(p)\\
+   nullable(p)  & = & \{\lambda\}\:\:\text{, se } G[p]s\leadsto s\\
+   nullable(p)  & = & \emptyset\:\:\text{, caso contrário}\\
+\end{array}
+
+</div></li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org80e539e">
+<h2 id="org80e539e">Gramáticas LL(1) e PEGs</h2>
+<ul>
+<li><p>
+Como a gramática possui expressões que podem não consumir nenhum símbolo da entrada,
+devemos considerar o conjunto \(follow\):
+</p>
+
+<div>
+\begin{array}{lcl}
+  follow^{G}(A) & = & \{a \in\Sigma\cup\{\$\}\,|\, G[A]yaz\leadsto az\text{ em uma prova de }
+        G[A]\,w\$\leadsto\$\}
+\end{array}
+
+</div></li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-orgabfaea6">
+<h2 id="orgabfaea6">Gramáticas LL(1) e PEGs</h2>
+<ul>
+<li>Gramáticas que possuem expressões que não consomem nenhum símbolo da entrada são LL(1) se
+para toda produção \(A \to p\) e toda escolha \(p_1\,|\,p_2\) de \(p\):
+<ul>
+<li>\(first^{G}(p_1)\cap first^{G}(p_2) = \emptyset\)</li>
+<li>Se \(\lambda \in first^{G}(p_2)\) então \(first^{G}(p_1) \cap follow^{G}(p_2) = \emptyset\)</li>
+
+</ul></li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org92707ac">
+<h2 id="org92707ac">Gramáticas LL(1) e PEGs</h2>
+<ul>
+<li>Logo, gramáticas que atendem as condições anteriores podem ser intepretadas como PEGs e,
+portanto, executadas usando intepretadores para tal formalismo.</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-orgaa49302">
+<h2 id="orgaa49302">Gramáticas e PEGs</h2>
+<ul>
+<li>Outras classes de gramáticas possuem equivalências com PEGs: strong LL(k), right-linear e
+LL-regular.</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-orge3f7c01">
+<h2 id="orge3f7c01">Exercícios</h2>
+<ul>
+<li>Apresente uma prova detalhada do seguinte teorema.</li>
+
+<li>Se \(G[p]ss'\leadsto_{PEG} s'\) então \(G[p]ss' \leadsto s'\).</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org68370bd">
+<h2 id="org68370bd">Referências</h2>
 <ul>
 <li>Mascarenhas, Fábio; Medeiros, Sérgio; Ierusalimschy, Roberto.
 On the relation between context-free grammars and parsing expression grammars.
