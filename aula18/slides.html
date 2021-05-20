@@ -1,0 +1,1251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Introdução ao lambda-cálculo</title>
+<meta name="author" content="Rodrigo Ribeiro"/>
+<style type="text/css">
+.underline { text-decoration: underline; }
+</style>
+<link rel="stylesheet" href="/Users/rodrigo/.emacs.d/.local/straight/build-27.2/revealjs/dist/reveal.css"/>
+
+<link rel="stylesheet" href="/Users/rodrigo/.emacs.d/.local/straight/build-27.2/revealjs/dist/theme/white.css" id="theme"/>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+<section id="sec-title-slide">
+<h1>Introdução ao lambda-cálculo</h1><h2>PCC102 - Teoria da computação</h2><h3> Rodrigo Ribeiro</h3>
+</section>
+
+<section>
+<section id="slide-orgfd975f3">
+<h2 id="orgfd975f3">Objetivos</h2>
+<ul>
+<li>Apresentar a sintaxe e semântica do &lambda;-cálculo não tipado.</li>
+
+<li>Apresentar como o &lambda;-cálculo pode ser utilizado como
+uma linguagem de programação.</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org10b98eb">
+<h2 id="org10b98eb">Motivação</h2>
+<ul>
+<li>Tradicionalmente, o estudo de decidibilidade é feito usando-se
+como formalismo base às máquinas de Turing.</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-orgd5e9c6c">
+<h2 id="orgd5e9c6c">Motivação</h2>
+<ul>
+<li>Apresentaremos o &lambda;-cálculo como um formalismo alternativo
+para o estudo de decidibilidade.</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org08f4365">
+<h2 id="org08f4365">Sintaxe</h2>
+<ul>
+<li>Para a sintaxe do &lambda;-cálculo, vamos considerar um conjunto
+enumerável de símbolos denominados variáveis.</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org674d7bd">
+<h2 id="org674d7bd">Sintaxe</h2>
+<ul>
+<li>Definimos a sintaxe de termos do &lambda;-cálculo usando a
+seguinte gramática livre de contexto.</li>
+
+</ul>
+
+<div>
+\begin{array}{lcll}
+  e & ::=  & x            & \text{variáveis}\\
+    & \mid & e\:e         & \text{aplicação}\\
+    & \mid & \lambda\,x.e & \text{abstração}\\
+\end{array}
+
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org2462c0a">
+<h2 id="org2462c0a">Sintaxe</h2>
+<ul>
+<li>Exemplos (x,y e z são variáveis distintas)
+<ul>
+<li>&lambda; x. x y</li>
+<li>(&lambda; y.y) (&lambda; x.x y)</li>
+<li>x (&lambda; z. y z)</li>
+
+</ul></li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org90495b9">
+<h2 id="org90495b9">Sintaxe</h2>
+<ul>
+<li>Escopo: O escopo da variável x em &lambda; x. e é o termo e.</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-orgdf0b81c">
+<h2 id="orgdf0b81c">Sintaxe</h2>
+<ul>
+<li>Variáveis livres e ligadas: Dizemos que uma variável é ligada se
+ela ocorre no escopo de uma abstração e livre, caso contrário.</li>
+
+<li>Denotamos por fv(e) o conjunto de variáveis livres de um termo.</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-orgd3a0361">
+<h2 id="orgd3a0361">Sintaxe</h2>
+<ul>
+<li>Dizemos que um termo é fechado se ele não possui variáveis livres.
+<ul>
+<li>fv(e) = &empty;</li>
+
+</ul></li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org163afc6">
+<h2 id="org163afc6">Sintaxe</h2>
+<ul>
+<li>Exemplo: Considere o termo x (&lambda; z. y z)
+<ul>
+<li>A variável z é ligada em &lambda; z. y z</li>
+<li>As variáveis x e y são livres no termo apresentado.</li>
+
+</ul></li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org6ac352c">
+<h2 id="org6ac352c">Sintaxe</h2>
+<ul>
+<li>Antes de apresentar a semântica do &lambda;-cálculo, é necessário
+definir a operação de substituição.</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org7a17e26">
+<h2 id="org7a17e26">Sintaxe</h2>
+<ul>
+<li>A substituição de x por e&rsquo; em e, \([e'/x]e\), é definida por recursão sobre e:</li>
+
+</ul>
+
+<div>
+\begin{array}{lcl}
+  [e'/x]x          & = & e'\\
+  [e'/x]a          & = & a,\:\:\:a\not\equiv x\\
+  [e'/x](e_1\,e_2) & = & ([e'/x]e_1)([e'/x]e_2)\\
+  [e'/x](\lambda x. e) & = & \lambda x. e\\
+  [e'/x](\lambda y. e) & = & \lambda y. e,\:\:\:x\not\in fv(e)\\
+  [e'/x](\lambda y. e) & = & \lambda y. [e' / x] e, \:\: x \in fv(e)\land y\not\in fv(e')\\
+  [e'/x](\lambda y. e) & = & \lambda z. [e' / x][z / y] e,\:\:x \in fv(e) \land y \in fv(e').
+\end{array}
+
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org62f3926">
+<h2 id="org62f3926">Sintaxe</h2>
+<ul>
+<li>Seja &lambda; x.e um termo e \(z \not\in (fv(e) \cup \{x\})\). Substituir
+&lambda; x.e por (&lambda; z. [z / x] e) é chamada de renomeamento de
+variável.</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-orge1fbc3d">
+<h2 id="orge1fbc3d">Sintaxe</h2>
+<ul>
+<li>Dizemos que dois termos e, e&rsquo; são &alpha;-equivalentes, e &equiv;<sub>&alpha;</sub> e&rsquo;,
+se podemos transformar e em e&rsquo; por um número finito de renomeamento de variáveis.</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-orge719449">
+<h2 id="orge719449">Semântica</h2>
+<ul>
+<li>A semântica do &lambda;-cálculo é baseada no conceito de &beta;-redução:</li>
+
+</ul>
+
+<div>
+\begin{array}{l}
+  (\lambda x. e)\,e' \to_{\beta} [e' / x]e
+\end{array}
+
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-orgda6688c">
+<h2 id="orgda6688c">Semântica</h2>
+<ul>
+<li>Exemplos</li>
+
+</ul>
+
+<div>
+\begin{array}{lc}
+  (\lambda x. x (x y)) N & \to_{\beta} \\
+  [N / x](x (x y))       & \to_{\beta} \\
+  N (N y)                & \\
+\end{array}
+
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org0c91907">
+<h2 id="org0c91907">Semântica</h2>
+<ul>
+<li>As regras das semântica são:</li>
+
+</ul>
+
+<div>
+\begin{array}{c}
+  \dfrac{}{(\lambda x. e)e' \to_{\beta} [e' / x] e}
+\end{array}
+
+</div>
+
+
+</section>
+</section>
+<section>
+<section id="slide-orgbf571f9">
+<h2 id="orgbf571f9">Semântica</h2>
+<ul>
+<li>As regras das semântica são:</li>
+
+</ul>
+
+<div>
+\begin{array}{c}
+  \dfrac{e_1 \to_\beta e'_1}{(e_1\:e_2) \to_{\beta} (e'_1\:e_2)}
+\end{array}
+
+</div>
+
+
+</section>
+</section>
+<section>
+<section id="slide-org620beba">
+<h2 id="org620beba">Semântica</h2>
+<ul>
+<li>As regras das semântica são:</li>
+
+</ul>
+
+<div>
+\begin{array}{c}
+  \dfrac{e_2 \to_\beta e'_2}{(e_1\:e_2) \to_{\beta} (e_1\:e'_2)}
+\end{array}
+
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org4a76d50">
+<h2 id="org4a76d50">Semântica</h2>
+<ul>
+<li>As regras das semântica são:</li>
+
+</ul>
+
+<div>
+\begin{array}{c}
+  \dfrac{e \to_\beta e'}{\lambda x. e \to_{\beta} \lambda x. e'}
+\end{array}
+
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org3ea1de9">
+<h2 id="org3ea1de9">Semântica</h2>
+<ul>
+<li>Denotamos por &rarr;<sup>*</sup><sub>&beta;</sub> o fecho reflexivo e transitivo
+da relação &rarr;<sub>&beta;</sub>.</li>
+
+<li>Denotamos por e &equiv;<sub>&beta;</sub> e&rsquo; se e &rarr;<sup>*</sup><sub>&beta;</sub> e&rsquo; ou
+e&rsquo; &rarr;<sup>*</sup><sub>&beta;</sub> e.</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-orgbb9758c">
+<h2 id="orgbb9758c">Programando em lambda-cálculo</h2>
+<ul>
+<li>O &lambda;-cálculo é um formalismo capaz de representar toda
+função computável.</li>
+
+<li>Para ilustrar, vamos apresentar algumas funções conhecidas
+usando o &lambda;-cálculo.</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org51a152c">
+<h2 id="org51a152c">Programando em lambda-cálculo</h2>
+<ul>
+<li>Representando booleanos
+<ul>
+<li>True: &lambda; x y. x</li>
+<li>False: &lambda; x y. y</li>
+
+</ul></li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-orgbc7a60e">
+<h2 id="orgbc7a60e">Programando em lambda-cálculo</h2>
+<ul>
+<li>A função de conjunção é representada pelo seguinte termo:
+<ul>
+<li>False é o termo &lambda; x y . y</li>
+
+</ul></li>
+
+</ul>
+
+<div>
+\begin{array}{l}
+  and \equiv \lambda a b. a\,b\,False
+\end{array}
+
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org8c1ea7a">
+<h2 id="org8c1ea7a">Programando em lambda-cálculo</h2>
+<ul>
+<li>Exemplo</li>
+
+</ul>
+
+<div>
+\begin{array}{lc}
+  and\:True\:True & = \\
+\end{array}
+
+</div>
+
+
+</section>
+</section>
+<section>
+<section id="slide-orgb9aa871">
+<h2 id="orgb9aa871">Programando em lambda-cálculo</h2>
+<ul>
+<li>Exemplo</li>
+
+</ul>
+
+<div>
+\begin{array}{lc}
+  and\:True\:True & = \\
+  (\lambda a b. a\,b\,False)\,True\:True & =\\
+\end{array}
+
+</div>
+
+
+</section>
+</section>
+<section>
+<section id="slide-org48ff3d2">
+<h2 id="org48ff3d2">Programando em lambda-cálculo</h2>
+<ul>
+<li>Exemplo</li>
+
+</ul>
+
+<div>
+\begin{array}{lc}
+  and\:True\:True & = \\
+  (\lambda a b. a\,b\,False)\,True\:True & =\\
+  True\,True\,False & =\\
+\end{array}
+
+</div>
+
+
+</section>
+</section>
+<section>
+<section id="slide-org707e8b6">
+<h2 id="org707e8b6">Programando em lambda-cálculo</h2>
+<ul>
+<li>Exemplo</li>
+
+</ul>
+
+<div>
+\begin{array}{lc}
+  and\:True\:True & = \\
+  (\lambda a b. a\,b\,False)\,True\:True & =\\
+  True\,True\,False & =\\
+  (\lambda x y. x)\,(\lambda x y . x)\,(\lambda x y. y) & =\\
+\end{array}
+
+</div>
+
+
+</section>
+</section>
+<section>
+<section id="slide-org82ac118">
+<h2 id="org82ac118">Programando em lambda-cálculo</h2>
+<ul>
+<li>Exemplo</li>
+
+</ul>
+
+<div>
+\begin{array}{lc}
+  and\:True\:True & = \\
+  (\lambda a b. a\,b\,False)\,True\:True & =\\
+  True\,True\,False & =\\
+  (\lambda x y. x)\,(\lambda x y . x)\,(\lambda x y. y) & =\\
+  [(\lambda x y . x)\,/\,x;\lambda x y. y\,/\,y] x & =\\
+\end{array}
+
+</div>
+
+
+</section>
+</section>
+<section>
+<section id="slide-org08d9f6c">
+<h2 id="org08d9f6c">Programando em lambda-cálculo</h2>
+<ul>
+<li>Exemplo</li>
+
+</ul>
+
+<div>
+\begin{array}{lc}
+  and\:True\:True & = \\
+  (\lambda a b. a\,b\,False)\,True\:True & =\\
+  True\,True\,False & =\\
+  (\lambda x y. x)\,(\lambda x y . x)\,(\lambda x y. y) & =\\
+  [(\lambda x y . x)\,/\,x;\lambda x y. y\,/\,y] x & =\\
+  \lambda x y . x & =\\
+\end{array}
+
+</div>
+
+
+</section>
+</section>
+<section>
+<section id="slide-org241131d">
+<h2 id="org241131d">Programando em lambda-cálculo</h2>
+<ul>
+<li>Exemplo</li>
+
+</ul>
+
+<div>
+\begin{array}{lc}
+  and\:True\:True & = \\
+  (\lambda a b. a\,b\,False)\,True\:True & = \\
+  True\,True\,False & = \\
+  (\lambda x y. x)\,(\lambda x y . x)\,(\lambda x y. y) & = \\
+  [(\lambda x y . x)\,/\,x;\lambda x y. y\,/\,y] x & =\\
+  \lambda x y . x & =\\
+  True
+\end{array}
+
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-orge2b1d3b">
+<h2 id="orge2b1d3b">Programando em lambda-cálculo</h2>
+<ul>
+<li>Pode-se representar números naturais utilizando a notação de Peano.
+<ul>
+<li>zero &isin; \(\mathbb{N}\)</li>
+<li>se n &isin; \(\mathbb{N}\) então succ n &isin; \(\mathbb{N}\)</li>
+
+</ul></li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org7c38b42">
+<h2 id="org7c38b42">Programando em lambda-cálculo</h2>
+<ul>
+<li>Representando números naturais</li>
+
+</ul>
+
+<div>
+\begin{array}{lcl}
+  \overline{0} & = & \lambda s z. z \\
+  \overline{1} & = & \lambda s z. s z \\
+  \overline{2} & = & \lambda s z. s (s z) \\
+  \overline{3} & = & \lambda s z. s (s (s z)) \\
+   ...
+\end{array}
+
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org807e2d2">
+<h2 id="org807e2d2">Programando em lambda-cálculo</h2>
+<ul>
+<li>Representando números naturais:
+<ul>
+<li>Se n &isin; \(\mathbb{N}\) então \(\overline{n} = \lambda s z. s^n z\).</li>
+
+</ul></li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org557552d">
+<h2 id="org557552d">Programando em lambda-cálculo</h2>
+<ul>
+<li>Como representar uma função para calcular o sucessor de um número natural?</li>
+
+<li>A função deve computar \(\overline{n+1}\) a partir de \(\overline{n}\).</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org2f689fb">
+<h2 id="org2f689fb">Programando em lambda-cálculo</h2>
+<ul>
+<li>Logo, devemos obter um termo \(f\) tal que:</li>
+
+</ul>
+
+<div>
+\begin{array}{c}
+  f(\overline{n}) = \lambda s z . s^{n + 1} z\\
+\end{array}
+
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org5813dc9">
+<h2 id="org5813dc9">Programando em lambda-cálculo</h2>
+<ul>
+<li>Mas, temos que</li>
+
+</ul>
+
+<div>
+\begin{array}{lc}
+  \lambda s z . s^{n + 1} z & \equiv_{\beta}\\
+\end{array}
+
+</div>
+
+
+</section>
+</section>
+<section>
+<section id="slide-orgb857a11">
+<h2 id="orgb857a11">Programando em lambda-cálculo</h2>
+<ul>
+<li>Mas, temos que</li>
+
+</ul>
+
+<div>
+\begin{array}{lc}
+  \lambda s z . s^{n + 1} z & \equiv_{\beta}\\
+  \lambda s z . s (s^n z)   & \equiv_{\beta}\\
+\end{array}
+
+</div>
+
+
+
+</section>
+</section>
+<section>
+<section id="slide-org774e671">
+<h2 id="org774e671">Programando em lambda-cálculo</h2>
+<ul>
+<li>Mas, temos que</li>
+
+</ul>
+
+<div>
+\begin{array}{lc}
+  \lambda s z . s^{n + 1} z & \equiv_{\beta}\\
+  \lambda s z . s (s^n z)   & \equiv_{\beta}\\
+  \lambda s z . s ((\lambda s n. s^n z) s z) \\
+\end{array}
+
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org1ed5820">
+<h2 id="org1ed5820">Programando em lambda-cálculo</h2>
+<ul>
+<li>Porém, \(\overline{n} = \lambda s n. s^n z\):</li>
+
+</ul>
+
+<div>
+\begin{array}{lc}
+  \lambda s z . s^{n + 1} z & \equiv_{\beta}\\
+  \lambda s z . s (s^n z)   & \equiv_{\beta}\\
+  \lambda s z . s ((\lambda s n. s^n z) s z) \\
+  \lambda s z . s (\overline{n} s z) \\
+\end{array}
+
+</div>
+
+
+</section>
+</section>
+<section>
+<section id="slide-orga3f7ec8">
+<h2 id="orga3f7ec8">Programando em lambda-cálculo</h2>
+<ul>
+<li>Abstraindo sobre \(\overline{n}\), obtemos:</li>
+
+</ul>
+
+<div>
+\begin{array}{l}
+  succ \equiv \lambda n s z . s (n s z) \\
+\end{array}
+
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org700c7a3">
+<h2 id="org700c7a3">Programando em lambda-cálculo</h2>
+<ul>
+<li>Exemplo</li>
+
+</ul>
+
+<div>
+\begin{array}{lc}
+   succ(\overline{n}) & \equiv \\
+\end{array}
+
+</div>
+
+
+</section>
+</section>
+<section>
+<section id="slide-org1894a20">
+<h2 id="org1894a20">Programando em lambda-cálculo</h2>
+<ul>
+<li>Exemplo</li>
+
+</ul>
+
+<div>
+\begin{array}{lc}
+   succ(\overline{n}) & \equiv \\
+   \lambda n s z . s (n s z) (\overline{n}) & \to_{\beta} \\
+\end{array}
+
+</div>
+
+
+</section>
+</section>
+<section>
+<section id="slide-org52f20ba">
+<h2 id="org52f20ba">Programando em lambda-cálculo</h2>
+<ul>
+<li>Exemplo</li>
+
+</ul>
+
+<div>
+\begin{array}{lc}
+   succ(\overline{n}) & \equiv \\
+   \lambda n s z . s (n s z) (\overline{n}) & \to_{\beta} \\
+   \lambda s z . s (\overline{n} s z) & \equiv \\
+\end{array}
+
+</div>
+
+
+</section>
+</section>
+<section>
+<section id="slide-org52cb1e7">
+<h2 id="org52cb1e7">Programando em lambda-cálculo</h2>
+<ul>
+<li>Exemplo</li>
+
+</ul>
+
+<div>
+\begin{array}{lc}
+   succ(\overline{n}) & \equiv \\
+   \lambda n s z . s (n s z) (\overline{n}) & \to_{\beta} \\
+   \lambda s z . s (\overline{n} s z) & \equiv \\
+   \lambda s z . s ((\lambda s z. s^n z) s z) & \to_{\beta} \\
+\end{array}
+
+</div>
+
+
+</section>
+</section>
+<section>
+<section id="slide-org84d5c58">
+<h2 id="org84d5c58">Programando em lambda-cálculo</h2>
+<ul>
+<li>Exemplo</li>
+
+</ul>
+
+<div>
+\begin{array}{lc}
+   succ(\overline{n}) & \equiv \\
+   \lambda n s z . s (n s z) (\overline{n}) & \to_{\beta} \\
+   \lambda s z . s (\overline{n} s z) & \equiv \\
+   \lambda s z . s ((\lambda s z. s^n z) s z) & \to_{\beta} \\
+   \lambda s z . s ((\lambda z. s^n z) z) & \to_{\beta}\\
+\end{array}
+
+</div>
+
+
+</section>
+</section>
+<section>
+<section id="slide-org1bab546">
+<h2 id="org1bab546">Programando em lambda-cálculo</h2>
+<ul>
+<li>Exemplo</li>
+
+</ul>
+
+<div>
+\begin{array}{lc}
+   succ(\overline{n}) & \equiv \\
+   \lambda n s z . s (n s z) (\overline{n}) & \to_{\beta} \\
+   \lambda s z . s (\overline{n} s z) & \equiv \\
+   \lambda s z . s ((\lambda s z. s^n z) s z) & \to_{\beta} \\
+   \lambda s z . s ((\lambda z. s^n z) z) & \to_{\beta}\\
+   \lambda s z . s (s^n z) & \equiv \\
+\end{array}
+
+</div>
+
+
+</section>
+</section>
+<section>
+<section id="slide-org72fa432">
+<h2 id="org72fa432">Programando em lambda-cálculo</h2>
+<ul>
+<li>Exemplo</li>
+
+</ul>
+
+<div>
+\begin{array}{lc}
+   succ(\overline{n}) & \equiv \\
+   \lambda n s z . s (n s z) (\overline{n}) & \to_{\beta} \\
+   \lambda s z . s (\overline{n} s z) & \equiv \\
+   \lambda s z . s ((\lambda s z. s^n z) s z) & \to_{\beta} \\
+   \lambda s z . s ((\lambda z. s^n z) z) & \to_{\beta}\\
+   \lambda s z . s (s^n z) & \equiv \\
+   \lambda s z . s^{n + 1} z & \equiv \\
+\end{array}
+
+</div>
+
+
+</section>
+</section>
+<section>
+<section id="slide-org63e1b17">
+<h2 id="org63e1b17">Programando em lambda-cálculo</h2>
+<ul>
+<li>Exemplo</li>
+
+</ul>
+
+<div>
+\begin{array}{lc}
+   succ(\overline{n}) & \equiv \\
+   \lambda n s z . s (n s z) (\overline{n}) & \to_{\beta} \\
+   \lambda s z . s (\overline{n} s z) & \equiv \\
+   \lambda s z . s ((\lambda s z. s^n z) s z) & \to_{\beta} \\
+   \lambda s z . s ((\lambda z. s^n z) z) & \to_{\beta}\\
+   \lambda s z . s (s^n z) & \equiv \\
+   \lambda s z . s^{n + 1} z & \equiv \\
+   \overline{n+1}
+\end{array}
+
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org6171d76">
+<h2 id="org6171d76">Programando em lambda-cálculo</h2>
+<ul>
+<li>Pontos fixos: dizemos que x é ponto fixo de f se f(x) = x.</li>
+
+<li>Ao contrário de funções da análise, funções do &lambda;-cálculo
+sempre possuem um ponto fixo.</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org687b7ec">
+<h2 id="org687b7ec">Programando em lambda-cálculo</h2>
+<ul>
+<li>Podemos mostrar esse fato facilmente. Para isso, considere:
+<ul>
+<li>A = &lambda; x y. y (xxy).</li>
+<li>&Theta; = AA</li>
+
+</ul></li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-orge03964b">
+<h2 id="orge03964b">Programando em lambda-cálculo</h2>
+<ul>
+<li>Seja \(e\) um termo qualquer. O ponto fixo de \(f\) é dado por
+\(x = \Theta f\).</li>
+
+</ul>
+
+<div>
+\begin{array}{lc}
+  x & \equiv\\
+\end{array}
+
+</div>
+
+
+</section>
+</section>
+<section>
+<section id="slide-org0df6438">
+<h2 id="org0df6438">Programando em lambda-cálculo</h2>
+<ul>
+<li>Seja \(e\) um termo qualquer. O ponto fixo de \(f\) é dado por
+\(x = \Theta f\).</li>
+
+</ul>
+
+<div>
+\begin{array}{lc}
+  x & \equiv\\
+  \Theta f & \equiv \\
+\end{array}
+
+</div>
+
+
+</section>
+</section>
+<section>
+<section id="slide-org8f6ce3a">
+<h2 id="org8f6ce3a">Programando em lambda-cálculo</h2>
+<ul>
+<li>Seja \(e\) um termo qualquer. O ponto fixo de \(f\) é dado por
+\(x = \Theta f\).</li>
+
+</ul>
+
+<div>
+\begin{array}{lc}
+  x & \equiv\\
+  \Theta f & \equiv \\
+  AA f     & \equiv \\
+\end{array}
+
+</div>
+
+
+</section>
+</section>
+<section>
+<section id="slide-orgade84bf">
+<h2 id="orgade84bf">Programando em lambda-cálculo</h2>
+<ul>
+<li>Seja \(e\) um termo qualquer. O ponto fixo de \(f\) é dado por
+\(x = \Theta f\).</li>
+
+</ul>
+
+<div>
+\begin{array}{lc}
+  x & \equiv\\
+  \Theta f & \equiv \\
+  AA f     & \equiv \\
+  (\lambda x y. y(xx y))A f & \to^*_\beta\\
+\end{array}
+
+</div>
+
+
+</section>
+</section>
+<section>
+<section id="slide-orgef713b3">
+<h2 id="orgef713b3">Programando em lambda-cálculo</h2>
+<ul>
+<li>Seja \(e\) um termo qualquer. O ponto fixo de \(f\) é dado por
+\(x = \Theta f\).</li>
+
+</ul>
+
+<div>
+\begin{array}{lc}
+  x & \equiv\\
+  \Theta f & \equiv \\
+  AA f     & \equiv \\
+  (\lambda x y. y(xx y))A f & \to^*_\beta\\
+  f (A A f) & \equiv \\
+\end{array}
+
+</div>
+
+
+</section>
+</section>
+<section>
+<section id="slide-org4f8f2df">
+<h2 id="org4f8f2df">Programando em lambda-cálculo</h2>
+<ul>
+<li>Seja \(e\) um termo qualquer. O ponto fixo de \(f\) é dado por
+\(x = \Theta f\).</li>
+
+</ul>
+
+<div>
+\begin{array}{lc}
+  x & \equiv\\
+  \Theta f & \equiv \\
+  AA f     & \equiv \\
+  (\lambda x y. y(xx y))A f & \to^*_\beta\\
+  f (A A f) & \equiv \\
+  f (\Theta f) & \equiv \\
+\end{array}
+
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org22c847c">
+<h2 id="org22c847c">Programando em lambda-cálculo</h2>
+<ul>
+<li>Seja \(e\) um termo qualquer. O ponto fixo de \(f\) é dado por
+\(x = \Theta f\).</li>
+
+</ul>
+
+<div>
+\begin{array}{lc}
+  x & \equiv\\
+  \Theta f & \equiv \\
+  AA f     & \equiv \\
+  (\lambda x y. y(xx y))A f & \to^*_\beta\\
+  f (A A f) & \equiv \\
+  f (\Theta f) & \equiv \\
+  f(x)
+\end{array}
+
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org7f9f11d">
+<h2 id="org7f9f11d">Programando em lambda-cálculo</h2>
+<ul>
+<li>Podemos usar o &lambda;-cálculo para definir estruturas de dados
+como tuplas e listas.</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org1414783">
+<h2 id="org1414783">Programando em lambda-cálculo</h2>
+<ul>
+<li>Pares: Se \(e_1, e_2\) são &lambda;-termos então o par \((e_1,e_2)\) pode
+ser representado pelo termo:</li>
+
+</ul>
+
+<div>
+\begin{array}{l}
+  \lambda z. z e_1 e_2
+\end{array}
+
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org7fdda5c">
+<h2 id="org7fdda5c">Programando em lambda-cálculo</h2>
+<ul>
+<li>Projeções:
+<ul>
+<li>fst = &lambda; p.p (&lambda; x y. x)</li>
+<li>snd = &lambda; p.p (&lambda; x y. y)</li>
+
+</ul></li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-orga306e6c">
+<h2 id="orga306e6c">Programando em lambda-cálculo</h2>
+<ul>
+<li>Tuplas são representadas de maneira similar.</li>
+
+<li>Se \(e_1, ..., e_n\) são &lambda;-termos então a n-upla \((e_1,...,e_n)\) é
+representada pelo seguinte termo</li>
+
+</ul>
+
+<div>
+\begin{array}{l}
+  \lambda z. z e_1 ... e_n
+\end{array}
+
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-orgfab5864">
+<h2 id="orgfab5864">Programando em lambda-cálculo</h2>
+<ul>
+<li>Projeções podem também ser generalizadas de forma imediata.</li>
+
+</ul>
+
+<div>
+\begin{array}{l}
+  \pi^{n}_{i} = \lambda z. z (\lambda x_1 ... x_n . x_i)
+\end{array}
+
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-orgb63bbac">
+<h2 id="orgb63bbac">Programando em lambda-cálculo</h2>
+<ul>
+<li>Listas: são formadas por dois construtores
+<ul>
+<li>nil: representando a lista vazia</li>
+<li>h:t : lista formada por um primeiro elemento h e uma causa t.</li>
+
+</ul></li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org4edc9a0">
+<h2 id="org4edc9a0">Programando em lambda-cálculo</h2>
+<ul>
+<li>Representando o construtor nil:</li>
+
+</ul>
+
+<div>
+\begin{array}{l}
+nil = \lambda x y. y
+\end{array}
+
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-orgc7c6d1b">
+<h2 id="orgc7c6d1b">Programando em lambda-cálculo</h2>
+<ul>
+<li>Representando o construtor h:t</li>
+
+</ul>
+
+<div>
+\begin{array}{l}
+h:t = \lambda x y. x h t
+\end{array}
+
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org2bb34bd">
+<h2 id="org2bb34bd">Exercícios</h2>
+<ul>
+<li>Apresente um &lambda;-termo para calcular o n-ésimo termo
+da sequência de Fibonacci.</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org2bb3be7">
+<h2 id="org2bb3be7">Referências</h2>
+<ul>
+<li>Pierce, Benjamin. Types and Programming Languages. MIT Press.</li>
+
+<li>Hindley, J. Roger; Seldin, Jonathan P. Lambda-calculus and combinators: An
+introduction. Cambridge.</li>
+
+</ul>
+</section>
+</section>
+</div>
+</div>
+<script src="/Users/rodrigo/.emacs.d/.local/straight/build-27.2/revealjs/dist/reveal.js"></script>
+<script src="/Users/rodrigo/.emacs.d/.local/straight/build-27.2/revealjs/plugin/markdown/markdown.js"></script>
+<script src="/Users/rodrigo/.emacs.d/.local/straight/build-27.2/revealjs/plugin/notes/notes.js"></script>
+<script src="/Users/rodrigo/.emacs.d/.local/straight/build-27.2/revealjs/plugin/search/search.js"></script>
+<script src="/Users/rodrigo/.emacs.d/.local/straight/build-27.2/revealjs/plugin/zoom/zoom.js"></script>
+<script>
+// Full list of configuration options available here:
+// https://github.com/hakimel/reveal.js#configuration
+Reveal.initialize({
+
+controls: true,
+progress: true,
+history: true,
+center: true,
+slideNumber: 'c',
+rollingLinks: true,
+keyboard: true,
+mouseWheel: false,
+fragmentInURL: false,
+hashOneBasedIndex: false,
+pdfSeparateFragments: true,
+
+overview: true,
+width: 1200,
+height: 800,
+margin: 0.20,
+minScale: 0.50,
+maxScale: 2.50,
+
+transition: 'none',
+transitionSpeed: 'default',
+
+// Plugins with reveal.js 4.x
+plugins: [ RevealMarkdown, RevealNotes, RevealSearch, RevealZoom ],
+
+// Optional libraries used to extend reveal.js
+dependencies: [
+]
+
+});
+</script>
+</body>
+</html>

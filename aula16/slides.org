@@ -39,6 +39,11 @@
 - Não! Mascarenhas et.al. mostra a relação de certas classes de linguagens livres de contexto
   e PEGs.
 
+- Consequência: Podemos usar algoritmos para PEGs para reconhecimento de linguagens livres de
+  contexto.
+
+* Gramáticas e PEGs
+
 - Para evidenciar essas similaridades, os autores usaram uma semântica operacional para gramáticas
   livres de contexto.
 
@@ -284,7 +289,7 @@
   devemos considerar o conjunto $follow$:
 
   \begin{array}{lcl}
-    follow^{G}(A) & = & \{a \in\Sigma\cup\{\$\}\,|\, G[A]yaz\leadsto az\text{ em uma prova de }
+    follow^{G}(A) & = & \{a \in\Sigma\cup\{\$\}\,|\, G[A]yaz\leadsto az\text{ em }
           G[A]\,w\$\leadsto\$\}
   \end{array}
 

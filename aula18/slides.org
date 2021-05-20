@@ -1,0 +1,636 @@
+#    -*- mode: org -*-
+#+OPTIONS: reveal_center:t reveal_progress:t reveal_history:t reveal_control:t
+#+OPTIONS: reveal_mathjax:t reveal_rolling_links:t reveal_keyboard:t num:nil
+#+OPTIONS: reveal_width:1200 reveal_height:800
+#+OPTIONS: toc:nil
+#+REVEAL_MARGIN: 0.2
+#+REVEAL_MIN_SCALE: 0.5
+#+REVEAL_MAX_SCALE: 2.5
+#+REVEAL_TRANS: none
+#+REVEAL_THEME: white
+#+REVEAL_HLEVEL: 999
+#+REVEAL_TITLE_SLIDE: <h1>%t</h1><h2>%s</h2><h3>%A %a</h3>
+#+LATEX_HEADER: \usepackage{proof,latesym,amsmath,amssymb}
+
+#+TITLE: Introdução ao lambda-cálculo
+#+SUBTITLE: PCC102 - Teoria da computação
+#+AUTHOR: Rodrigo Ribeiro
+#+EMAIL: rodrigo.ribeiro@ufop.edu.br
+
+* Objetivos
+
+- Apresentar a sintaxe e semântica do \lambda-cálculo não tipado.
+
+- Apresentar como o \lambda-cálculo pode ser utilizado como
+  uma linguagem de programação.
+
+* Motivação
+
+- Tradicionalmente, o estudo de decidibilidade é feito usando-se
+  como formalismo base às máquinas de Turing.
+
+* Motivação
+
+- Apresentaremos o \lambda-cálculo como um formalismo alternativo
+  para o estudo de decidibilidade.
+
+* Sintaxe
+
+- Para a sintaxe do \lambda-cálculo, vamos considerar um conjunto
+  enumerável de símbolos denominados variáveis.
+
+* Sintaxe
+
+- Definimos a sintaxe de termos do \lambda-cálculo usando a
+  seguinte gramática livre de contexto.
+
+\begin{array}{lcll}
+  e & ::=  & x            & \text{variáveis}\\
+    & \mid & e\:e         & \text{aplicação}\\
+    & \mid & \lambda\,x.e & \text{abstração}\\
+\end{array}
+
+* Sintaxe
+
+- Exemplos (x,y e z são variáveis distintas)
+  - \lambda x. x y
+  - (\lambda y.y) (\lambda x.x y)
+  - x (\lambda z. y z)
+
+* Sintaxe
+
+- Escopo: O escopo da variável x em \lambda x. e é o termo e.
+
+* Sintaxe
+- Variáveis livres e ligadas: Dizemos que uma variável é ligada se
+  ela ocorre no escopo de uma abstração e livre, caso contrário.
+
+- Denotamos por fv(e) o conjunto de variáveis livres de um termo.
+
+* Sintaxe
+
+- Dizemos que um termo é fechado se ele não possui variáveis livres.
+  - fv(e) = \emptyset
+
+* Sintaxe
+
+- Exemplo: Considere o termo x (\lambda z. y z)
+  - A variável z é ligada em \lambda z. y z
+  - As variáveis x e y são livres no termo apresentado.
+
+* Sintaxe
+
+- Antes de apresentar a semântica do \lambda-cálculo, é necessário
+  definir a operação de substituição.
+
+* Sintaxe
+
+- A substituição de x por e' em e, $[e'/x]e$, é definida por recursão sobre e:
+
+\begin{array}{lcl}
+  [e'/x]x          & = & e'\\
+  [e'/x]a          & = & a,\:\:\:a\not\equiv x\\
+  [e'/x](e_1\,e_2) & = & ([e'/x]e_1)([e'/x]e_2)\\
+  [e'/x](\lambda x. e) & = & \lambda x. e\\
+  [e'/x](\lambda y. e) & = & \lambda y. e,\:\:\:x\not\in fv(e)\\
+  [e'/x](\lambda y. e) & = & \lambda y. [e' / x] e, \:\: x \in fv(e)\land y\not\in fv(e')\\
+  [e'/x](\lambda y. e) & = & \lambda z. [e' / x][z / y] e,\:\:x \in fv(e) \land y \in fv(e').
+\end{array}
+
+* Sintaxe
+
+- Seja \lambda x.e um termo e $z \not\in (fv(e) \cup \{x\})$. Substituir
+  \lambda x.e por (\lambda z. [z / x] e) é chamada de renomeamento de
+  variável.
+
+* Sintaxe
+
+- Dizemos que dois termos e, e' são \alpha-equivalentes, e \equiv_{\alpha} e',
+  se podemos transformar e em e' por um número finito de renomeamento de variáveis.
+
+* Semântica
+
+- A semântica do \lambda-cálculo é baseada no conceito de \beta-redução:
+
+\begin{array}{l}
+  (\lambda x. e)\,e' \to_{\beta} [e' / x]e
+\end{array}
+
+* Semântica
+
+- Exemplos
+
+\begin{array}{lc}
+  (\lambda x. x (x y)) N & \to_{\beta} \\
+  [N / x](x (x y))       & \to_{\beta} \\
+  N (N y)                & \\
+\end{array}
+
+* Semântica
+
+- As regras das semântica são:
+
+\begin{array}{c}
+  \dfrac{}{(\lambda x. e)e' \to_{\beta} [e' / x] e}
+\end{array}
+
+
+* Semântica
+
+- As regras das semântica são:
+
+\begin{array}{c}
+  \dfrac{e_1 \to_\beta e'_1}{(e_1\:e_2) \to_{\beta} (e'_1\:e_2)}
+\end{array}
+
+
+* Semântica
+
+- As regras das semântica são:
+
+\begin{array}{c}
+  \dfrac{e_2 \to_\beta e'_2}{(e_1\:e_2) \to_{\beta} (e_1\:e'_2)}
+\end{array}
+
+* Semântica
+
+- As regras das semântica são:
+
+\begin{array}{c}
+  \dfrac{e \to_\beta e'}{\lambda x. e \to_{\beta} \lambda x. e'}
+\end{array}
+
+* Semântica
+
+- Denotamos por \to^{*}_{\beta} o fecho reflexivo e transitivo
+  da relação \to_{\beta}.
+
+- Denotamos por e \equiv_{\beta} e' se e \to^{*}_{\beta} e' ou
+  e' \to^{*}_{\beta} e.
+
+* Programando em lambda-cálculo
+
+- O \lambda-cálculo é um formalismo capaz de representar toda
+  função computável.
+
+- Para ilustrar, vamos apresentar algumas funções conhecidas
+  usando o \lambda-cálculo.
+
+* Programando em lambda-cálculo
+
+- Representando booleanos
+  - True: \lambda x y. x
+  - False: \lambda x y. y
+
+* Programando em lambda-cálculo
+
+- A função de conjunção é representada pelo seguinte termo:
+   - False é o termo \lambda x y . y
+
+\begin{array}{l}
+  and \equiv \lambda a b. a\,b\,False
+\end{array}
+
+* Programando em lambda-cálculo
+
+- Exemplo
+
+\begin{array}{lc}
+  and\:True\:True & = \\
+\end{array}
+
+
+* Programando em lambda-cálculo
+
+- Exemplo
+
+\begin{array}{lc}
+  and\:True\:True & = \\
+  (\lambda a b. a\,b\,False)\,True\:True & =\\
+\end{array}
+
+
+* Programando em lambda-cálculo
+
+- Exemplo
+
+\begin{array}{lc}
+  and\:True\:True & = \\
+  (\lambda a b. a\,b\,False)\,True\:True & =\\
+  True\,True\,False & =\\
+\end{array}
+
+
+* Programando em lambda-cálculo
+
+- Exemplo
+
+\begin{array}{lc}
+  and\:True\:True & = \\
+  (\lambda a b. a\,b\,False)\,True\:True & =\\
+  True\,True\,False & =\\
+  (\lambda x y. x)\,(\lambda x y . x)\,(\lambda x y. y) & =\\
+\end{array}
+
+
+* Programando em lambda-cálculo
+
+- Exemplo
+
+\begin{array}{lc}
+  and\:True\:True & = \\
+  (\lambda a b. a\,b\,False)\,True\:True & =\\
+  True\,True\,False & =\\
+  (\lambda x y. x)\,(\lambda x y . x)\,(\lambda x y. y) & =\\
+  [(\lambda x y . x)\,/\,x;\lambda x y. y\,/\,y] x & =\\
+\end{array}
+
+
+* Programando em lambda-cálculo
+
+- Exemplo
+
+\begin{array}{lc}
+  and\:True\:True & = \\
+  (\lambda a b. a\,b\,False)\,True\:True & =\\
+  True\,True\,False & =\\
+  (\lambda x y. x)\,(\lambda x y . x)\,(\lambda x y. y) & =\\
+  [(\lambda x y . x)\,/\,x;\lambda x y. y\,/\,y] x & =\\
+  \lambda x y . x & =\\
+\end{array}
+
+
+* Programando em lambda-cálculo
+
+- Exemplo
+
+\begin{array}{lc}
+  and\:True\:True & = \\
+  (\lambda a b. a\,b\,False)\,True\:True & = \\
+  True\,True\,False & = \\
+  (\lambda x y. x)\,(\lambda x y . x)\,(\lambda x y. y) & = \\
+  [(\lambda x y . x)\,/\,x;\lambda x y. y\,/\,y] x & =\\
+  \lambda x y . x & =\\
+  True
+\end{array}
+
+* Programando em lambda-cálculo
+
+- Pode-se representar números naturais utilizando a notação de Peano.
+  - zero \in $\mathbb{N}$
+  - se n \in $\mathbb{N}$ então succ n \in $\mathbb{N}$
+
+* Programando em lambda-cálculo
+
+- Representando números naturais
+
+\begin{array}{lcl}
+  \overline{0} & = & \lambda s z. z \\
+  \overline{1} & = & \lambda s z. s z \\
+  \overline{2} & = & \lambda s z. s (s z) \\
+  \overline{3} & = & \lambda s z. s (s (s z)) \\
+   ...
+\end{array}
+
+* Programando em lambda-cálculo
+
+- Representando números naturais:
+  - Se n \in $\mathbb{N}$ então $\overline{n} = \lambda s z. s^n z$.
+
+* Programando em lambda-cálculo
+
+- Como representar uma função para calcular o sucessor de um número natural?
+
+- A função deve computar $\overline{n+1}$ a partir de $\overline{n}$.
+
+* Programando em lambda-cálculo
+
+- Logo, devemos obter um termo $f$ tal que:
+
+\begin{array}{c}
+  f(\overline{n}) = \lambda s z . s^{n + 1} z\\
+\end{array}
+
+* Programando em lambda-cálculo
+
+- Mas, temos que
+
+\begin{array}{lc}
+  \lambda s z . s^{n + 1} z & \equiv_{\beta}\\
+\end{array}
+
+
+* Programando em lambda-cálculo
+
+- Mas, temos que
+
+\begin{array}{lc}
+  \lambda s z . s^{n + 1} z & \equiv_{\beta}\\
+  \lambda s z . s (s^n z)   & \equiv_{\beta}\\
+\end{array}
+
+
+
+* Programando em lambda-cálculo
+
+- Mas, temos que
+
+\begin{array}{lc}
+  \lambda s z . s^{n + 1} z & \equiv_{\beta}\\
+  \lambda s z . s (s^n z)   & \equiv_{\beta}\\
+  \lambda s z . s ((\lambda s n. s^n z) s z) \\
+\end{array}
+
+* Programando em lambda-cálculo
+
+- Porém, $\overline{n} = \lambda s n. s^n z$:
+
+\begin{array}{lc}
+  \lambda s z . s^{n + 1} z & \equiv_{\beta}\\
+  \lambda s z . s (s^n z)   & \equiv_{\beta}\\
+  \lambda s z . s ((\lambda s n. s^n z) s z) \\
+  \lambda s z . s (\overline{n} s z) \\
+\end{array}
+
+
+* Programando em lambda-cálculo
+
+- Abstraindo sobre $\overline{n}$, obtemos:
+
+\begin{array}{l}
+  succ \equiv \lambda n s z . s (n s z) \\
+\end{array}
+
+* Programando em lambda-cálculo
+
+- Exemplo
+
+\begin{array}{lc}
+   succ(\overline{n}) & \equiv \\
+\end{array}
+
+
+* Programando em lambda-cálculo
+
+- Exemplo
+
+\begin{array}{lc}
+   succ(\overline{n}) & \equiv \\
+   \lambda n s z . s (n s z) (\overline{n}) & \to_{\beta} \\
+\end{array}
+
+
+* Programando em lambda-cálculo
+
+- Exemplo
+
+\begin{array}{lc}
+   succ(\overline{n}) & \equiv \\
+   \lambda n s z . s (n s z) (\overline{n}) & \to_{\beta} \\
+   \lambda s z . s (\overline{n} s z) & \equiv \\
+\end{array}
+
+
+* Programando em lambda-cálculo
+
+- Exemplo
+
+\begin{array}{lc}
+   succ(\overline{n}) & \equiv \\
+   \lambda n s z . s (n s z) (\overline{n}) & \to_{\beta} \\
+   \lambda s z . s (\overline{n} s z) & \equiv \\
+   \lambda s z . s ((\lambda s z. s^n z) s z) & \to_{\beta} \\
+\end{array}
+
+
+* Programando em lambda-cálculo
+
+- Exemplo
+
+\begin{array}{lc}
+   succ(\overline{n}) & \equiv \\
+   \lambda n s z . s (n s z) (\overline{n}) & \to_{\beta} \\
+   \lambda s z . s (\overline{n} s z) & \equiv \\
+   \lambda s z . s ((\lambda s z. s^n z) s z) & \to_{\beta} \\
+   \lambda s z . s ((\lambda z. s^n z) z) & \to_{\beta}\\
+\end{array}
+
+
+* Programando em lambda-cálculo
+
+- Exemplo
+
+\begin{array}{lc}
+   succ(\overline{n}) & \equiv \\
+   \lambda n s z . s (n s z) (\overline{n}) & \to_{\beta} \\
+   \lambda s z . s (\overline{n} s z) & \equiv \\
+   \lambda s z . s ((\lambda s z. s^n z) s z) & \to_{\beta} \\
+   \lambda s z . s ((\lambda z. s^n z) z) & \to_{\beta}\\
+   \lambda s z . s (s^n z) & \equiv \\
+\end{array}
+
+
+* Programando em lambda-cálculo
+
+- Exemplo
+
+\begin{array}{lc}
+   succ(\overline{n}) & \equiv \\
+   \lambda n s z . s (n s z) (\overline{n}) & \to_{\beta} \\
+   \lambda s z . s (\overline{n} s z) & \equiv \\
+   \lambda s z . s ((\lambda s z. s^n z) s z) & \to_{\beta} \\
+   \lambda s z . s ((\lambda z. s^n z) z) & \to_{\beta}\\
+   \lambda s z . s (s^n z) & \equiv \\
+   \lambda s z . s^{n + 1} z & \equiv \\
+\end{array}
+
+
+* Programando em lambda-cálculo
+
+- Exemplo
+
+\begin{array}{lc}
+   succ(\overline{n}) & \equiv \\
+   \lambda n s z . s (n s z) (\overline{n}) & \to_{\beta} \\
+   \lambda s z . s (\overline{n} s z) & \equiv \\
+   \lambda s z . s ((\lambda s z. s^n z) s z) & \to_{\beta} \\
+   \lambda s z . s ((\lambda z. s^n z) z) & \to_{\beta}\\
+   \lambda s z . s (s^n z) & \equiv \\
+   \lambda s z . s^{n + 1} z & \equiv \\
+   \overline{n+1}
+\end{array}
+
+* Programando em lambda-cálculo
+
+- Pontos fixos: dizemos que x é ponto fixo de f se f(x) = x.
+
+- Ao contrário de funções da análise, funções do \lambda-cálculo
+  sempre possuem um ponto fixo.
+
+* Programando em lambda-cálculo
+
+- Podemos mostrar esse fato facilmente. Para isso, considere:
+   - A = \lambda x y. y (xxy).
+   - \Theta = AA
+
+* Programando em lambda-cálculo
+
+- Seja $e$ um termo qualquer. O ponto fixo de $f$ é dado por
+  $x = \Theta f$.
+
+\begin{array}{lc}
+  x & \equiv\\
+\end{array}
+
+
+* Programando em lambda-cálculo
+
+- Seja $e$ um termo qualquer. O ponto fixo de $f$ é dado por
+  $x = \Theta f$.
+
+\begin{array}{lc}
+  x & \equiv\\
+  \Theta f & \equiv \\
+\end{array}
+
+
+* Programando em lambda-cálculo
+
+- Seja $e$ um termo qualquer. O ponto fixo de $f$ é dado por
+  $x = \Theta f$.
+
+\begin{array}{lc}
+  x & \equiv\\
+  \Theta f & \equiv \\
+  AA f     & \equiv \\
+\end{array}
+
+
+* Programando em lambda-cálculo
+
+- Seja $e$ um termo qualquer. O ponto fixo de $f$ é dado por
+  $x = \Theta f$.
+
+\begin{array}{lc}
+  x & \equiv\\
+  \Theta f & \equiv \\
+  AA f     & \equiv \\
+  (\lambda x y. y(xx y))A f & \to^*_\beta\\
+\end{array}
+
+
+* Programando em lambda-cálculo
+
+- Seja $e$ um termo qualquer. O ponto fixo de $f$ é dado por
+  $x = \Theta f$.
+
+\begin{array}{lc}
+  x & \equiv\\
+  \Theta f & \equiv \\
+  AA f     & \equiv \\
+  (\lambda x y. y(xx y))A f & \to^*_\beta\\
+  f (A A f) & \equiv \\
+\end{array}
+
+
+* Programando em lambda-cálculo
+
+- Seja $e$ um termo qualquer. O ponto fixo de $f$ é dado por
+  $x = \Theta f$.
+
+\begin{array}{lc}
+  x & \equiv\\
+  \Theta f & \equiv \\
+  AA f     & \equiv \\
+  (\lambda x y. y(xx y))A f & \to^*_\beta\\
+  f (A A f) & \equiv \\
+  f (\Theta f) & \equiv \\
+\end{array}
+
+* Programando em lambda-cálculo
+
+- Seja $e$ um termo qualquer. O ponto fixo de $f$ é dado por
+  $x = \Theta f$.
+
+\begin{array}{lc}
+  x & \equiv\\
+  \Theta f & \equiv \\
+  AA f     & \equiv \\
+  (\lambda x y. y(xx y))A f & \to^*_\beta\\
+  f (A A f) & \equiv \\
+  f (\Theta f) & \equiv \\
+  f(x)
+\end{array}
+
+* Programando em lambda-cálculo
+
+- Podemos usar o \lambda-cálculo para definir estruturas de dados
+  como tuplas e listas.
+
+* Programando em lambda-cálculo
+
+- Pares: Se $e_1, e_2$ são \lambda-termos então o par $(e_1,e_2)$ pode
+  ser representado pelo termo:
+
+\begin{array}{l}
+  \lambda z. z e_1 e_2
+\end{array}
+
+* Programando em lambda-cálculo
+
+- Projeções:
+  - fst = \lambda p.p (\lambda x y. x)
+  - snd = \lambda p.p (\lambda x y. y)
+
+* Programando em lambda-cálculo
+
+- Tuplas são representadas de maneira similar.
+
+- Se $e_1, ..., e_n$ são \lambda-termos então a n-upla $(e_1,...,e_n)$ é
+  representada pelo seguinte termo
+
+\begin{array}{l}
+  \lambda z. z e_1 ... e_n
+\end{array}
+
+* Programando em lambda-cálculo
+
+- Projeções podem também ser generalizadas de forma imediata.
+
+\begin{array}{l}
+  \pi^{n}_{i} = \lambda z. z (\lambda x_1 ... x_n . x_i)
+\end{array}
+
+* Programando em lambda-cálculo
+
+- Listas: são formadas por dois construtores
+  - nil: representando a lista vazia
+  - h:t : lista formada por um primeiro elemento h e uma causa t.
+
+* Programando em lambda-cálculo
+
+- Representando o construtor nil:
+
+\begin{array}{l}
+nil = \lambda x y. y
+\end{array}
+
+* Programando em lambda-cálculo
+
+- Representando o construtor h:t
+
+\begin{array}{l}
+h:t = \lambda x y. x h t
+\end{array}
+
+* Exercícios
+
+- Apresente um \lambda-termo para calcular o n-ésimo termo
+  da sequência de Fibonacci.
+
+* Referências
+
+- Pierce, Benjamin. Types and Programming Languages. MIT Press.
+
+- Hindley, J. Roger; Seldin, Jonathan P. Lambda-calculus and combinators: An
+  introduction. Cambridge.

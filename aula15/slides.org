@@ -54,6 +54,9 @@
 - Sim! Veremos como construir uma parsing expression que reconhece a mesma
   linguagem de uma RE.
 
+- Vamos definir uma semântica para RE que mostre as similaridades deste formalismo
+  com PEGs.
+
 * Expressões regulares
 
 - Semântica alternativa para RE
@@ -116,17 +119,9 @@
 - Semântica de parsing expressions
 
 \begin{array}{c}
-   \dfrac{}{(lambda, s) \leadsto_{G} s}
+   \dfrac{}{(\lambda, s) \leadsto_{G} s}
 \end{array}
 
-
-* Parsing expressions
-
-- Semântica de parsing expressions
-
-\begin{array}{c}
-   \dfrac{(G(A),s) \leadsto X}{(A, s) \leadsto_{G} X}
-\end{array}
 
 
 * Parsing expressions
@@ -152,7 +147,16 @@
 - Semântica de parsing expressions
 
 \begin{array}{c}
-   \dfrac{a \neq b}{(a, \lambda) \leadsto_{G} \bot}
+   \dfrac{}{(a, \lambda) \leadsto_{G} \bot}
+\end{array}
+
+
+* Parsing expressions
+
+- Semântica de parsing expressions
+
+\begin{array}{c}
+   \dfrac{(G(A),s) \leadsto_{G} X}{(A, s) \leadsto_{G} X}
 \end{array}
 
 * Parsing expressions
@@ -186,7 +190,7 @@
 - Semântica de parsing expressions
 
 \begin{array}{c}
-   \dfrac{(e_1,ss's'') \leadsto_{G} s's''\:\:\:(e_1^*,s's'')\leadsto_{G} s''}{(e_1^*,s)\leadsto_{G} s}
+   \dfrac{(e_1,ss's'') \leadsto_{G} s's''\:\:\:(e_1^*,s's'')\leadsto_{G} s''}{(e_1^*,s)\leadsto_{G} s''}
 \end{array}
 
 * Parsing expressions

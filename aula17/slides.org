@@ -1,0 +1,325 @@
+#    -*- mode: org -*-
+#+OPTIONS: reveal_center:t reveal_progress:t reveal_history:t reveal_control:t
+#+OPTIONS: reveal_mathjax:t reveal_rolling_links:t reveal_keyboard:t num:nil
+#+OPTIONS: reveal_width:1200 reveal_height:800
+#+OPTIONS: toc:nil
+#+REVEAL_MARGIN: 0.2
+#+REVEAL_MIN_SCALE: 0.5
+#+REVEAL_MAX_SCALE: 2.5
+#+REVEAL_TRANS: none
+#+REVEAL_THEME: white
+#+REVEAL_HLEVEL: 999
+#+REVEAL_TITLE_SLIDE: <h1>%t</h1><h2>%s</h2><h3>%A %a</h3>
+#+LATEX_HEADER: \usepackage{proof,latesym,amsmath,amssymb}
+
+#+TITLE: Parsing Machines para PEGs
+#+SUBTITLE: PCC102 - Teoria da computação
+#+AUTHOR: Rodrigo Ribeiro
+#+EMAIL: rodrigo.ribeiro@ufop.edu.br
+
+* Objetivos
+
+- Apresentar uma semântica alternativa para PEGs usando uma máquina virtual.
+
+- Apresentar como PEGs podem ser compiladas para programas desta máquina virtual.
+
+* Motivação
+
+- Ferramentas de processamento de texto utilizam expressões regulares (REGEX)
+  para tarefas de casamento de padrão.
+
+* Motivação
+
+- Porém, expressões regulares possuem problemas de ambiguidade que tornam o seu
+  resultado dependente da implementação utilizada.
+
+- Solução: PEGs são determinísticas e podem expressar os mesmos padrões que
+  expressões regulares.
+
+* Motivação
+
+- Algoritmos para parsing baseados em PEGs possuem tempo linear, no pior caso, sobre o
+  tamanho da entrada.
+
+- Porém, o tempo linear é usando memoização, o que demanda espaço linear sobre o tamanho
+  da entrada
+
+* Motivação
+
+- Pode-se melhorar a complexidade de espaço para processamento de texto usando PEGs?
+  - Espaço é um problema para grandes quantidades de texto.
+
+* Motivação
+
+- Sim! Para isso, Medeiros e Ierusalimschy definem uma máquina virtual que é capaz de
+  modelar PEGs como programas a serem executados.
+
+* Parsing Machine
+
+- A máquina virtual possui as instruções para processamento de texto.
+
+- PEGs são compiladas para programas sobre essa máquina virtual
+
+* Parsing Machine
+
+- Sintaxe:
+
+  - Chr c: Tenta casar o caractere c com a posição atual da entrada, movendo em
+    uma posição do texto em caso de sucesso.
+
+
+* Parsing Machine
+
+- Sintaxe:
+
+  - Any: Casa qualquer caractere e avança uma posição do texto.
+
+
+* Parsing Machine
+
+- Sintaxe:
+  - Choice l: empilha o deslocamento l que é usado para backtracking da máquina.
+
+* Parsing Machine
+
+- Sintaxe:
+
+  - Call l: empilha o endereço da próxima instrução e salta para a instrução no
+    deslocamento l
+
+* Parsing Machine
+
+- Sintaxe
+
+  - Jump l: Modifica o contador de instrução usando o deslocamento l.
+
+* Parsing Machine
+
+- Sintaxe:
+  - Return: Desempilha um endereço da pilha e modifica o contador de instruções
+    para esse endereço
+
+
+* Parsing Machine
+
+- Sintaxe:
+  - Commit l: Desempilha uma entrada da pilha para backtracking e usa l como deslocamento do
+    contador de instruções
+
+
+* Parsing Machine
+
+- Sintaxe:
+  - Fail: Força uma falha na execução da máquina
+
+* Parsing Machine
+
+- Semântica operacional da máquina é expressa como uma relação entre configurações.
+
+- Uma configuração é formada por uma tripla ou uma indicação de falha
+
+* Parsing Machine
+
+- Triplas são compostas por:
+
+  - Contador de instrução
+
+  - Posição atual no texto de entrada
+
+  - Pilha.
+
+* Parsing Machine
+
+- Pilhas são compostas por entradas da forma $\mathbb{N}\cup\mathbb{N}\times \mathbb{N}$.
+  - Entradas $\mathbb{N}$ são endereços de retorno.
+  - Entradas $\mathbb{N}\times\mathbb{N}$ são entradas para backtracking.
+
+* Parsing Machine
+
+- Semântica para instrução Chr
+
+\begin{array}{l}
+\langle pc,i,s \rangle \to \langle pc + 1, i + 1, e\rangle\text{ se }T[i] = c\\
+\\
+\text{em que }P[pc] = Chr\,c
+\end{array}
+
+
+* Parsing Machine
+
+- Semântica para instrução Chr
+
+\begin{array}{l}
+\langle pc,i,s \rangle \to Fail(s)\text{ se }T[i] = c'\\
+\\
+\text{em que }P[pc] = Chr\,c \text{ e } c\neq c'
+\end{array}
+
+* Parsing Machine
+
+- Semântica para instrução Any
+
+\begin{array}{l}
+\langle pc,i,s \rangle \to \langle pc + 1, i + 1, e\rangle\text{ se }i + 1\leq |T|\\
+\\
+\text{em que }P[pc] = Any
+\end{array}
+
+
+* Parsing Machine
+
+- Semântica para instrução Any
+
+\begin{array}{l}
+\langle pc,i,s \rangle \to Fail(e)\text{ se }|T| \leq i + 1\\
+\\
+\text{em que }P[pc] = Any
+\end{array}
+
+* Parsing Machine
+
+- Semântica para instrução Choice l
+
+\begin{array}{l}
+\langle pc,i,s \rangle \to \langle pc + 1, i, (pc + l, i) : e\rangle\\
+\\
+\text{em que }P[pc] = Choice\:l
+\end{array}
+
+
+* Parsing Machine
+
+- Semântica para instrução Call l
+
+\begin{array}{l}
+\langle pc,i,s \rangle \to \langle pc + l, i, (pc + 1, i) : e\rangle\\
+\\
+\text{em que }P[pc] = Call\:l
+\end{array}
+
+* Parsing Machine
+
+- Semântica para instrução Return
+
+\begin{array}{l}
+\langle pc_{0},i, pc_{1} : s \rangle \to \langle pc_{1}, i, e\rangle\\
+\\
+\text{em que }P[pc] = Return
+\end{array}
+
+* Parsing Machine
+
+- Semântica para instrução Commit l
+
+\begin{array}{l}
+\langle pc, i, h:s\rangle \to \langle pc + l, i, e\rangle\\
+\\
+\text{em que }P[pc] = Commit\:l
+\end{array}
+
+* Parsing Machine
+
+- Semântica para instrução Fail
+
+\begin{array}{l}
+\langle pc, i, s\rangle \to Fail(s)\\
+\\
+\text{em que }P[pc] = Fail
+\end{array}
+
+* Parsing Machine
+
+- Semântica para instrução Fail
+
+\begin{array}{l}
+Fail(pc : e) \to Fail(e)
+\end{array}
+
+* Parsing Machine
+
+- Semântica para instrução Fail
+
+\begin{array}{l}
+Fail((pc, i) : e) \to \langle pc , i , e \rangle
+\end{array}
+
+* Compilando Parsing Expressions
+
+- Agora, vamos mostrar como compilar PEGs em programas da máquina virtual apresentada.
+
+* Compilando Parsing Expressions
+
+- O processo de compilar PEGs é definido usando uma função $\Pi$ que, a partir de uma
+  parsing expression, produz um programa para máquina virtual apresentada.
+
+* Compilando Parsing Expressions
+
+- Compilando a parsing expression $a \in \Sigma$:
+
+\begin{array}{l}
+  \Pi(a) = Chr\:a
+\end{array}
+
+* Compilando Parsing Expressions
+
+- Compilando a parsing expression $e_1\,e_2$:
+
+\begin{array}{l}
+  \Pi(e_1\,e_2) = \Pi(e_1)\,\Pi(e_2)
+\end{array}
+
+* Compilando Parsing Expressions
+
+- Compilando a parsing expression $e_1\,/\,e_2$:
+
+\begin{array}{lcl}
+  \Pi(e_1\,/\,e_2) & = & Choice\,|\Pi(e_1)| + 2\\
+                   &   & \Pi(e_1)\\
+                   &   & Commit\,|\Pi(e_2)| + 1\\
+                   &   & \Pi(e_2)\\
+\end{array}
+
+* Compilando Parsing Expressions
+
+- Compilando a parsing expression $!\,e$:
+
+\begin{array}{lcl}
+  \Pi(!\,e) & = & Choice\,|\Pi(e)| + 3\\
+            &   & \Pi(e)\\
+            &   & Commit\,1\\
+            &   & Fail\\
+\end{array}
+
+* Compilando Parsing Expressions
+
+- Compilando a parsing expression $e^*$:
+
+\begin{array}{lcl}
+  \Pi(e^*) & = & Choice\,|\Pi(e)| + 2\\
+           &   & \Pi(e)\\
+           &   & Commit\,-(|\Pi(e)| + 1)\\
+\end{array}
+
+* Compilando Gramáticas
+
+- Vimos como uma parsing expression pode ser compilada em
+  um programa da máquina virtual de parsing.
+
+- Porém, falta como gerar um programa para uma gramática completa.
+
+* Compilando Gramáticas
+
+- A geração de um programa para uma gramática consiste em gerar
+  código para as expressões correspondentes a cada uma de suas
+  variáveis.
+
+
+* Exercícios
+
+- Mostre como representar um autômato finito determinístico qualquer como um programa
+  expresso pela máquina virtual apresentada. Prove que seu programa executa com sucesso em
+  palavras aceitas pelo autômato representado.
+
+* Referências
+
+- Medeiros, Sérgio; Ierusalimschy, Roberto. A Parsing Machine for PEGs.
