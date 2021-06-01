@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Incompletude</title>
+<meta name="author" content="Rodrigo Ribeiro"/>
+<style type="text/css">
+.underline { text-decoration: underline; }
+</style>
+<link rel="stylesheet" href="/Users/rodrigo/.emacs.d/.local/straight/build-27.2/revealjs/dist/reveal.css"/>
+
+<link rel="stylesheet" href="/Users/rodrigo/.emacs.d/.local/straight/build-27.2/revealjs/dist/theme/white.css" id="theme"/>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+<section id="sec-title-slide">
+<h1>Incompletude</h1><h2>PCC102 - Teoria da computação</h2><h3> Rodrigo Ribeiro</h3>
+</section>
+
+<section>
+<section id="slide-org3d996a8">
+<h2 id="org3d996a8">Objetivos</h2>
+<ul>
+<li>Apresentar o conceito da incompletude e de uma possível demonstração deste conceito.</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org061258f">
+<h2 id="org061258f">Motivação</h2>
+<ul>
+<li>Em 1931, Kurt Gödel publicou trabalhos contendo demonstrações de resultados de
+grande consequência para lógica.</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org5d43ad6">
+<h2 id="org5d43ad6">Motivação</h2>
+<ul>
+<li>Incompletude: Nenhum sistema formal para a teoria dos números é capaz de provar
+todas os teoremas desta teoria.</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org0a5716f">
+<h2 id="org0a5716f">Motivação</h2>
+<ul>
+<li>Para demonstrar a incompletude, vamos definir a linguagem da teoria dos números.</li>
+
+<li>Na sequência, vamos mostrar como reduzir o problema da parada para máquinas de Turing
+para o de decidir sentenças da linguagem da teoria dos números.</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-orgc81929d">
+<h2 id="orgc81929d">Linguagem da Teoria dos Números</h2>
+<ul>
+<li>A linguagem da teoria dos números é a formada sobre propriedades envolvendo números naturais.</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org82addba">
+<h2 id="org82addba">Linguagem da Teoria dos Números</h2>
+<ul>
+<li>A linguagem é formada por:
+<ul>
+<li>Variáveis sobre números naturais.</li>
+<li>Operadores binários: adição, multiplicação.</li>
+<li>símbolos relacionais: =, \(\le,\ge, <, >\).</li>
+<li>Quantificadores e conectivos da lógica.</li>
+
+</ul></li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org6d98836">
+<h2 id="org6d98836">Linguagem da Teoria dos Números</h2>
+<ul>
+<li>q é quociente e r é o resto da divisão de x por y</li>
+
+</ul>
+
+<div>
+\begin{array}{l}
+   INTDIV(x,y,q,r) = x = qy + r \land r < y
+\end{array}
+
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org20a786b">
+<h2 id="org20a786b">Linguagem da Teoria dos Números</h2>
+<ul>
+<li>y divide x</li>
+
+</ul>
+
+<div>
+\begin{array}{l}
+  DIV(y,x) = \exists q. INTDIV(x,y,q,0)
+\end{array}
+
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org5055c84">
+<h2 id="org5055c84">Linguagem da Teoria dos Números</h2>
+<ul>
+<li>x é par (x é ímpar)</li>
+
+</ul>
+
+<div>
+\begin{array}{l}
+  EVEN(x) = DIV(2,x)\\
+  ODD(x) = \neg EVEN(x)\\
+\end{array}
+
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-orgbef6e3d">
+<h2 id="orgbef6e3d">Linguagem da Teoria dos Números</h2>
+<ul>
+<li>x é primo</li>
+
+</ul>
+
+<div>
+\begin{array}{l}
+  PRIME(x) = x \geq 2 \land \forall y. (DIV(y,x) \to (y = 1 \lor y = x))
+\end{array}
+
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-orgaf016c4">
+<h2 id="orgaf016c4">Linguagem da Teoria dos Números</h2>
+<ul>
+<li>x é uma potência de 2.</li>
+
+</ul>
+
+<div>
+\begin{array}{l}
+  POWER_{2}(x) = \forall y.(DIV(y,x))
+\end{array}
+
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org3051ece">
+<h2 id="org3051ece">Linguagem da Teoria dos Números</h2>
+<ul>
+<li>y é potência de 2 e o k-ésimo bit de y é 1.</li>
+
+</ul>
+
+<div>
+\begin{array}{l}
+  BIT(k,y) = POWER_{2}(y) \land \forall q\,r. INTDIV(x,y,q,r) \to ODD(q)\\
+\end{array}
+
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org205833b">
+<h2 id="org205833b">Linguagem da Teoria dos Números</h2>
+<ul>
+<li>Denominamos por \(Th(\mathbb{N})\) o conjunto de sentenças verdadeiras
+da linguagem da teoria dos números.</li>
+
+<li>O problema de decisão da teoria dos números consiste em determinar se
+uma sentença pertence ou não a \(Th(\mathbb{N})\).</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org8d09b7f">
+<h2 id="org8d09b7f">Aritmética de Peano</h2>
+<ul>
+<li>Existem diversos sistemas que formalizam a teoria dos números.</li>
+
+<li>O mais conhecido é o sistema da Aritmética de Peano.</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org056f3ac">
+<h2 id="org056f3ac">Aritmética de Peano</h2>
+<ul>
+<li>A aritmética de Peano é formada por axiomas envolvendo a igualdade
+e fórmulas da lógica de predicados.</li>
+
+<li>Regras de inferência da lógica.</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-orgfac251c">
+<h2 id="orgfac251c">Aritmética de Peano</h2>
+<ul>
+<li>Adicionalmente, os seguintes axiomas pertencem a teoria:</li>
+
+</ul>
+
+<div>
+\begin{array}{ll}
+   \forall x. \neg (0 = x + 1) \\
+   \forall x\,y. x + 1 = y + 1 \to x = y \\
+   \forall x. x + 0 = x\\
+   \forall x\,y. x + (y + 1) = (x + y) + 1\\
+   \forall x. x \times 0 = 0 \\
+   \forall x\,y. x \times (y + 1) = (x \times y) + x \\
+   \varphi(0) \land \forall x. \varphi(n) \to \varphi(n + 1)\\
+\end{array}
+
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-orgfc8aa78">
+<h2 id="orgfc8aa78">Aritmética de Peano</h2>
+<ul>
+<li>A aritmética de Peano é uma teoria correta (sound), toda fórmula
+demonstrável é verdadeira.</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org58a2d40">
+<h2 id="org58a2d40">Aritmética de Peano</h2>
+<ul>
+<li>Porém, a mesma teoria não é completa (complete), existem fórmulas que
+são verdadeiras e não são demonstráveis pela aritmética de Peano.</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org740e6f3">
+<h2 id="org740e6f3">Incompletude</h2>
+<ul>
+<li>A demonstração de Gödel envolve a criação de uma fórmula da aritmética
+de Peano \(\varphi\) tal que:</li>
+
+</ul>
+
+<div>
+\begin{array}{l}
+  \varphi\text{ é verdadeira }\Leftrightarrow \varphi\text{ não é provável }
+\end{array}
+
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org654b57b">
+<h2 id="org654b57b">Incompletude</h2>
+<ul>
+<li>A construção da fórmula \(\varphi\) é muito similar à construção de
+programas conhecidos como <i>quines</i>.
+<ul>
+<li>Quine: programas que imprimem seu próprio código fonte.</li>
+
+</ul></li>
+
+</ul>
+
+<div class="org-src-container">
+
+<pre class="src src-haskell"><span style="color: #c678dd;">main</span> <span style="color: #dcaeea;">=</span> putStr s <span style="color: #dcaeea;">&gt;&gt;</span> print s
+  <span style="color: #51afef;">where</span>
+    s <span style="color: #dcaeea;">=</span> <span style="color: #98be65;">"main = putStr s &gt;&gt; print s where s = "</span>
+</pre>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-orgf74a150">
+<h2 id="orgf74a150">Incompletude</h2>
+<ul>
+<li>Antes de apresentarmos a construção da fórmula \(\varphi\) diretamente, vamos demonstrar  demonstração da incompletude seguindo uma abordagem baseada em redução.</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-orgbcf8d67">
+<h2 id="orgbcf8d67">Incompletude</h2>
+<ul>
+<li>A demonstração visa mostrar que:
+<ul>
+<li>O conjunto de teoremas da AP é recursivamente enumerável.</li>
+<li>O conjunto de \(Th(\mathbb{N})\) não é recursivamente enumerável.</li>
+
+</ul></li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-orgaba4567">
+<h2 id="orgaba4567">Incompletude</h2>
+<ul>
+<li>O ponto central da demonstração é mostrar que o conjunto \(Th(\mathbb{N})\) não é recursivamente enumerável.</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org4667657">
+<h2 id="org4667657">Incompletude</h2>
+<ul>
+<li>Para isso, vamos construir uma redução do problema da parada para máquinas de Turing.</li>
+
+<li>Problema da parada:</li>
+
+</ul>
+
+<div>
+\begin{array}{l}
+HP = \{R\langle M,w\rangle\,|\,M\text{ para com entrada }w\}
+\end{array}
+
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org3182c25">
+<h2 id="org3182c25">Incompletude</h2>
+<ul>
+<li>A construção é, em essência, formar uma fórmula \(\gamma\), tal que:</li>
+
+</ul>
+
+<div>
+\begin{array}{l}
+M\text{ não para com entrada }w \Leftrightarrow \gamma\in Th(\mathbb{N})
+\end{array}
+
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org2e5c423">
+<h2 id="org2e5c423">Incompletude</h2>
+<ul>
+<li>A fórmula \(\gamma\) é construída em termos da sequência de configurações produzidas por \(M\) durante o processamento de \(w\).</li>
+
+<li>Configuração: tripla \((e,y,n)\) em que
+<ul>
+<li>\(e\) estado atual</li>
+<li>\(y\) prefixo finito da fita</li>
+<li>\(n\) posição atual do cabeçote</li>
+
+</ul></li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org58ba858">
+<h2 id="org58ba858">Incompletude</h2>
+<ul>
+<li>Para isso, vamos construir diversas fórmulas intermediárias que serão
+utilizadas para modelar a sequência de configurações como uma fórmula
+da aritmética de Peano.</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-orga263359">
+<h2 id="orga263359">Incompletude</h2>
+<ul>
+<li>Assuma que a codificação de configurações é feita por palavras de um
+alfabeto de tamanho \(p\), em que \(p\) é um primo.</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-orgcc91f94">
+<h2 id="orgcc91f94">Incompletude</h2>
+<ul>
+<li>O número y é uma potência de p (primo)</li>
+
+</ul>
+
+<div>
+\begin{array}{l}
+POWER_{p}(y) = \forall z. (DIV(z,y) \land PRIME(p) \to z = p)
+\end{array}
+
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-orge1befaa">
+<h2 id="orge1befaa">Incompletude</h2>
+<ul>
+<li>O número d é uma potência de p e especifica o tamanho de v
+como uma string.</li>
+
+</ul>
+
+<div>
+\begin{array}{l}
+LENGTH(v,d) = POWER_{p}(d) \land v < d
+\end{array}
+
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-orgeadef5a">
+<h2 id="orgeadef5a">Incompletude</h2>
+<ul>
+<li>O dígito na posição y de v é b.</li>
+
+</ul>
+
+<div>
+\begin{array}{l}
+DIGIT(v,y,b) = \exists u.\exists a. (v = a + by + upy \land a < y \land b < p)
+\end{array}
+
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-orgf820ddd">
+<h2 id="orgf820ddd">Incompletude</h2>
+<ul>
+<li>Os 3 dígitos de v na posição y são b, c e d</li>
+
+</ul>
+
+<div>
+\begin{array}{lcl}
+3DIGIT(v,y,b,c,d) & = &\exists u. \exists a.(v = a + by + cpy + dppy + uppy \land \\
+                  &   & a < y \land b < p \land c < p \land d < p)
+\end{array}
+
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org3a0ff1e">
+<h2 id="org3a0ff1e">Incompletude</h2>
+<ul>
+<li>Os 3 dígitos de v na posição y são iguais aos da posição z.</li>
+
+</ul>
+
+<div>
+\begin{array}{lcl}
+  MATCH(v,y,z) & = & \bigvee_{(a,b,c,d,e,f) \in C} 3DIGIT(v,y,a,b,c) \land\\
+               &   & 3DIGIT(v,z,d,e,f)\\
+\end{array}
+
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org4c088bc">
+<h2 id="org4c088bc">Incompletude</h2>
+<ul>
+<li>A string v representa configurações sucessivas de uma computação de M</li>
+
+</ul>
+
+<div>
+\begin{array}{lcl}
+   MOVE(v,c,d) = \forall y. POWER_{p}(y) \land yppc < d \to MATCH(v,y,yc)
+\end{array}
+
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org23f11b6">
+<h2 id="org23f11b6">Incompletude</h2>
+<ul>
+<li>A string v representa a configuração inicial da máquina M</li>
+
+</ul>
+
+<div>
+\begin{array}{lcl}
+START(v,c) & = & \bigwedge_{i = 0}^n DIGIT(v, p^i, k_i) \land p^n < c \land\\
+           &   & \forall y. (POWER_{p}(y) \land p^n < y < c \to DIGIT(v,y,k))
+\end{array}
+
+</div>
+
+
+</section>
+</section>
+<section>
+<section id="slide-org8af6f65">
+<h2 id="org8af6f65">Incompletude</h2>
+<ul>
+<li>A string v possui algum estado de parada (\(\exists e\,a.\delta(e,a) = \bot\)).</li>
+
+</ul>
+
+<div>
+\begin{array}{l}
+HALT(v,d) = \exists y. POWER_{p}(y) \land y < d \land \bigvee_{a \in H}DIGIT(v,y,a)
+\end{array}
+
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org941f885">
+<h2 id="org941f885">Incompletude</h2>
+<ul>
+<li>A string v representa uma sequência de configurações de M para a string w.</li>
+
+</ul>
+
+<div>
+\begin{array}{lcl}
+VALCOMP_{M,w}(v) & = & \exists c\,d.POWER_{p}(c) \land c < d \land LENGTH(v,d) \land \\
+              &   & START(v,c) \land MOVE(v,c,d) \land HALT(v,d)
+\end{array}
+
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org789db4a">
+<h2 id="org789db4a">Incompletude</h2>
+<ul>
+<li>Usando a fórmula anterior, concluímos a redução, pois \(M\) para com entrada \(w\) só se:</li>
+
+</ul>
+
+<div>
+\begin{array}{l}
+\neg VALCOMP_{M,w}(v)
+\end{array}
+
+</div>
+
+<p>
+para v representando as configurações de M para w.
+</p>
+
+</section>
+</section>
+<section>
+<section id="slide-orgd66cdd5">
+<h2 id="orgd66cdd5">Referências</h2>
+<ul>
+<li>Kozen, Dexter. Automata and Computability. Springer.</li>
+
+</ul>
+</section>
+</section>
+</div>
+</div>
+<script src="/Users/rodrigo/.emacs.d/.local/straight/build-27.2/revealjs/dist/reveal.js"></script>
+<script src="/Users/rodrigo/.emacs.d/.local/straight/build-27.2/revealjs/plugin/markdown/markdown.js"></script>
+<script src="/Users/rodrigo/.emacs.d/.local/straight/build-27.2/revealjs/plugin/notes/notes.js"></script>
+<script src="/Users/rodrigo/.emacs.d/.local/straight/build-27.2/revealjs/plugin/search/search.js"></script>
+<script src="/Users/rodrigo/.emacs.d/.local/straight/build-27.2/revealjs/plugin/zoom/zoom.js"></script>
+<script>
+// Full list of configuration options available here:
+// https://github.com/hakimel/reveal.js#configuration
+Reveal.initialize({
+
+controls: true,
+progress: true,
+history: true,
+center: true,
+slideNumber: 'c',
+rollingLinks: true,
+keyboard: true,
+mouseWheel: false,
+fragmentInURL: false,
+hashOneBasedIndex: false,
+pdfSeparateFragments: true,
+
+overview: true,
+width: 1200,
+height: 800,
+margin: 0.20,
+minScale: 0.50,
+maxScale: 2.50,
+
+transition: 'none',
+transitionSpeed: 'default',
+
+// Plugins with reveal.js 4.x
+plugins: [ RevealMarkdown, RevealNotes, RevealSearch, RevealZoom ],
+
+// Optional libraries used to extend reveal.js
+dependencies: [
+]
+
+});
+</script>
+</body>
+</html>

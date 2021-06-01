@@ -316,9 +316,9 @@ Fail((pc, i) : e) \to \langle pc , i , e \rangle
 
 * Exercícios
 
-- Mostre como representar um autômato finito determinístico qualquer como um programa
-  expresso pela máquina virtual apresentada. Prove que seu programa executa com sucesso em
-  palavras aceitas pelo autômato representado.
+- Mostre que a máquina virtual apresentada pode ser utilizada para
+  compilar expressões regulares (sem expressá-las como PEGs). Apresente um argumento
+  de que seu processo de compilação preserva a semântica de expressões regulares.
 
 * Referências
 

@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Introdução à lógica combinatória</title>
+<meta name="author" content="Rodrigo Ribeiro"/>
+<style type="text/css">
+.underline { text-decoration: underline; }
+</style>
+<link rel="stylesheet" href="/Users/rodrigo/.emacs.d/.local/straight/build-27.2/revealjs/dist/reveal.css"/>
+
+<link rel="stylesheet" href="/Users/rodrigo/.emacs.d/.local/straight/build-27.2/revealjs/dist/theme/white.css" id="theme"/>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+<section id="sec-title-slide">
+<h1>Introdução à lógica combinatória</h1><h2>PCC102 - Teoria da computação</h2><h3> Rodrigo Ribeiro</h3>
+</section>
+
+<section>
+<section id="slide-org4b19c3b">
+<h2 id="org4b19c3b">Objetivos</h2>
+<ul>
+<li>Apresentar a sintaxe e semântica da lógica combinatória.</li>
+
+<li>Apresentar a equivalência entre lógica combinatória e &lambda;-cálculo.</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org15632ae">
+<h2 id="org15632ae">Motivação</h2>
+<ul>
+<li>O &lambda;-cálculo é um formalismo conveniente para o estudo de computabilidade
+por sua semelhança com linguagens de programação.</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org8501329">
+<h2 id="org8501329">Motivação</h2>
+<ul>
+<li>Porém, essa mesma semelhança é um inconveniente!</li>
+
+<li>Grande parte da complicação da semântica (substituição) deve-se à necessidade
+de evitar a captura de variáveis livres e do gerenciamento correto de variáveis
+ligadas.</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org8dd04aa">
+<h2 id="org8dd04aa">Motivação</h2>
+<ul>
+<li>Nesse sentido, a lógica combinatória evita os problemas associados a
+variáveis ligadas por ser um formalismo que não as utiliza.</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org63b4579">
+<h2 id="org63b4579">Motivação</h2>
+<ul>
+<li>Para entender, considere a seguinte propriedade:</li>
+
+</ul>
+
+<div>
+\begin{array}{l}
+   \forall x\,y. x + y = y + x
+\end{array}
+
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-orge734f27">
+<h2 id="orge734f27">Motivação</h2>
+<ul>
+<li>Podemos representar a propriedade anterior, sem usar variáveis ligadas,
+da seguinte forma:</li>
+
+<li>Primeiro, vamos usar um operador para representar a adição:</li>
+
+</ul>
+
+<div>
+\begin{array}{l}
+   A(x,y) = x + y
+\end{array}
+
+</div>
+
+
+</section>
+</section>
+<section>
+<section id="slide-org6cdf7e0">
+<h2 id="org6cdf7e0">Motivação</h2>
+<ul>
+<li>Em seguida, definimos um operador para representar a comutatividade de uma
+função:</li>
+
+</ul>
+
+<div>
+\begin{array}{l}
+  C(f)(x,y) = f(y,x)
+\end{array}
+
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-orgd2187d7">
+<h2 id="orgd2187d7">Motivação</h2>
+<ul>
+<li>Dessa forma, temos que a propriedade:</li>
+
+</ul>
+
+<div>
+\begin{array}{l}
+  \forall x\,y.x + y = y + x
+\end{array}
+
+</div>
+
+<ul>
+<li>Pode ser representada por A = C(A)</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org26f1c22">
+<h2 id="org26f1c22">Sintaxe</h2>
+<ul>
+<li>Para a sintaxe da lógica combinatória, vamos considerar um conjunto
+enumerável de símbolos denominados variáveis.</li>
+
+<li>Um conjunto (finito ou infinito) de símbolos atômicos</li>
+
+<li>Três combinadores: <b>I</b>, <b>S</b>, <b>K</b>.</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-orgd65a133">
+<h2 id="orgd65a133">Sintaxe</h2>
+<ul>
+<li>Definimos a sintaxe de termos da lógica combinatória usando a
+seguinte gramática livre de contexto.</li>
+
+</ul>
+
+<div>
+\begin{array}{lcll}
+  e & ::=  & x            & \text{variáveis}\\
+    & \mid & a            & \text{átomos}\\
+    & \mid & I\,\mid\,S\,\mid\,K & \text{combinadores}\\
+    & \mid & e\:e         & \text{aplicação}\\
+\end{array}
+
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-orgfd31abb">
+<h2 id="orgfd31abb">Sintaxe</h2>
+<ul>
+<li>Exemplos (x,y e z são variáveis distintas)
+<ul>
+<li>(<b>S</b> (<b>K</b> x) <b>K</b>)</li>
+<li><b>S</b> (<b>I</b> y) z</li>
+
+</ul></li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org7f5dc7c">
+<h2 id="org7f5dc7c">Semântica</h2>
+<ul>
+<li>A semântica da lógica combinatória é dada em termos do significado dos
+combinadores <b>K</b>, <b>S</b> e <b>I</b>.</li>
+
+</ul>
+
+
+</section>
+</section>
+<section>
+<section id="slide-org4753198">
+<h2 id="org4753198">Semântica</h2>
+<ul>
+<li>Semântica da lógica combinatória.</li>
+
+</ul>
+
+<div>
+\begin{array}{lcl}
+  \textbf{I}\:e          & \rhd & e\\
+  \textbf{K}\:e\:e'      & \rhd & e\\
+  \textbf{S}\:e\:e'\:e'' & \rhd & e\,e''(e'\,e'')\\
+\end{array}
+
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org4683b6d">
+<h2 id="org4683b6d">Semântica</h2>
+<ul>
+<li>Exemplo: Considere <b>B</b> &equiv; <b>S</b> ( <b>K</b> <b>S</b>) <b>K</b></li>
+
+</ul>
+
+<div>
+\begin{array}{lcl}
+B\,X\,Y\,Z & \rhd\\
+\end{array}
+
+</div>
+
+
+</section>
+</section>
+<section>
+<section id="slide-org3d73d13">
+<h2 id="org3d73d13">Semântica</h2>
+<ul>
+<li>Exemplo: Considere <b>B</b> &equiv; <b>S</b> ( <b>K</b> <b>S</b>) <b>K</b></li>
+
+</ul>
+
+<div>
+\begin{array}{lcl}
+B\,X\,Y\,Z & \rhd\\
+S\,(K\,S)\,K\,X\,Y\,Z & \rhd\\
+\end{array}
+
+</div>
+
+
+</section>
+</section>
+<section>
+<section id="slide-orge9162c5">
+<h2 id="orge9162c5">Semântica</h2>
+<ul>
+<li>Exemplo: Considere <b>B</b> &equiv; <b>S</b> ( <b>K</b> <b>S</b>) <b>K</b></li>
+
+</ul>
+
+<div>
+\begin{array}{lcl}
+B\,X\,Y\,Z & \rhd\\
+S\,(K\,S)\,K\,X\,Y\,Z & \rhd\\
+K\,S\,X\,(K\,X)\,Y\,Z & \rhd & \{S\,(K\,S)\,K\,X \rhd K\,S\,X\,(K\,X)\}\\
+\end{array}
+
+</div>
+
+
+</section>
+</section>
+<section>
+<section id="slide-org9cb10f3">
+<h2 id="org9cb10f3">Semântica</h2>
+<ul>
+<li>Exemplo: Considere <b>B</b> &equiv; <b>S</b> ( <b>K</b> <b>S</b>) <b>K</b></li>
+
+</ul>
+
+<div>
+\begin{array}{lcl}
+B\,X\,Y\,Z & \rhd\\
+S\,(K\,S)\,K\,X\,Y\,Z & \rhd\\
+K\,S\,X\,(K\,X)\,Y\,Z & \rhd & \{S\,(K\,S)\,K\,X \rhd K\,S\,X\,(K\,X)\}\\
+S\,(K\,X)\,Y\,Z & \rhd & \{K\,S\,X \rhd S\}\\
+\end{array}
+
+</div>
+
+
+</section>
+</section>
+<section>
+<section id="slide-org55d7499">
+<h2 id="org55d7499">Semântica</h2>
+<ul>
+<li>Exemplo: Considere <b>B</b> &equiv; <b>S</b> ( <b>K</b> <b>S</b>) <b>K</b></li>
+
+</ul>
+
+<div>
+\begin{array}{lcl}
+B\,X\,Y\,Z & \rhd\\
+S\,(K\,S)\,K\,X\,Y\,Z & \rhd\\
+K\,S\,X\,(K\,X)\,Y\,Z & \rhd & \{S\,(K\,S)\,K\,X \rhd K\,S\,X\,(K\,X)\}\\
+S\,(K\,X)\,Y\,Z & \rhd & \{K\,S\,X \rhd S\}\\
+K\,X\,Z\,(Y\,Z) & \rhd & \\
+\end{array}
+
+</div>
+
+
+</section>
+</section>
+<section>
+<section id="slide-org110ae09">
+<h2 id="org110ae09">Semântica</h2>
+<ul>
+<li>Exemplo: Considere <b>B</b> &equiv; <b>S</b> ( <b>K</b> <b>S</b>) <b>K</b></li>
+
+</ul>
+
+<div>
+\begin{array}{lcl}
+B\,X\,Y\,Z & \rhd\\
+S\,(K\,S)\,K\,X\,Y\,Z & \rhd\\
+K\,S\,X\,(K\,X)\,Y\,Z & \rhd & \{S\,(K\,S)\,K\,X \rhd K\,S\,X\,(K\,X)\}\\
+S\,(K\,X)\,Y\,Z & \rhd & \{K\,S\,X \rhd S\}\\
+K\,X\,Z\,(Y\,Z) & \rhd & \\
+X\,Y\,Z
+\end{array}
+
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-orge4ff7a2">
+<h2 id="orge4ff7a2">Abstração</h2>
+<ul>
+<li>Para apresentar a equivalência entre a lógica combinatória e o &lambda;-cálculo
+devemos definir uma função que &ldquo;simula&rdquo; uma abstração.</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org56ea420">
+<h2 id="org56ea420">Abstração</h2>
+<ul>
+<li>Abstração em lógica combinatória</li>
+
+</ul>
+
+<div>
+\begin{array}{lcl}
+   \lbrack x \rbrack . e & = & \textbf{K}\:e\:\:\:\text{se }x\not\in fv(e)\\
+   \lbrack x \rbrack . x & = & \textbf{I}\\
+   \lbrack x \rbrack . e\:x & = & e\:\:\:\:\text{se }x\not\in fv(e)\\
+   \lbrack x \rbrack . e\:e' & = & \textbf{S}\:(\lbrack x \rbrack .e)
+                                               (\lbrack x \rbrack . e')\:\:\:\:
+                                               \text{caso contrário}\\
+\end{array}
+
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-orgde45abe">
+<h2 id="orgde45abe">Equivalência</h2>
+<ul>
+<li>Traduzindo um termo da lógica combinatória em um &lambda;-termo:</li>
+
+</ul>
+
+<div>
+\begin{array}{lcl}
+   x_{\lambda} & = & x\\
+   \textbf{I}  & = & \lambda x. x\\
+   \textbf{K}  & = & \lambda x\,y.x\\
+   \textbf{S}  & = & \lambda x\,y\,z.x\,z(y\,z)\\
+   (e_{1}\:e_{2}) & = & (e_{1})_{\lambda}\,(e_{2})_{\lambda}\\
+\end{array}
+
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org19d46a9">
+<h2 id="org19d46a9">Equivalência</h2>
+<ul>
+<li>Traduzindo um &lambda;-termo em um termo da lógica combinatória:</li>
+
+</ul>
+
+<div>
+\begin{array}{lcl}
+   x_{\eta} & = & x\\
+   (e\:e')_{\eta} & = & e_{\eta}\:e'_{\eta}\\
+   (\lambda x. e)_{\eta} & = & \lbrack x \rbrack . (e_{\eta})\\
+\end{array}
+
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org2f4b01e">
+<h2 id="org2f4b01e">Exercícios</h2>
+<ul>
+<li>Implemente um intepretador para lógica combinatória em sua
+linguagem de programação favorita.</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org8db77be">
+<h2 id="org8db77be">Referências</h2>
+<ul>
+<li>Hindley, J. Roger; Seldin, Jonathan P. Lambda-calculus and combinators: An
+introduction. Cambridge.</li>
+
+</ul>
+</section>
+</section>
+</div>
+</div>
+<script src="/Users/rodrigo/.emacs.d/.local/straight/build-27.2/revealjs/dist/reveal.js"></script>
+<script src="/Users/rodrigo/.emacs.d/.local/straight/build-27.2/revealjs/plugin/markdown/markdown.js"></script>
+<script src="/Users/rodrigo/.emacs.d/.local/straight/build-27.2/revealjs/plugin/notes/notes.js"></script>
+<script src="/Users/rodrigo/.emacs.d/.local/straight/build-27.2/revealjs/plugin/search/search.js"></script>
+<script src="/Users/rodrigo/.emacs.d/.local/straight/build-27.2/revealjs/plugin/zoom/zoom.js"></script>
+<script>
+// Full list of configuration options available here:
+// https://github.com/hakimel/reveal.js#configuration
+Reveal.initialize({
+
+controls: true,
+progress: true,
+history: true,
+center: true,
+slideNumber: 'c',
+rollingLinks: true,
+keyboard: true,
+mouseWheel: false,
+fragmentInURL: false,
+hashOneBasedIndex: false,
+pdfSeparateFragments: true,
+
+overview: true,
+width: 1200,
+height: 800,
+margin: 0.20,
+minScale: 0.50,
+maxScale: 2.50,
+
+transition: 'none',
+transitionSpeed: 'default',
+
+// Plugins with reveal.js 4.x
+plugins: [ RevealMarkdown, RevealNotes, RevealSearch, RevealZoom ],
+
+// Optional libraries used to extend reveal.js
+dependencies: [
+]
+
+});
+</script>
+</body>
+</html>

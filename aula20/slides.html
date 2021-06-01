@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Indecidibilidade</title>
+<meta name="author" content="Rodrigo Ribeiro"/>
+<style type="text/css">
+.underline { text-decoration: underline; }
+</style>
+<link rel="stylesheet" href="/Users/rodrigo/.emacs.d/.local/straight/build-27.2/revealjs/dist/reveal.css"/>
+
+<link rel="stylesheet" href="/Users/rodrigo/.emacs.d/.local/straight/build-27.2/revealjs/dist/theme/white.css" id="theme"/>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+<section id="sec-title-slide">
+<h1>Indecidibilidade</h1><h2>PCC102 - Teoria da computação</h2><h3> Rodrigo Ribeiro</h3>
+</section>
+
+<section>
+<section id="slide-orgc64874d">
+<h2 id="orgc64874d">Objetivos</h2>
+<ul>
+<li>Apresentar a indecidibilidade do problema de determinar se um termo possui forma
+normal.</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-orge93b8b4">
+<h2 id="orge93b8b4">Motivação</h2>
+<ul>
+<li>Normalmente, o estudo de decidibilidade inicia-se por apresentar a definição
+de máquinas de Turing e o problema da parada.</li>
+
+<li>Adotaremos uma abordagem diferente, usaremos o &lambda; cálculo como formalismo base.</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org8f355d3">
+<h2 id="org8f355d3">Motivação</h2>
+<ul>
+<li>Mas, essas provas são equivalentes?
+<ul>
+<li>Sim! Note que podemos construir um &lambda;-termo cuja computação simula as configurações
+de uma máquina de Turing.</li>
+<li>Logo, o termo possui forma normal só se a sequência de configurações da máquina de Turing
+é finita.</li>
+
+</ul></li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org0ec975f">
+<h2 id="org0ec975f">Definições</h2>
+<ul>
+<li>Antes de apresentar a demonstração, devemos introduzir algumas noções.</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org4132481">
+<h2 id="org4132481">Definições</h2>
+<ul>
+<li>Vamos supor um algoritmo para codificar termos por um único número natural.</li>
+
+<li>Denotaremos esse número por gd(e), o número de Gödel do termo e.</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-orga3d9814">
+<h2 id="orga3d9814">Definições</h2>
+<ul>
+<li>Intuitivamente, a codificação é feita da seguinte forma:
+
+<ul>
+<li>A cada símbolo da linguagem, atribuímos um número primo \(p_i\).</li>
+
+<li>O código de um termo consiste no produto dos primos correspondentes
+a cada símbolo.</li>
+
+</ul></li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org9ccb4e0">
+<h2 id="org9ccb4e0">Definições</h2>
+<ul>
+<li>A função gd(e) é injetora, isto é, atribui para termos sintaticamente diferentes
+diferentes códigos.</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org61f6d98">
+<h2 id="org61f6d98">Definições</h2>
+<ul>
+<li>Supomos uma função recursiva e total &tau; que satisfaz:</li>
+
+</ul>
+
+<div>
+\begin{array}{l}
+  \forall e_1\:e_2. \tau(gd(e_1),gd(e_2)) = gd(e_1\:e_2)\\
+\end{array}
+
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org6c8a851">
+<h2 id="org6c8a851">Definições</h2>
+<ul>
+<li>Supomos uma função recursiva e total &nu; que satisfaz:
+<ul>
+<li>\(\overline{n}\) denota o termo correspondente a \(n\in\mathbb{N}\)</li>
+
+</ul></li>
+
+</ul>
+
+<div>
+\begin{array}{l}
+  \nu(n) = gd(\overline{n})\\
+\end{array}
+
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-orgbd34748">
+<h2 id="orgbd34748">Definições</h2>
+<ul>
+<li>O código correspondente ao número de Gödel de um termo e:</li>
+
+</ul>
+
+<div>
+\begin{array}{l}
+  \lceil e \rceil = \overline{gd(e)}
+\end{array}
+
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org2025232">
+<h2 id="org2025232">Definições</h2>
+<ul>
+<li>Considere que gd(ee&rsquo;) = 3. Então, temos que:</li>
+
+</ul>
+
+<div>
+\begin{array}{l}
+  \lceil ee' \rceil = \\
+  \overline{gd(ee')} = \\
+  \overline{3} = \\
+  \lambda s\,z.s\,(s\,(s\,z))\\
+\end{array}
+
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org8a3d233">
+<h2 id="org8a3d233">Definições</h2>
+<ul>
+<li>Dizemos que dois conjuntos \(\mathcal{A}\subseteq\mathbb{N}\) e
+\(\mathcal{B}\subseteq\mathbb{N}\) são recursivamente separáveis se
+existe uma função total recursiva &phi; tal que:
+
+<ul>
+<li>Se \(n \in \mathcal{A}\) então \(\phi(n) = 0\)</li>
+<li>Se \(n \in \mathcal{B}\) então \(\phi(n) = 1\)</li>
+
+</ul></li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org5e539ab">
+<h2 id="org5e539ab">Definições</h2>
+<ul>
+<li>Conjuntos de termos são recursivamente separáveis se seus respectivos
+conjuntos de códigos de Gödel o são.</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-orga7fc566">
+<h2 id="orga7fc566">Definições</h2>
+<ul>
+<li>Dizemos que um conjunto \(\mathcal{A}\subseteq\mathbb{N}\) é decidível
+se \(\mathcal{A}\) e seu complemento são recursivamente separáveis.</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-orga967f43">
+<h2 id="orga967f43">Definições</h2>
+<ul>
+<li>Toda função recursiva total pode ser representada por um &lambda;-termo.</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-orgda278b2">
+<h2 id="orgda278b2">Definições</h2>
+<ul>
+<li>Um conjunto de termos \(\mathcal{A}\) é dito ser fechado com respeito a
+\(\equiv_{\beta}\) se:</li>
+
+</ul>
+
+<div>
+\begin{array}{l}
+   e \in \mathcal{A} \land e' \equiv_{\beta} e \to e' \in \mathcal{A}
+\end{array}
+
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org86e05af">
+<h2 id="org86e05af">Indecidibilidade</h2>
+<ul>
+<li>Não existem conjuntos de termos fechados com respeito a \(\equiv_{\beta}\)
+recursivamente separáveis.</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org56748b0">
+<h2 id="org56748b0">Indecidibilidade</h2>
+<ul>
+<li>Como a relação \(\equiv_{\beta}\) relaciona termos que reduzem entre si,
+podemos mostrar que um conjunto de termos e suas formas normais não
+são recursivamente separáveis.
+<ul>
+<li>Consequência: indecidível se um termo possui ou não forma normal.</li>
+
+</ul></li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org5dc3be6">
+<h2 id="org5dc3be6">Indecidibilidade</h2>
+<ul>
+<li><b>Prova:</b> Suponha A e B dois conjuntos fechados não vazios de termos.</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org7e5958b">
+<h2 id="org7e5958b">Indecidibilidade</h2>
+<ul>
+<li>Suponha, por contradição, que exista uma função recursiva total &phi; que separa A e B.
+
+<ul>
+<li>\(e \in A \Rightarrow \phi(gd(e)) = 0\)</li>
+<li>\(e \in B \Rightarrow \phi(gd(e)) = 1\)</li>
+
+</ul></li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org4ae9df0">
+<h2 id="org4ae9df0">Indecidibilidade</h2>
+<ul>
+<li>Como &phi; é recursiva total, existe um &lambda;-termo F que denota &phi;.</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org907e021">
+<h2 id="org907e021">Indecidibilidade</h2>
+<ul>
+<li>Dessa forma, temos que:
+
+<ul>
+<li>\(e \in A \Rightarrow F(\lceil e \rceil) \equiv_\beta \overline{0}\)</li>
+<li>\(e \in B \Rightarrow F(\lceil e \rceil) \equiv_\beta \overline{1}\)</li>
+
+</ul></li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org920b501">
+<h2 id="org920b501">Indecidibilidade</h2>
+<ul>
+<li>Sejam \(e_1 \in A\), \(e_2 \in B\) termos quaisquer.</li>
+
+<li>Vamos construir um termo \(J\) tal que:</li>
+
+</ul>
+
+<div>
+\begin{array}{l}
+  F(\lceil J \rceil) = \overline{0} \Rightarrow J \equiv_{\beta} e_{2}\\
+  F(\lceil J \rceil) = \overline{1} \Rightarrow J \equiv_{\beta} e_{1}\\
+\end{array}
+
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org86d00fb">
+<h2 id="org86d00fb">Indecidibilidade</h2>
+<ul>
+<li>O termo \(J\) é tal que
+<ul>
+<li>Se \(J \in A\) então \(F(\lceil J \rceil) \equiv_\beta \overline{1}\).</li>
+<li>Se \(J \in B\) então \(F(\lceil J \rceil) \equiv_\beta \overline{0}\).</li>
+
+</ul></li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org42be969">
+<h2 id="org42be969">Indecidibilidade</h2>
+<ul>
+<li>Construção de \(J\).
+<ul>
+<li>Seja \(K = \lambda x\,y.x\)</li>
+<li>Seja \(D = \lambda x\,y\,z.z (K\:y)\,x\)</li>
+<li>Seja \(T\) o termo correspondente a função \(\phi\).</li>
+<li>Seja \(N\) o termo correspondente a função \(\nu\).</li>
+
+</ul></li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-orgad5d1c2">
+<h2 id="orgad5d1c2">Indecidibilidade</h2>
+<ul>
+<li>Construção de \(J\).
+<ul>
+<li>Seja \(H = \lambda y. D\,B\,A\,(F(T\,y\,(N\:y)))\)</li>
+
+</ul></li>
+<li>O termo \(J = H \lceil H \rceil\)</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-orge66610a">
+<h2 id="orge66610a">Indecidibilidade</h2>
+<ul>
+<li>Seja \(j = gd(J)\). Temos que \(\phi(j) = 0 \lor \phi(j) = 1\).</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-orgc8b1d4b">
+<h2 id="orgc8b1d4b">Indecidibilidade</h2>
+<ul>
+<li>Caso \(\phi(j) = 0\):
+<ul>
+<li>Como \(\phi(j) = 0\) e \(j = gd(J)\), temos que \(F(\lceil J \rceil) \equiv_\beta \overline{0}\).</li>
+
+</ul></li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-orgbe0deca">
+<h2 id="orgbe0deca">Indecidibilidade</h2>
+<ul>
+<li>Caso \(\phi(j) = 0\):
+<ul>
+<li>Como \(F(\lceil J \rceil) \equiv_\beta \overline{0}\) e \(F(\lceil J \rceil) = \overline{0} \Rightarrow J \equiv_{\beta} e_{2}\), temos \(J \equiv_{\beta} e_{2}\).</li>
+
+<li>Como \(J \equiv_{\beta} e_{2}\), \(e_2 \in B\) e \(B\) é fechado, temos que \(J \in B\).</li>
+
+</ul></li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org6502242">
+<h2 id="org6502242">Indecidibilidade</h2>
+<ul>
+<li>Caso \(\phi(j) = 0\):
+<ul>
+<li>Como \(J \in B\) e \(\forall e. e \in B \Rightarrow \phi(gd(e)) = 1\), então
+\(\phi(gd(J)) = 1\).</li>
+<li>Mas, como \(j = gd(J)\), temos que \(1 = \phi(gd(J)) = \phi(j) = 0\).</li>
+<li>Contradição!</li>
+
+</ul></li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org0a76f37">
+<h2 id="org0a76f37">Indecidibilidade</h2>
+<ul>
+<li>Caso \(\phi(j) = 1\): similar ao caso \(\phi(j) = 0\).</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org0280981">
+<h2 id="org0280981">Exercícios</h2>
+<ul>
+<li>Existe similaridade entre a prova de indecidibilidade para o &lambda;-cálculo e a
+tradicional demonstração para máquinas de Turing? Comente sobre as possíveis similaridades
+e diferenças entre essas formalizações.</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org3af99df">
+<h2 id="org3af99df">Referências</h2>
+<ul>
+<li>Hindley, J. Roger; Seldin, Jonathan P. Lambda-calculus and combinators: An
+introduction. Cambridge.</li>
+
+</ul>
+</section>
+</section>
+</div>
+</div>
+<script src="/Users/rodrigo/.emacs.d/.local/straight/build-27.2/revealjs/dist/reveal.js"></script>
+<script src="/Users/rodrigo/.emacs.d/.local/straight/build-27.2/revealjs/plugin/markdown/markdown.js"></script>
+<script src="/Users/rodrigo/.emacs.d/.local/straight/build-27.2/revealjs/plugin/notes/notes.js"></script>
+<script src="/Users/rodrigo/.emacs.d/.local/straight/build-27.2/revealjs/plugin/search/search.js"></script>
+<script src="/Users/rodrigo/.emacs.d/.local/straight/build-27.2/revealjs/plugin/zoom/zoom.js"></script>
+<script>
+// Full list of configuration options available here:
+// https://github.com/hakimel/reveal.js#configuration
+Reveal.initialize({
+
+controls: true,
+progress: true,
+history: true,
+center: true,
+slideNumber: 'c',
+rollingLinks: true,
+keyboard: true,
+mouseWheel: false,
+fragmentInURL: false,
+hashOneBasedIndex: false,
+pdfSeparateFragments: true,
+
+overview: true,
+width: 1200,
+height: 800,
+margin: 0.20,
+minScale: 0.50,
+maxScale: 2.50,
+
+transition: 'none',
+transitionSpeed: 'default',
+
+// Plugins with reveal.js 4.x
+plugins: [ RevealMarkdown, RevealNotes, RevealSearch, RevealZoom ],
+
+// Optional libraries used to extend reveal.js
+dependencies: [
+]
+
+});
+</script>
+</body>
+</html>

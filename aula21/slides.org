@@ -1,0 +1,310 @@
+#    -*- mode: org -*-
+#+OPTIONS: reveal_center:t reveal_progress:t reveal_history:t reveal_control:t
+#+OPTIONS: reveal_mathjax:t reveal_rolling_links:t reveal_keyboard:t num:nil
+#+OPTIONS: reveal_width:1200 reveal_height:800
+#+OPTIONS: toc:nil
+#+REVEAL_MARGIN: 0.2
+#+REVEAL_MIN_SCALE: 0.5
+#+REVEAL_MAX_SCALE: 2.5
+#+REVEAL_TRANS: none
+#+REVEAL_THEME: white
+#+REVEAL_HLEVEL: 999
+#+REVEAL_TITLE_SLIDE: <h1>%t</h1><h2>%s</h2><h3>%A %a</h3>
+#+LATEX_HEADER: \usepackage{proof,latesym,amsmath,amssymb}
+
+#+TITLE: Incompletude
+#+SUBTITLE: PCC102 - Teoria da computação
+#+AUTHOR: Rodrigo Ribeiro
+#+EMAIL: rodrigo.ribeiro@ufop.edu.br
+
+* Objetivos
+
+- Apresentar o conceito da incompletude e de uma possível demonstração deste conceito.
+
+* Motivação
+
+- Em 1931, Kurt Gödel publicou trabalhos contendo demonstrações de resultados de
+  grande consequência para lógica.
+
+* Motivação
+
+- Incompletude: Nenhum sistema formal para a teoria dos números é capaz de provar
+  todas os teoremas desta teoria.
+
+* Motivação
+
+- Para demonstrar a incompletude, vamos definir a linguagem da teoria dos números.
+
+- Na sequência, vamos mostrar como reduzir o problema da parada para máquinas de Turing
+  para o de decidir sentenças da linguagem da teoria dos números.
+
+* Linguagem da Teoria dos Números
+
+- A linguagem da teoria dos números é a formada sobre propriedades envolvendo números naturais.
+
+* Linguagem da Teoria dos Números
+
+- A linguagem é formada por:
+  - Variáveis sobre números naturais.
+  - Operadores binários: adição, multiplicação.
+  - símbolos relacionais: =, $\le,\ge, <, >$.
+  - Quantificadores e conectivos da lógica.
+
+* Linguagem da Teoria dos Números
+
+- q é quociente e r é o resto da divisão de x por y
+
+\begin{array}{l}
+   INTDIV(x,y,q,r) = x = qy + r \land r < y
+\end{array}
+
+* Linguagem da Teoria dos Números
+
+- y divide x
+
+\begin{array}{l}
+  DIV(y,x) = \exists q. INTDIV(x,y,q,0)
+\end{array}
+
+* Linguagem da Teoria dos Números
+
+- x é par (x é ímpar)
+
+\begin{array}{l}
+  EVEN(x) = DIV(2,x)\\
+  ODD(x) = \neg EVEN(x)\\
+\end{array}
+
+* Linguagem da Teoria dos Números
+
+- x é primo
+
+\begin{array}{l}
+  PRIME(x) = x \geq 2 \land \forall y. (DIV(y,x) \to (y = 1 \lor y = x))
+\end{array}
+
+* Linguagem da Teoria dos Números
+
+- x é uma potência de 2.
+
+\begin{array}{l}
+  POWER_{2}(x) = \forall y.(DIV(y,x))
+\end{array}
+
+* Linguagem da Teoria dos Números
+
+- y é potência de 2 e o k-ésimo bit de y é 1.
+
+\begin{array}{l}
+  BIT(k,y) = POWER_{2}(y) \land \forall q\,r. INTDIV(x,y,q,r) \to ODD(q)\\
+\end{array}
+
+* Linguagem da Teoria dos Números
+
+- Denominamos por $Th(\mathbb{N})$ o conjunto de sentenças verdadeiras
+  da linguagem da teoria dos números.
+
+- O problema de decisão da teoria dos números consiste em determinar se
+  uma sentença pertence ou não a $Th(\mathbb{N})$.
+
+* Aritmética de Peano
+
+- Existem diversos sistemas que formalizam a teoria dos números.
+
+- O mais conhecido é o sistema da Aritmética de Peano.
+
+* Aritmética de Peano
+
+- A aritmética de Peano é formada por axiomas envolvendo a igualdade
+  e fórmulas da lógica de predicados.
+
+- Regras de inferência da lógica.
+
+* Aritmética de Peano
+
+- Adicionalmente, os seguintes axiomas pertencem a teoria:
+
+\begin{array}{ll}
+   \forall x. \neg (0 = x + 1) \\
+   \forall x\,y. x + 1 = y + 1 \to x = y \\
+   \forall x. x + 0 = x\\
+   \forall x\,y. x + (y + 1) = (x + y) + 1\\
+   \forall x. x \times 0 = 0 \\
+   \forall x\,y. x \times (y + 1) = (x \times y) + x \\
+   \varphi(0) \land \forall x. \varphi(n) \to \varphi(n + 1)\\
+\end{array}
+
+* Aritmética de Peano
+
+- A aritmética de Peano é uma teoria correta (sound), toda fórmula
+  demonstrável é verdadeira.
+
+* Aritmética de Peano
+
+- Porém, a mesma teoria não é completa (complete), existem fórmulas que
+  são verdadeiras e não são demonstráveis pela aritmética de Peano.
+
+* Incompletude
+
+- A demonstração de Gödel envolve a criação de uma fórmula da aritmética
+  de Peano $\varphi$ tal que:
+
+\begin{array}{l}
+  \varphi\text{ é verdadeira }\Leftrightarrow \varphi\text{ não é provável }
+\end{array}
+
+* Incompletude
+
+- A construção da fórmula $\varphi$ é muito similar à construção de
+  programas conhecidos como /quines/.
+   - Quine: programas que imprimem seu próprio código fonte.
+
+#+BEGIN_SRC haskell
+main = putStr s >> print s
+  where
+    s = "main = putStr s >> print s where s = "
+#+END_SRC
+
+* Incompletude
+
+- Antes de apresentarmos a construção da fórmula $\varphi$ diretamente, vamos demonstrar  demonstração da incompletude seguindo uma abordagem baseada em redução.
+
+* Incompletude
+
+- A demonstração visa mostrar que:
+  - O conjunto de teoremas da AP é recursivamente enumerável.
+  - O conjunto de $Th(\mathbb{N})$ não é recursivamente enumerável.
+
+* Incompletude
+
+- O ponto central da demonstração é mostrar que o conjunto $Th(\mathbb{N})$ não é recursivamente enumerável.
+
+* Incompletude
+
+- Para isso, vamos construir uma redução do problema da parada para máquinas de Turing.
+
+- Problema da parada:
+
+\begin{array}{l}
+HP = \{R\langle M,w\rangle\,|\,M\text{ para com entrada }w\}
+\end{array}
+
+* Incompletude
+
+- A construção é, em essência, formar uma fórmula $\gamma$, tal que:
+
+\begin{array}{l}
+M\text{ não para com entrada }w \Leftrightarrow \gamma\in Th(\mathbb{N})
+\end{array}
+
+* Incompletude
+
+- A fórmula $\gamma$ é construída em termos da sequência de configurações produzidas por $M$ durante o processamento de $w$.
+
+- Configuração: tripla $(e,y,n)$ em que
+   - $e$ estado atual
+   - $y$ prefixo finito da fita
+   - $n$ posição atual do cabeçote
+
+* Incompletude
+
+- Para isso, vamos construir diversas fórmulas intermediárias que serão
+  utilizadas para modelar a sequência de configurações como uma fórmula
+  da aritmética de Peano.
+
+* Incompletude
+
+- Assuma que a codificação de configurações é feita por palavras de um
+  alfabeto de tamanho $p$, em que $p$ é um primo.
+
+* Incompletude
+
+- O número y é uma potência de p (primo)
+
+\begin{array}{l}
+POWER_{p}(y) = \forall z. (DIV(z,y) \land PRIME(p) \to z = p)
+\end{array}
+
+* Incompletude
+
+- O número d é uma potência de p e especifica o tamanho de v
+  como uma string.
+
+\begin{array}{l}
+LENGTH(v,d) = POWER_{p}(d) \land v < d
+\end{array}
+
+* Incompletude
+
+- O dígito na posição y de v é b.
+
+\begin{array}{l}
+DIGIT(v,y,b) = \exists u.\exists a. (v = a + by + upy \land a < y \land b < p)
+\end{array}
+
+* Incompletude
+
+- Os 3 dígitos de v na posição y são b, c e d
+
+\begin{array}{lcl}
+3DIGIT(v,y,b,c,d) & = &\exists u. \exists a.(v = a + by + cpy + dppy + uppy \land \\
+                  &   & a < y \land b < p \land c < p \land d < p)
+\end{array}
+
+* Incompletude
+
+- Os 3 dígitos de v na posição y são iguais aos da posição z.
+
+\begin{array}{lcl}
+  MATCH(v,y,z) & = & \bigvee_{(a,b,c,d,e,f) \in C} 3DIGIT(v,y,a,b,c) \land\\
+               &   & 3DIGIT(v,z,d,e,f)\\
+\end{array}
+
+* Incompletude
+
+- A string v representa configurações sucessivas de uma computação de M
+
+\begin{array}{lcl}
+   MOVE(v,c,d) = \forall y. POWER_{p}(y) \land yppc < d \to MATCH(v,y,yc)
+\end{array}
+
+* Incompletude
+
+- A string v representa a configuração inicial da máquina M
+
+\begin{array}{lcl}
+START(v,c) & = & \bigwedge_{i = 0}^n DIGIT(v, p^i, k_i) \land p^n < c \land\\
+           &   & \forall y. (POWER_{p}(y) \land p^n < y < c \to DIGIT(v,y,k))
+\end{array}
+
+
+* Incompletude
+
+- A string v possui algum estado de parada ($\exists e\,a.\delta(e,a) = \bot$).
+
+\begin{array}{l}
+HALT(v,d) = \exists y. POWER_{p}(y) \land y < d \land \bigvee_{a \in H}DIGIT(v,y,a)
+\end{array}
+
+* Incompletude
+
+- A string v representa uma sequência de configurações de M para a string w.
+
+\begin{array}{lcl}
+VALCOMP_{M,w}(v) & = & \exists c\,d.POWER_{p}(c) \land c < d \land LENGTH(v,d) \land \\
+              &   & START(v,c) \land MOVE(v,c,d) \land HALT(v,d)
+\end{array}
+
+* Incompletude
+
+- Usando a fórmula anterior, concluímos a redução, pois $M$ para com entrada $w$ só se:
+
+\begin{array}{l}
+\neg VALCOMP_{M,w}(v)
+\end{array}
+
+para v representando as configurações de M para w.
+
+* Referências
+
+- Kozen, Dexter. Automata and Computability. Springer.

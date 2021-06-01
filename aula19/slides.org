@@ -1,0 +1,242 @@
+#    -*- mode: org -*-
+#+OPTIONS: reveal_center:t reveal_progress:t reveal_history:t reveal_control:t
+#+OPTIONS: reveal_mathjax:t reveal_rolling_links:t reveal_keyboard:t num:nil
+#+OPTIONS: reveal_width:1200 reveal_height:800
+#+OPTIONS: toc:nil
+#+REVEAL_MARGIN: 0.2
+#+REVEAL_MIN_SCALE: 0.5
+#+REVEAL_MAX_SCALE: 2.5
+#+REVEAL_TRANS: none
+#+REVEAL_THEME: white
+#+REVEAL_HLEVEL: 999
+#+REVEAL_TITLE_SLIDE: <h1>%t</h1><h2>%s</h2><h3>%A %a</h3>
+#+LATEX_HEADER: \usepackage{proof,latesym,amsmath,amssymb}
+
+#+TITLE: Introdução à lógica combinatória
+#+SUBTITLE: PCC102 - Teoria da computação
+#+AUTHOR: Rodrigo Ribeiro
+#+EMAIL: rodrigo.ribeiro@ufop.edu.br
+
+* Objetivos
+
+- Apresentar a sintaxe e semântica da lógica combinatória.
+
+- Apresentar a equivalência entre lógica combinatória e \lambda-cálculo.
+
+* Motivação
+
+- O \lambda-cálculo é um formalismo conveniente para o estudo de computabilidade
+  por sua semelhança com linguagens de programação.
+
+* Motivação
+
+- Porém, essa mesma semelhança é um inconveniente!
+
+- Grande parte da complicação da semântica (substituição) deve-se à necessidade
+  de evitar a captura de variáveis livres e do gerenciamento correto de variáveis
+  ligadas.
+
+* Motivação
+
+- Nesse sentido, a lógica combinatória evita os problemas associados a
+  variáveis ligadas por ser um formalismo que não as utiliza.
+
+* Motivação
+
+- Para entender, considere a seguinte propriedade:
+
+\begin{array}{l}
+   \forall x\,y. x + y = y + x
+\end{array}
+
+* Motivação
+
+- Podemos representar a propriedade anterior, sem usar variáveis ligadas,
+  da seguinte forma:
+
+- Primeiro, vamos usar um operador para representar a adição:
+
+\begin{array}{l}
+   A(x,y) = x + y
+\end{array}
+
+
+* Motivação
+
+- Em seguida, definimos um operador para representar a comutatividade de uma
+  função:
+
+\begin{array}{l}
+  C(f)(x,y) = f(y,x)
+\end{array}
+
+* Motivação
+
+- Dessa forma, temos que a propriedade:
+
+\begin{array}{l}
+  \forall x\,y.x + y = y + x
+\end{array}
+
+- Pode ser representada por A = C(A)
+
+* Sintaxe
+
+- Para a sintaxe da lógica combinatória, vamos considerar um conjunto
+  enumerável de símbolos denominados variáveis.
+
+- Um conjunto (finito ou infinito) de símbolos atômicos
+
+- Três combinadores: *I*, *S*, *K*.
+
+* Sintaxe
+
+- Definimos a sintaxe de termos da lógica combinatória usando a
+  seguinte gramática livre de contexto.
+
+\begin{array}{lcll}
+  e & ::=  & x            & \text{variáveis}\\
+    & \mid & a            & \text{átomos}\\
+    & \mid & I\,\mid\,S\,\mid\,K & \text{combinadores}\\
+    & \mid & e\:e         & \text{aplicação}\\
+\end{array}
+
+* Sintaxe
+
+- Exemplos (x,y e z são variáveis distintas)
+  - (*S* (*K* x) *K*)
+  - *S* (*I* y) z
+
+* Semântica
+
+- A semântica da lógica combinatória é dada em termos do significado dos
+  combinadores *K*, *S* e *I*.
+
+
+* Semântica
+
+- Semântica da lógica combinatória.
+
+\begin{array}{lcl}
+  \textbf{I}\:e          & \rhd & e\\
+  \textbf{K}\:e\:e'      & \rhd & e\\
+  \textbf{S}\:e\:e'\:e'' & \rhd & e\,e''(e'\,e'')\\
+\end{array}
+
+* Semântica
+
+- Exemplo: Considere *B* \equiv *S* ( *K* *S*) *K*
+
+\begin{array}{lcl}
+B\,X\,Y\,Z & \rhd\\
+\end{array}
+
+
+* Semântica
+
+- Exemplo: Considere *B* \equiv *S* ( *K* *S*) *K*
+
+\begin{array}{lcl}
+B\,X\,Y\,Z & \rhd\\
+S\,(K\,S)\,K\,X\,Y\,Z & \rhd\\
+\end{array}
+
+
+* Semântica
+
+- Exemplo: Considere *B* \equiv *S* ( *K* *S*) *K*
+
+\begin{array}{lcl}
+B\,X\,Y\,Z & \rhd\\
+S\,(K\,S)\,K\,X\,Y\,Z & \rhd\\
+K\,S\,X\,(K\,X)\,Y\,Z & \rhd & \{S\,(K\,S)\,K\,X \rhd K\,S\,X\,(K\,X)\}\\
+\end{array}
+
+
+* Semântica
+
+- Exemplo: Considere *B* \equiv *S* ( *K* *S*) *K*
+
+\begin{array}{lcl}
+B\,X\,Y\,Z & \rhd\\
+S\,(K\,S)\,K\,X\,Y\,Z & \rhd\\
+K\,S\,X\,(K\,X)\,Y\,Z & \rhd & \{S\,(K\,S)\,K\,X \rhd K\,S\,X\,(K\,X)\}\\
+S\,(K\,X)\,Y\,Z & \rhd & \{K\,S\,X \rhd S\}\\
+\end{array}
+
+
+* Semântica
+
+- Exemplo: Considere *B* \equiv *S* ( *K* *S*) *K*
+
+\begin{array}{lcl}
+B\,X\,Y\,Z & \rhd\\
+S\,(K\,S)\,K\,X\,Y\,Z & \rhd\\
+K\,S\,X\,(K\,X)\,Y\,Z & \rhd & \{S\,(K\,S)\,K\,X \rhd K\,S\,X\,(K\,X)\}\\
+S\,(K\,X)\,Y\,Z & \rhd & \{K\,S\,X \rhd S\}\\
+K\,X\,Z\,(Y\,Z) & \rhd & \\
+\end{array}
+
+
+* Semântica
+
+- Exemplo: Considere *B* \equiv *S* ( *K* *S*) *K*
+
+\begin{array}{lcl}
+B\,X\,Y\,Z & \rhd\\
+S\,(K\,S)\,K\,X\,Y\,Z & \rhd\\
+K\,S\,X\,(K\,X)\,Y\,Z & \rhd & \{S\,(K\,S)\,K\,X \rhd K\,S\,X\,(K\,X)\}\\
+S\,(K\,X)\,Y\,Z & \rhd & \{K\,S\,X \rhd S\}\\
+K\,X\,Z\,(Y\,Z) & \rhd & \\
+X\,Y\,Z
+\end{array}
+
+* Abstração
+
+- Para apresentar a equivalência entre a lógica combinatória e o \lambda-cálculo
+  devemos definir uma função que "simula" uma abstração.
+
+* Abstração
+
+- Abstração em lógica combinatória
+
+\begin{array}{lcl}
+   \lbrack x \rbrack . e & = & \textbf{K}\:e\:\:\:\text{se }x\not\in fv(e)\\
+   \lbrack x \rbrack . x & = & \textbf{I}\\
+   \lbrack x \rbrack . e\:x & = & e\:\:\:\:\text{se }x\not\in fv(e)\\
+   \lbrack x \rbrack . e\:e' & = & \textbf{S}\:(\lbrack x \rbrack .e)
+                                               (\lbrack x \rbrack . e')\:\:\:\:
+                                               \text{caso contrário}\\
+\end{array}
+
+* Equivalência
+
+- Traduzindo um termo da lógica combinatória em um \lambda-termo:
+
+\begin{array}{lcl}
+   x_{\lambda} & = & x\\
+   \textbf{I}  & = & \lambda x. x\\
+   \textbf{K}  & = & \lambda x\,y.x\\
+   \textbf{S}  & = & \lambda x\,y\,z.x\,z(y\,z)\\
+   (e_{1}\:e_{2}) & = & (e_{1})_{\lambda}\,(e_{2})_{\lambda}\\
+\end{array}
+
+* Equivalência
+
+- Traduzindo um \lambda-termo em um termo da lógica combinatória:
+
+\begin{array}{lcl}
+   x_{\eta} & = & x\\
+   (e\:e')_{\eta} & = & e_{\eta}\:e'_{\eta}\\
+   (\lambda x. e)_{\eta} & = & \lbrack x \rbrack . (e_{\eta})\\
+\end{array}
+
+* Exercícios
+
+- Implemente um intepretador para lógica combinatória em sua
+  linguagem de programação favorita.
+
+* Referências
+
+- Hindley, J. Roger; Seldin, Jonathan P. Lambda-calculus and combinators: An
+  introduction. Cambridge.
