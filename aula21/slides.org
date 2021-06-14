@@ -88,7 +88,7 @@
 - x é uma potência de 2.
 
 \begin{array}{l}
-  POWER_{2}(x) = \forall y.(DIV(y,x))
+  POWER_{2}(x) = \forall y.(DIV(y,x) \land PRIME(y)) \to y = 2
 \end{array}
 
 * Linguagem da Teoria dos Números
@@ -131,7 +131,7 @@
    \forall x\,y. x + (y + 1) = (x + y) + 1\\
    \forall x. x \times 0 = 0 \\
    \forall x\,y. x \times (y + 1) = (x \times y) + x \\
-   \varphi(0) \land \forall x. \varphi(n) \to \varphi(n + 1)\\
+   \varphi(0) \land \forall n. \varphi(n) \to \varphi(n + 1)\\
 \end{array}
 
 * Aritmética de Peano
@@ -167,7 +167,7 @@ main = putStr s >> print s
 
 * Incompletude
 
-- Antes de apresentarmos a construção da fórmula $\varphi$ diretamente, vamos demonstrar  demonstração da incompletude seguindo uma abordagem baseada em redução.
+- Ao invés de apresentar a construção da fórmula $\varphi$ diretamente, vamos demonstrar  demonstração da incompletude seguindo uma abordagem baseada em redução.
 
 * Incompletude
 
